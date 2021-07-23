@@ -1,5 +1,6 @@
 package com.example.jasoali.api;
 
+import com.example.jasoali.models.FileData;
 import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.User;
 
@@ -26,6 +27,11 @@ public class DBConnection {
     }
 
     public ArrayList<QuestionsHolder> getAllQuestions() {
+        return null;
+    }
+
+    public FileData getFile(int fileId) {
+        /// download and store file
         return null;
     }
 }
