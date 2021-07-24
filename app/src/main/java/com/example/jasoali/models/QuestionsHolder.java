@@ -12,9 +12,8 @@ public class QuestionsHolder {
     private ArrayList<Category> categories;
     private ArrayList<Comment> comments;
     private ArrayList<Question> questions;
-    private ArrayList<String> tags;
 
-    public QuestionsHolder(String title, String description, Date createDate, int creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions, ArrayList<String> tags) {
+    public QuestionsHolder(String title, String description, Date createDate, int creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
         this.title = title;
         this.description = description;
         this.createDate = createDate;
@@ -23,7 +22,6 @@ public class QuestionsHolder {
         this.categories = categories;
         this.comments = comments;
         this.questions = questions;
-        this.tags = tags;
     }
 
     public QuestionsHolder(Date createDate, int creatorId, String creatorName) {
@@ -32,7 +30,6 @@ public class QuestionsHolder {
         this.creatorName = creatorName;
         this.categories = new ArrayList<>();
         this.questions = new ArrayList<>();
-        this.tags = new ArrayList<>();
     }
 
     public String getTitle() {
@@ -100,11 +97,4 @@ public class QuestionsHolder {
         this.questions = questions;
     }
 
-    public ArrayList<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
-    }
 }

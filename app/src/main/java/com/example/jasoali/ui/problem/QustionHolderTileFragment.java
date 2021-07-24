@@ -12,10 +12,10 @@ import com.example.jasoali.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link QustionResultFragment#newInstance} factory method to
+ * Use the {@link QustionHolderTileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class QustionResultFragment extends Fragment {
+public class QustionHolderTileFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class QustionResultFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public QustionResultFragment() {
+    public QustionHolderTileFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class QustionResultFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment QustionResultFragment.
+     * @return A new instance of fragment QustionHolderTileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static QustionResultFragment newInstance(String param1, String param2) {
-        QustionResultFragment fragment = new QustionResultFragment();
+    public static QustionHolderTileFragment newInstance(String param1, String param2) {
+        QustionHolderTileFragment fragment = new QustionHolderTileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
