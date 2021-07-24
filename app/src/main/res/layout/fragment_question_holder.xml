@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxHeight="200dp">
+
+<!--    YEAR,-->
+<!--    COURSE,-->
+<!--    DEPARTMENT,-->
+<!--    UNIVERSITY,-->
+<!--    PROFESSOR,-->
+<!--    OTHER,-->
+
+    <TextView
+        android:id="@+id/question_holder_title"
+        android:layout_width="297dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/question_holder_department"
+        android:layout_width="297dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/question_holder_course"
+        android:layout_width="297dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+</LinearLayout>
