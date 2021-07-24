@@ -1,15 +1,18 @@
 package com.example.jasoali;
 
-import com.parse.Parse;
+//import com.parse.Parse;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 
 
+import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.ParseObject;
+//import com.parse.ParseObject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -41,10 +44,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_main);
+//        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//        transaction.replace(R.id.your_placeholder, fragInfo);
+//        transaction.commit();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+         Passing each menu ID as a set of Ids because each
+         menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
