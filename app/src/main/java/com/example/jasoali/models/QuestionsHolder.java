@@ -7,18 +7,16 @@ public class QuestionsHolder {
     private int id;
     private String title;
     private String description;
-    private Date createDate;
     private int creatorId;
     private String creatorName;
     private ArrayList<Category> categories;
     private ArrayList<Comment> comments;
     private ArrayList<Question> questions;
 
-    public QuestionsHolder(int id, String title, String description, Date createDate, int creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
+    public QuestionsHolder(int id, String title, String description, int creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.createDate = createDate;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
         this.categories = categories;
@@ -26,9 +24,8 @@ public class QuestionsHolder {
         this.questions = questions;
     }
 
-    public QuestionsHolder(int id, Date createDate, int creatorId, String creatorName) {
+    public QuestionsHolder(int id, int creatorId, String creatorName) {
         this.id = id;
-        this.createDate = createDate;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
         this.categories = new ArrayList<>();
@@ -59,14 +56,6 @@ public class QuestionsHolder {
         this.description = description;
     }
 
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
 
     public int getCreatorId() {
         return creatorId;
