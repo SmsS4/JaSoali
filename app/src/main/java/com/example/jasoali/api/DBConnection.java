@@ -1,8 +1,6 @@
 package com.example.jasoali.api;
 
-import com.example.jasoali.exceptions.AuthenticationFailed;
 import com.example.jasoali.exceptions.NetworkError;
-import com.example.jasoali.exceptions.RegisterFailed;
 import com.example.jasoali.models.Category;
 import com.example.jasoali.models.CategoryType;
 import com.example.jasoali.models.Comment;
@@ -12,9 +10,11 @@ import com.example.jasoali.models.Question;
 import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class DBConnection {
     static private DBConnection instance = new DBConnection();
@@ -28,13 +28,6 @@ public class DBConnection {
         return DBConnection.instance;
     }
 
-    public User login(String username, String password) throws AuthenticationFailed, NetworkError {
-        throw new AuthenticationFailed();
-    }
-
-    public void register(User user) throws RegisterFailed, NetworkError {
-        throw new RegisterFailed("reason");
-    }
 
     public ArrayList<QuestionsHolder> getQuestionsHolderByCategories(String name, ArrayList<Category> categories) throws NetworkError {
         /// returns list of questions that has this categories
@@ -76,7 +69,7 @@ public class DBConnection {
         return null;
     }
 
-    public QuestionsHolder getLocalQuestionsHolder(int questionsHolderId){
+    public QuestionsHolder getLocalQuestionsHolder(int questionsHolderId) {
         // todo
         ArrayList<Category> categories = new ArrayList<>();
         categories.add(
@@ -111,9 +104,52 @@ public class DBConnection {
         );
     }
 
+    public void login(String username, String password, String email) {
+        ParseUser parseUser = new ParseUser();
+        parseUser.setUsername(username);
+        parseUser.setPassword(password);
+        parseUser.setEmail(email);
+        ParseUser.logInInBackground(username, password,
+                new LogInCallback() {
+                    @Override
+                    public void done(ParseUser user, ParseException e) {
+                        if (user != null) {
+                            // Hooray! The user is logged in.
+                        } else {
+                            // Signup failed. Look at the ParseException to see what happened.
+                        }
+                    }
+                });
+    }
+
+    public void register(User user) {
+        ParseUser parseUser = new ParseUser();
+        parseUser.setUsername(user.getUsername());
+        parseUser.setPassword(user.getPassword());
+        parseUser.setEmail(user.getEmail());
+        parseUser.put("name", user.getName());
+        parseUser.put("isAdmin", user.isAdmin());
+        parseUser.put("image", null); //todo: add image
+        try {
+            parseUser.signUp();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     public User getLocalUser() {
-        // todo
-        return new User(0, "demol", null, "ramz", "SeyedMahdi SadeghShobeiri", true);
+        ParseUser user = ParseUser.getCurrentUser();
+        if (user != null) {
+            return new User(
+                    user.getObjectId(),
+                    user.getString("username"),
+                    user.getString("password"),
+                    user.getString("email"),
+                    user.getString("name"),
+                    null,// todo: handle image
+                    user.getBoolean("isAdmin"));
+        }
+        return null;
     }
 
 }
