@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class QuestionsHolder {
+    private int id;
     private String title;
     private String description;
     private Date createDate;
@@ -13,7 +14,8 @@ public class QuestionsHolder {
     private ArrayList<Comment> comments;
     private ArrayList<Question> questions;
 
-    public QuestionsHolder(String title, String description, Date createDate, int creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
+    public QuestionsHolder(int id, String title, String description, Date createDate, int creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.createDate = createDate;
@@ -24,12 +26,21 @@ public class QuestionsHolder {
         this.questions = questions;
     }
 
-    public QuestionsHolder(Date createDate, int creatorId, String creatorName) {
+    public QuestionsHolder(int id, Date createDate, int creatorId, String creatorName) {
+        this.id = id;
         this.createDate = createDate;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
         this.categories = new ArrayList<>();
         this.questions = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
