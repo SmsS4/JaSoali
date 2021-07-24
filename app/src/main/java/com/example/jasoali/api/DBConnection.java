@@ -41,11 +41,11 @@ public class DBConnection {
         return getQuestionsHolderByCategories(null, new ArrayList<>());
     }
 
-    public ArrayList<QuestionsHolder> getFavouritesQuestionsHolder() throws NetworkError {
+    public ArrayList<QuestionsHolder> getFavouritesQuestionsHolder(int userId) throws NetworkError {
         return null;
     }
 
-    public void addFavouritesQuestionsHolder(int questionsHolderId) throws NetworkError {
+    public void addFavouritesQuestionsHolder(int questionsHolderId, int userId) throws NetworkError {
 
     }
 
