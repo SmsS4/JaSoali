@@ -28,10 +28,12 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn"
+        android:id="@+id/search_between_question_holders"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_gravity="bottom"
         android:layout_margin="10dp"
-        android:text="@string/start_search" />
+        android:fontFamily="@font/button"
+        android:text="@string/start_searching"
+        android:textSize="25sp" />
 </FrameLayout>
