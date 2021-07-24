@@ -2,8 +2,8 @@
 <font-family xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <font
-        android:font="@font/Vazir_Bold"
-        android:fontWeight="400"
+        android:font="@font/vazir_bold"
+        android:fontWeight="1000"
         tools:targetApi="o" />
 
 </font-family>
