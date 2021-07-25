@@ -2,29 +2,31 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 
-import com.example.jasoali.api.DBConnection;
-import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.parse.FindCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 //import com.parse.ParseObject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Fragment;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    public LinearProgressIndicator progressIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +39,47 @@ public class MainActivity extends AppCompatActivity {
                 .enableLocalDataStore()
                 .build());
 
-        ParseObject firstObject = new ParseObject("FirstClass");
-        firstObject.put("message", "Hey ! First message from android. Parse is now connected");
-        firstObject.saveInBackground(e -> {
-            if (e != null) {
-                Log.e("MainActivity", e.getLocalizedMessage());
-            } else {
-                Log.d("MainActivity", "Object saved.");
-            }
-        });
+        setContentView(R.layout.activity_main);
 
-//        setContentView(R.layout.activity_main);
+        progressIndicator = findViewById(R.id.progress_bar);
+        progressIndicator.setVisibility(View.VISIBLE);
+
+//        ParseObject firstObject = new ParseObject("FirstClass");
+//        firstObject.put("message", "Hey ! First message from android. Parse is now connected");
+//        firstObject.saveInBackground(e -> {
+//            if (e != null) {
+//                Log.e("MainActivity", e.getLocalizedMessage());
+//            } else {
+//                Log.d("MainActivity", "Object saved.");
+//            }
+//        });
+
+
+//        ArrayList<ParseObject> tmp = new ArrayList<>();
+//
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery("FirstClass");
+//        query.findInBackground(new FindCallback<ParseObject>() {
+//            public void done(List<ParseObject> scoreList, ParseException e) {
+//                if (e == null) {
+//                    tmp.add(scoreList.get(0));
+//                    tmp.add(scoreList.get(1));
+//                    Log.d("score", "Retrieved " + scoreList.size() + " scores");
+//                    for (ParseObject parseObject : tmp) {
+//                        Log.e("Salam", parseObject.getParseFile("image").getUrl());
+//                        Log.e("Salam", parseObject.getParseFile("image").getName());
+//                        try {
+//                            Log.e("Salam", Arrays.toString(parseObject.getParseFile("image").getData()));
+//                        } catch (ParseException parseException) {
+//                            parseException.printStackTrace();
+//                        }
+//                    }
+//                } else {
+//                    Log.d("score", "Error: " + e.getMessage());
+//                }
+//            }
+//        });
+
+
 //        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
 //        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 //        transaction.replace(R.id.your_placeholder, fragInfo);

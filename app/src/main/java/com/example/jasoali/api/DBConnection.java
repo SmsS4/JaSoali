@@ -21,7 +21,6 @@ public class DBConnection {
     static private User user = null;
 
     private DBConnection() {
-
     }
 
     static public DBConnection getInstance() {
