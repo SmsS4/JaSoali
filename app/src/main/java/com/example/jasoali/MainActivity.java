@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 
-import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
+import com.example.jasoali.ui.problem.SearchFragment;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -30,6 +30,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public LinearProgressIndicator progressIndicator;
+    private SearchFragment searchFragment = new SearchFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         progressIndicator = findViewById(R.id.progress_bar);
         progressIndicator.setVisibility(View.VISIBLE);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, searchFragment).commit();
 
 //        ParseObject firstObject = new ParseObject("FirstClass");
 //        firstObject.put("message", "Hey ! First message from android. Parse is now connected");
@@ -85,10 +90,10 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
-        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.your_placeholder, fragInfo);
-        transaction.commit();
+//        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//        transaction.replace(R.id.your_placeholder, fragInfo);
+//        transaction.commit();
 //
 //        BottomNavigationView navView = findViewById(R.id.nav_view);
 ////        Passing each menu ID as a set of Ids because each

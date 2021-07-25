@@ -28,7 +28,7 @@ public class Category {
     static public CategoryType getCategoryByType(String typeString){
         switch (typeString){
             case Category.TERM:
-                return CategoryType.YEAR;
+                return CategoryType.TERM;
             case Category.COURSE:
                 return CategoryType.COURSE;
             case Category.PROFESSOR:
@@ -44,7 +44,7 @@ public class Category {
 
     public String getStringType() {
         switch (type){
-            case YEAR:
+            case TERM:
                 return Category.TERM;
             case COURSE:
                 return Category.COURSE;
