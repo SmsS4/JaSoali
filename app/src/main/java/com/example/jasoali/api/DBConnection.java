@@ -1,5 +1,7 @@
 package com.example.jasoali.api;
 
+import android.util.Log;
+
 import com.example.jasoali.exceptions.NetworkError;
 import com.example.jasoali.models.Category;
 import com.example.jasoali.models.CategoryType;
@@ -10,11 +12,15 @@ import com.example.jasoali.models.Question;
 import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DBConnection {
     static private DBConnection instance = new DBConnection();
@@ -28,18 +34,37 @@ public class DBConnection {
     }
 
 
-    public ArrayList<QuestionsHolder> getQuestionsHolderByCategories(String name, ArrayList<Category> categories) throws NetworkError {
-        /// returns list of questions that has this categories
-        // and has name in title (if name is not null)
-        return null;
-    }
-
-    public ArrayList<QuestionsHolder> getAllQuestionsHolder() throws NetworkError {
+    public ArrayList<QuestionsHolder> getAllQuestionsHolder() {
         return getQuestionsHolderByCategories(null, new ArrayList<>());
     }
 
+    public ArrayList<QuestionsHolder> getQuestionsHolderByCategories(String name, ArrayList<Category> categories) {
+        ArrayList<QuestionsHolder> result = new ArrayList<>();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
+        if (name != null) {
+            query.whereContains("title", name);
+        }
+        for (Category category : categories) {
+            query.whereEqualTo(category.getType().toString(), category.getValue());
+        }
+        query.findInBackground((questionHolderList, e) -> {
+            if (e == null) {
+//                for(ParseObject parseObject:questionHolderList){
+//                    result.add(new QuestionsHolder(pa));
+//                }
+//                result.addAll(questionHolderList);
+                Log.d("score", "Retrieved " + questionHolderList.size() + " scores");
+            } else {
+                Log.d("score", "Error: " + e.getMessage());
+            }
+        });
+        /// returns list of questions that has this categories
+        // and has name in title (if name is not null)
+        return result;
+    }
+
     public ArrayList<QuestionsHolder> getFavouritesQuestionsHolder(int userId) throws NetworkError {
-        return null;
+        return new ArrayList<>();
     }
 
     public void addFavouritesQuestionsHolder(int questionsHolderId, int userId) throws NetworkError {

@@ -1,7 +1,7 @@
 package com.example.jasoali.models;
 
 public enum CategoryType {
-    YEAR,
+    TERM,
     COURSE,
     DEPARTMENT,
     UNIVERSITY,
