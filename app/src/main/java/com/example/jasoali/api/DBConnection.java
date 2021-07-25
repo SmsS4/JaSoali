@@ -1,5 +1,6 @@
 package com.example.jasoali.api;
 
+import com.example.jasoali.exceptions.LengthExceeded;
 import com.example.jasoali.exceptions.NetworkError;
 import com.example.jasoali.models.Category;
 import com.example.jasoali.models.CategoryType;
@@ -46,15 +47,15 @@ public class DBConnection {
 
     }
 
-    public void addQuestionsHolder(QuestionsHolder questionsHolder) throws NetworkError {
+    public void addQuestionsHolder(QuestionsHolder questionsHolder){
 
     }
 
-    public void removeQuestionsHolder(int questionsHolderId) throws NetworkError {
+    public void removeQuestionsHolder(int questionsHolderId){
 
     }
 
-    public void editQuestionsHolder(QuestionsHolder newQuestionsHolder) throws NetworkError {
+    public void editQuestionsHolder(QuestionsHolder newQuestionsHolder){
         removeQuestionsHolder(newQuestionsHolder.getId());
         addQuestionsHolder(newQuestionsHolder);
     }
@@ -71,36 +72,65 @@ public class DBConnection {
     public QuestionsHolder getLocalQuestionsHolder(int questionsHolderId) {
         // todo
         ArrayList<Category> categories = new ArrayList<>();
-        categories.add(
-                new Category(CategoryType.COURSE, "FolanCourse")
-        );
-        categories.add(
-                new Category(CategoryType.DEPARTMENT, "CE")
-        );
-        ArrayList<Question> questions = new ArrayList<>();
-        questions.add(
-                new TextQuestion("soal ha", "matne soal")
-        );
-        questions.add(
-                new FileQuestion("javab ha", new FileData(0, null, "image/jpeg"))
-        );
-        ArrayList<Comment> comments = new ArrayList<>();
-        comments.add(
-                new Comment(0, "folan", "mmd")
-        );
-        comments.add(
-                new Comment(1, "bahman", "gholam")
-        );
-        return new QuestionsHolder(
-                0,
-                "first QH",
-                "blah blah blah",
-                0,
-                "SeyedMahdi SadeghShobeiri",
-                categories,
-                comments,
-                questions
-        );
+        try {
+            categories.add(
+                    new Category(CategoryType.COURSE, "شبیه سازی")
+            );
+            categories.add(
+                    new Category(CategoryType.DEPARTMENT, "مهندسی کامپیوتر")
+            );
+            categories.add(
+                    new Category(CategoryType.OTHER, "سوال_سخت")
+            );
+            categories.add(
+                    new Category(CategoryType.OTHER, "مخصوص_خودته")
+            );
+            categories.add(
+                    new Category(CategoryType.YEAR, "بهار ۱۴۰۰")
+            );
+            ArrayList<Question> questions = new ArrayList<>();
+            questions.add(
+                    new TextQuestion("سوال‌ها یک عنوان طولانی همیشگی", "بلا بلا متن سوال بلا بلا")
+            );
+            questions.add(
+                    new FileQuestion("جواب‌ها", new FileData(0, null, "image/jpeg"))
+            );
+            questions.add(
+                    new FileQuestion("راهنمایی‌ها", new FileData(0, null, "image/jpeg"))
+            );
+            questions.add(
+                    new FileQuestion("جواب‌ها", new FileData(0, null, "image/jpeg"))
+            );
+            questions.add(
+                    new FileQuestion("راهنمایی‌ها", new FileData(0, null, "image/jpeg"))
+            );
+            questions.add(
+                    new FileQuestion("جواب‌ها", new FileData(0, null, "image/jpeg"))
+            );
+            questions.add(
+                    new FileQuestion("راهنمایی‌ها", new FileData(0, null, "image/jpeg"))
+            );
+            ArrayList<Comment> comments = new ArrayList<>();
+            comments.add(
+                    new Comment(0, "عالی و طلایی", "ممد")
+            );
+            comments.add(
+                    new Comment(1, "ماورای تصور", "یک پدیده")
+            );
+            return new QuestionsHolder(
+                    0,
+                    "سلام سوال",
+                    "این یک توضیحات تستی برای یک تست دستی است.",
+                    0,
+                    "آقا صادق",
+                    categories,
+                    comments,
+                    questions
+            );
+        }catch (LengthExceeded le){
+            return null;
+        }
+
     }
 
     public void login(String username, String password, String email) {

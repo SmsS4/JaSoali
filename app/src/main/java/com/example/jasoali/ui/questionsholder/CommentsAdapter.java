@@ -44,8 +44,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         Comment comment = comments.get(position);
 
         // Set item views based on your views and data model
-        TextView textView = holder.nameTextView;
-        textView.setText(comment.getText());
+
+        holder.nameTextView.setText(comment.getName()+":");
+        holder.valueTextView.setText(comment.getText());
 //        Button button = holder.messageButton;
 //        button.setText("blah blah");
 //        button.setText(contact.isOnline() ? "Message" : "Offline");
@@ -62,7 +63,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView nameTextView;
-        public Button messageButton;
+        public TextView valueTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -72,6 +73,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             super(itemView);
 
             nameTextView = (TextView) itemView.findViewById(R.id.comment_name);
+            valueTextView = (TextView) itemView.findViewById(R.id.comment_value);
         }
     }
 }

@@ -9,4 +9,14 @@
     <color name="white">#FFFFFFFF</color>
     <color name="enabled_color">#3F3F3F</color>
     <color name="disabled_color">#000000</color>
+
+    <color name="tags0">#FF37B300</color>
+    <color name="tags1">#FF18FFA3</color>
+    <color name="tags2">#FFA80297</color>
+    <color name="tags3">#FF00A9B5</color>
+    <color name="tags4">#FFA3A037</color>
+    <color name="tags5">#FFD58700</color>
+    <color name="tags6">#FF3700B3</color>
+    <color name="tags7">#FF625F60</color>
+
 </resources>

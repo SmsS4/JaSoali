@@ -2,12 +2,15 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 
+import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /// hides keyboard on start
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(getString(R.string.back4app_app_id))
@@ -80,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
-//        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.your_placeholder, fragInfo);
-//        transaction.commit();
+        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.your_placeholder, fragInfo);
+        transaction.commit();
 //
 //        BottomNavigationView navView = findViewById(R.id.nav_view);
 ////        Passing each menu ID as a set of Ids because each

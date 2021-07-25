@@ -9,8 +9,54 @@ public class Category {
         this.value = value;
     }
 
+    final public static String TERM = "ترم";
+    final public static String COURSE = "درس";
+    final public static String PROFESSOR = "استاد";
+    final public static String DEPARTMENT = "دانشکده";
+    final public static String UNIVERSITY = "دانشگاه";
+    final public static String[] ALL_STRINGS = new String[]{
+            TERM,
+            COURSE,
+            PROFESSOR,
+            DEPARTMENT,
+            UNIVERSITY
+    };
     public CategoryType getType() {
         return type;
+    }
+
+    static public CategoryType getCategoryByType(String typeString){
+        switch (typeString){
+            case Category.TERM:
+                return CategoryType.YEAR;
+            case Category.COURSE:
+                return CategoryType.COURSE;
+            case Category.PROFESSOR:
+                return CategoryType.PROFESSOR;
+            case Category.DEPARTMENT:
+                return CategoryType.DEPARTMENT;
+            case Category.UNIVERSITY:
+                return CategoryType.UNIVERSITY;
+            default:
+                return null;
+        }
+    }
+
+    public String getStringType() {
+        switch (type){
+            case YEAR:
+                return Category.TERM;
+            case COURSE:
+                return Category.COURSE;
+            case PROFESSOR:
+                return Category.PROFESSOR;
+            case DEPARTMENT:
+                return Category.DEPARTMENT;
+            case UNIVERSITY:
+                return Category.UNIVERSITY;
+            default:
+                return null;
+        }
     }
 
     public void setType(CategoryType type) {

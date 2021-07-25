@@ -1,57 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/questions_holder"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.problem.ShowQuestionsHolderFragment">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:checkable="true"
+    android:clickable="true"
+    android:focusable="true">
 
-    <LinearLayout
-        android:id="@+id/testfsa"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/titleQH"
+        <LinearLayout
+            android:id="@+id/testfsa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:gravity="center|center_horizontal|center_vertical"
-            android:inputType="textPersonName"
-            android:textColor="@drawable/edit_text_selector"
-            android:text="Title" />
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/descriptionQH"
-            android:layout_width="match_parent"
-            android:layout_height="134dp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:inputType="textMultiLine"
-            android:textColor="@drawable/edit_text_selector"
-            android:text="this is description" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/tagQH"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:textColor="@drawable/edit_text_selector"
-            android:text="tags" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/edit_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:text="ویرایش"
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/questions"
-            android:layout_width="match_parent"
-            android:layout_height="107dp"
-            app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/comments"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+                </com.google.android.material.button.MaterialButton>
 
-    </LinearLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
 
-</FrameLayout>
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/titleQH"
+                        android:layout_width="match_parent"
+                        android:background="@drawable/light_frame"
+
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:gravity="center|center_horizontal|center_vertical"
+                        android:inputType="textPersonName"
+                        android:text="عنوان"
+                        android:textColor="@drawable/edit_text_selector"
+                        android:textSize="24sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </FrameLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionQH"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine"
+                    android:text="توضیحات"
+                    android:background="@drawable/light_frame"
+
+                    android:textColor="@drawable/edit_text_selector" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/special_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/light_frame"
+
+                    />
+
+                <EditText
+                    android:id="@+id/tagQH"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="20dp"
+                    android:text="#شریف #کامپیوتر"
+                    android:textColor="@drawable/edit_text_selector" />
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/questions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:spanCount="2" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/questions"
+                    android:layout_marginTop="30dp"
+
+                    />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</com.google.android.material.card.MaterialCardView>
+
+
