@@ -2,7 +2,10 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,13 +15,17 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jasoali.api.DBConnection;
+import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
+import com.example.jasoali.ui.profile.ProfileFragment;
 import com.example.jasoali.ui.sign_in_up.RegisterActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.Parse;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 //import com.parse.ParseObject;
@@ -62,12 +69,24 @@ public class MainActivity extends AppCompatActivity {
         configNavigationMenu();
         showSearchFragment();
 
+
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
 
 //        /// todo remove these
+//        new DBConnection(null).register(
+//                new User(
+//                        "a2",
+//                        "SmsS132",
+//                        "1122qqww",
+//                        "smss.lite2@gmail.com",
+//                        "سید مهدی صادق شبیری",
+//                        true
+//                )
+//        );
+//        ProfileFragment fragInfo = ProfileFragment.newInstance();
 //        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragment_container, s);
+//        transaction.replace(R.id.fragment_container, searchFragment);
 //        transaction.commit();
 
 //        ParseObject firstObject = new ParseObject("FirstClass");

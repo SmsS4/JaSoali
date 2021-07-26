@@ -86,7 +86,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
         spin.setAdapter(arrayAdapter);
         int spinnerPosition = arrayAdapter.getPosition(category.getStringType());
         spin.setSelection(spinnerPosition);
-        spin.setEnabled(editMode);
+        spin.setEnabled(false);
         setColorFullTag(holder, category, position);
         holder.getValueTextView().setEnabled(editMode);
         if (!editMode && holder.getValueTextView().getText().toString().equals("")) {
