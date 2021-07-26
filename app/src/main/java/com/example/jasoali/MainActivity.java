@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
@@ -35,13 +36,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public LinearProgressIndicator progressIndicator;
-    private SearchFragment searchFragment = new SearchFragment();
+    private final SearchFragment searchFragment = new SearchFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /// hides keyboard on start
+        // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        setContentView(R.layout.activity_main);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(getString(R.string.back4app_app_id))
@@ -49,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
                 .server(getString(R.string.back4app_server_url))
                 .enableLocalDataStore()
                 .build());
-
-        setContentView(R.layout.activity_main);
 
         progressIndicator = findViewById(R.id.progress_bar);
         progressIndicator.setVisibility(View.VISIBLE);

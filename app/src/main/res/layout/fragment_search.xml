@@ -11,10 +11,17 @@
         android:layout_height="wrap_content"
         android:background="@color/teal_200" />
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@color/teal_700" />
+        android:background="@color/teal_700">
+
+        <LinearLayout
+            android:id="@+id/search_question_holders_fields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+    </ScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/question_holder_recycler_view"

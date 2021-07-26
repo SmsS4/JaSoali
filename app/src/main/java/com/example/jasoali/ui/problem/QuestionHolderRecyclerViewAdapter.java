@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,17 +23,22 @@ import java.util.List;
 public class QuestionHolderRecyclerViewAdapter
         extends RecyclerView.Adapter<QuestionHolderHolder> {
 
-    private final List<QuestionsHolder> mData;
-    private final List<QuestionsHolder> mDataCopy = new ArrayList<>();
+    private List<QuestionsHolder> mData = new ArrayList<>();
+    private List<QuestionsHolder> mDataCopy = new ArrayList<>();
     private final LayoutInflater mInflater;
     public ItemClickListener mClickListener;
 
 
     // data is passed into the constructor
-    public QuestionHolderRecyclerViewAdapter(Context context, List<QuestionsHolder> data) {
+    public QuestionHolderRecyclerViewAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
-        mDataCopy.addAll(data);
+    }
+
+
+    public void replaceData(List<QuestionsHolder> newData) {
+        mData = newData;
+        mDataCopy.addAll(newData);
+        notifyDataSetChanged();
     }
 
 

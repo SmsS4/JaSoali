@@ -1,6 +1,7 @@
 package com.example.jasoali.api;
 
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.example.jasoali.exceptions.LengthExceeded;
 import com.example.jasoali.exceptions.NetworkError;
@@ -13,6 +14,9 @@ import com.example.jasoali.models.Question;
 import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
+import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -20,11 +24,13 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.boltsinternal.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBConnection {
+    final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
     static private DBConnection instance = new DBConnection();
     static private User user = null;
 
@@ -36,11 +42,11 @@ public class DBConnection {
     }
 
 
-    public ArrayList<QuestionsHolder> getAllQuestionsHolder() {
-        return getQuestionsHolderByCategories(null, new ArrayList<>());
+    public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
+        getQuestionsHolderByCategories(null, new ArrayList<>(), adapter);
     }
 
-    public ArrayList<QuestionsHolder> getQuestionsHolderByCategories(String name, ArrayList<Category> categories) {
+    public void getQuestionsHolderByCategories(String name, ArrayList<Category> categories, QuestionHolderRecyclerViewAdapter adapter) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
         if (name != null) {
             query.whereContains("title", name);
@@ -48,26 +54,76 @@ public class DBConnection {
         for (Category category : categories) {
             query.whereEqualTo(category.getType().toString(), category.getValue());
         }
-        ArrayList<QuestionsHolder> result = new ArrayList<>();
-        try {
-            List<ParseObject> questionHolderList = query.find();
-            for (ParseObject parseObject : questionHolderList) {
-                ParseUser user = getUserFromParseObject(parseObject, "creator");
-                result.add(new QuestionsHolder(
-                        parseObject.getString("id"),
-                        parseObject.getString("title"),
-                        parseObject.getString("description"),
-                        user.getObjectId(),
-                        user.getString("name"),
-                        getCategoryListFromParseObject(parseObject),
-                        getCommentsListFromParseObject(parseObject),
-                        getQuestionsListFromParseObject(parseObject)
-                ));
+
+        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            ParseException error = (ParseException) task.getError();
+            ArrayList<QuestionsHolder> result = new ArrayList<>();
+            if (error == null) {
+                List<ParseObject> questionHoldersList = task.getResult();
+                for (ParseObject parseObject : questionHoldersList) {
+                    ParseUser user = getUserFromParseObject(parseObject, "creator");
+                    result.add(new QuestionsHolder(
+                            parseObject.getString("id"),
+                            parseObject.getString("title"),
+                            parseObject.getString("description"),
+                            user.getObjectId(),
+                            user.getString("name"),
+                            getCategoryListFromParseObject(parseObject),
+                            getCommentsListFromParseObject(parseObject),
+                            getQuestionsListFromParseObject(parseObject)
+                    ));
+                }
+                adapter.replaceData(result);
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return result;
+            return query.fromNetwork().findInBackground();
+        }).continueWithTask((task -> {
+            ParseException error = (ParseException) task.getError();
+            ArrayList<QuestionsHolder> result = new ArrayList<>();
+            if (error == null) {
+                List<ParseObject> questionHoldersList = task.getResult();
+                for (ParseObject parseObject : questionHoldersList) {
+                    ParseUser user = getUserFromParseObject(parseObject, "creator");
+                    result.add(new QuestionsHolder(
+                            parseObject.getString("id"),
+                            parseObject.getString("title"),
+                            parseObject.getString("description"),
+                            user.getObjectId(),
+                            user.getString("name"),
+                            getCategoryListFromParseObject(parseObject),
+                            getCommentsListFromParseObject(parseObject),
+                            getQuestionsListFromParseObject(parseObject)
+                    ));
+                }
+                ParseObject.unpinAllInBackground(QUESTION_HOLDERS, questionHoldersList, e -> {
+                    if (e != null) {
+                        // There was some error.
+                        return;
+                    }
+                    // Add the latest results for this query to the cache.
+                    ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
+                });
+                adapter.replaceData(result);
+            }
+            return task;
+        }));
+
+//        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
+//        query.findInBackground((questionHoldersList, e) -> {
+//            for (ParseObject parseObject : questionHoldersList) {
+//                ParseUser user = getUserFromParseObject(parseObject, "creator");
+//                result.add(new QuestionsHolder(
+//                        parseObject.getString("id"),
+//                        parseObject.getString("title"),
+//                        parseObject.getString("description"),
+//                        user.getObjectId(),
+//                        user.getString("name"),
+//                        getCategoryListFromParseObject(parseObject),
+//                        getCommentsListFromParseObject(parseObject),
+//                        getQuestionsListFromParseObject(parseObject)
+//                ));
+//            }
+//            adapter.replaceData(result);
+//        });
     }
 
     public ArrayList<QuestionsHolder> getFavouritesQuestionsHolder(String userId) throws NetworkError {
