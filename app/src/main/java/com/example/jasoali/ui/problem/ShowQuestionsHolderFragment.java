@@ -66,7 +66,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private RecyclerView recyclerViewTags;
 
 
-
     private View view;
 
     private boolean onEditMode = false;
@@ -96,7 +95,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            int questionsHolderId = getArguments().getInt(QUESTIONS_HOLDER_ID);
+            String questionsHolderId = getArguments().getString(QUESTIONS_HOLDER_ID);
             questionsHolder = db.getLocalQuestionsHolder(questionsHolderId);
 //            user = db.getLocalUser(); todo
             user = new User("pppfff", "fafsadfa", "ffffff", "f@f.com", "fff", null, true);
@@ -356,7 +355,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
         showQuestionsHolder();
         setEditButtonToEdit();
         changeMode(false);
-        if (!user.isAdmin()){
+        if (!user.isAdmin()) {
             editButton.setVisibility(View.INVISIBLE);
         }
         return view;

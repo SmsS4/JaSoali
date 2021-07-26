@@ -1,24 +1,32 @@
 package com.example.jasoali.models;
 
 public class Comment {
-    private int userId;
+    private String makerId;
+    private String questionHolderId;
     private String name;
-
-
     private String text;
 
-    public Comment(int userId, String text, String name) {
-        this.userId = userId;
+    public Comment(String userId, String questionHolderId, String text, String name) {
+        this.makerId = userId;
+        this.questionHolderId = questionHolderId;
         this.text = text;
         this.name = name;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getMakerId() {
+        return makerId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public String getQuestionHolderId() {
+        return questionHolderId;
+    }
+
+    public void setQuestionHolderId(String questionHolderId) {
+        this.questionHolderId = questionHolderId;
+    }
+
+    public void setMakerId(String makerId) {
+        this.makerId = makerId;
     }
 
     public String getText() {
