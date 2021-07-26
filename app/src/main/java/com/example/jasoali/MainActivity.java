@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 .enableLocalDataStore()
                 .build());
 
+        //
         progressIndicator = findViewById(R.id.progress_bar);
         progressIndicator.setVisibility(View.VISIBLE);
 

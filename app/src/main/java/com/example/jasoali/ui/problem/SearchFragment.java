@@ -26,11 +26,10 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        getActivity().setTitle("جستجو بین جاسوالی‌ها");
         super.onCreate(savedInstanceState);
         adapter = new QuestionHolderRecyclerViewAdapter(getActivity());
-        Log.e("BEFORE", "salam");
         DBConnection.getInstance().getAllQuestionsHolder(adapter);
-        Log.e("AFTER", "khodafefz");
     }
 
     @Override
