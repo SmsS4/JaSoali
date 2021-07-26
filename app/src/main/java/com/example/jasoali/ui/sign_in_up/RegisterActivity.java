@@ -45,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
             String username = usernameEditText.toString();
             String email = emailEditText.toString();
 
-            User user = new User("", username, password, email, name, null, false);
+            User user = new User("", username, password, email, name, false);
             DBConnection db = new DBConnection(null);
             db.register(user);
         });

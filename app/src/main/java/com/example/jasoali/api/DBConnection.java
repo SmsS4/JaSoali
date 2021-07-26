@@ -272,7 +272,7 @@ public class DBConnection {
         parseUser.setEmail(user.getEmail());
         parseUser.put("name", user.getName());
         parseUser.put("isAdmin", false);
-        parseUser.put("image", null); //todo: add image
+        //parseUser.put("image", null); //todo: add image
         try {
             parseUser.signUp();
         } catch (ParseException e) {
@@ -289,7 +289,6 @@ public class DBConnection {
                     user.getString("password"),
                     user.getString("email"),
                     user.getString("name"),
-                    null,// todo: handle image
                     user.getBoolean("isAdmin"));
         }
         return null;

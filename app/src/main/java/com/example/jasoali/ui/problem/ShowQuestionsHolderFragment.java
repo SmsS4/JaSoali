@@ -98,7 +98,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
         if (getArguments() != null) {
 
 //            user = db.getLocalUser(); todo
-            user = new User("pppfff", "fafsadfa", "ffffff", "f@f.com", "fff", null, true);
+            user = new User("pppfff", "fafsadfa", "ffffff", "f@f.com", "fff", true);
             int questionsHolderId = getArguments().getInt(QUESTIONS_HOLDER_ID);
             if (questionsHolderId != ADD_QUESTIONS_ID) {
                 questionsHolder = db.getLocalQuestionsHolder();
@@ -253,14 +253,15 @@ public class ShowQuestionsHolderFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void selectFile() {
-                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-                chooseFile.setType(String.join(MIMES[0], MIMES[1]));
-                chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, MIMES);
-                startActivityForResult(
-                        Intent.createChooser(chooseFile, "Choose a file"),
-                        PICKFILE_RESULT_CODE
-                );
+                qhSelectFile();
+//                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+//                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+//                chooseFile.setType(String.join(MIMES[0], MIMES[1]));
+//                chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, MIMES);
+//                startActivityForResult(
+//                        Intent.createChooser(chooseFile, "Choose a file"),
+//                        PICKFILE_RESULT_CODE
+//                );
             }
 
             @Override
@@ -277,12 +278,14 @@ public class ShowQuestionsHolderFragment extends Fragment {
             @Override
             public FileQuestion submitFile(String title) {
                 if (source == null) {
+                    System.out.println("hmm nabyad intor mishoda");
                     return null;
                 }
                 try {
                     return new FileQuestion(title, source);
                 } catch (LengthExceeded e) {
                     /// this won't happen
+                    System.out.println("sssssss");
                     return null;
                 }
             }
@@ -290,10 +293,27 @@ public class ShowQuestionsHolderFragment extends Fragment {
         questionsRecyclerView.setAdapter(questionsAdapter);
     }
 
+    public void qhSelectFile(){
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
 
+//        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+//        chooseFile.setType(String.join(MIMES[0], MIMES[1]));
+        chooseFile.setType("*/*");
+
+
+//        chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, MIMES);
+        startActivityForResult(
+                Intent.createChooser(chooseFile, "Choose a file"),
+                PICKFILE_RESULT_CODE
+        );
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        System.out.println(requestCode);
+        System.out.println(PICKFILE_RESULT_CODE);
+        System.out.println(resultCode);
+        System.out.println(Activity.RESULT_OK);
         if (requestCode == PICKFILE_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri content_describer = data.getData();
             String src = content_describer.getPath();
