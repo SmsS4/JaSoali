@@ -106,12 +106,6 @@ public class MainActivity extends AppCompatActivity {
             this.mainActivityWeakReference = new WeakReference<>(mainActivity);
         }
 
-        public void sendMessage(int message) {
-            Message msg = new Message();
-            msg.what = message;
-            sendMessage(msg);
-        }
-
         @Override
         public void handleMessage(Message msg) {
             Log.e("HANDLER", String.valueOf(msg.what));

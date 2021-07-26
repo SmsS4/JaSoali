@@ -37,6 +37,12 @@ public class DBConnection {
         this.handler = handler;
     }
 
+    private void sendMessage(int msgId) {
+        Message msg = new Message();
+        msg.what = msgId;
+        handler.sendMessage(msg);
+    }
+
     public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
         getQuestionsHolderByCategories(new ArrayList<>(), adapter);
     }
@@ -49,10 +55,7 @@ public class DBConnection {
                 query.whereEqualTo(category.getType().toString(), category.getValue());
         }
 
-
-        Message startProgressMsg = new Message();
-        startProgressMsg.what = MainActivity.MyHandler.START_PROGRESS_BAR;
-        handler.sendMessage(startProgressMsg);
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
 
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
             Log.e("FETCH", "2");
@@ -74,10 +77,7 @@ public class DBConnection {
                     ));
                 }
                 Log.e("FETCH", "3" + result.size());
-                adapter.replaceData(result);
-                Message msg = new Message();
-                msg.what = MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW;
-                handler.sendMessage(msg);
+                sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
             }
             return query.fromNetwork().findInBackground();
         }).continueWithTask((task -> {
@@ -108,13 +108,8 @@ public class DBConnection {
                 adapter.replaceData(result);
                 Log.e("FETCH", "5" + result.size());
 
-                Message msg = new Message();
-                msg.what = MainActivity.MyHandler.STOP_PROGRESS_BAR;
-                handler.sendMessage(msg);
-
-                msg = new Message();
-                msg.what = MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW;
-                handler.sendMessage(msg);
+                sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+                sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
             }
             return task;
         }));
