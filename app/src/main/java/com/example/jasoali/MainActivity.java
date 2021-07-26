@@ -2,49 +2,46 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
-import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
-
-
-import com.example.jasoali.api.DBConnection;
-import com.example.jasoali.models.Comment;
-import com.example.jasoali.models.TextQuestion;
-import com.example.jasoali.ui.problem.SearchFragment;
-import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
-import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
-import com.example.jasoali.ui.profile.ProfileFragment;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-//import com.parse.ParseObject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.example.jasoali.ui.problem.SearchFragment;
+import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
+import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
+import com.example.jasoali.ui.sign_in_up.RegisterActivity;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.parse.Parse;
+
+import java.lang.ref.WeakReference;
+
+//import com.parse.ParseObject;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    public LinearProgressIndicator progressIndicator;
     private final SearchFragment searchFragment = new SearchFragment();
+    public LinearProgressIndicator progressIndicator;
+    ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
+
+    private static MyHandler handler;
+
+    public static MyHandler getHandler() {
+        return handler;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        handler = new MyHandler(this);
+
         // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         getSupportActionBar().hide(); //<< this
@@ -58,59 +55,21 @@ public class MainActivity extends AppCompatActivity {
                 .enableLocalDataStore()
                 .build());
 
-        //
         progressIndicator = findViewById(R.id.progress_bar);
-        progressIndicator.setVisibility(View.VISIBLE);
+        progressIndicator.setVisibility(View.INVISIBLE);
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, searchFragment).commit();
 
-//        // todo remove these
-//        try {
-//            TextQuestion textQuestion = new TextQuestion(
-//                    "یک عنوان خوب",
-//                    "دهان شماخروجی افکار شماست\n" +
-//                            "\n" +
-//                            "وقتی باز میشود سریعترین راه برای درک شخصیتتان دراختیار مخاطب قرار میگیرد\n" +
-//                            "\n" +
-//                            "مواظب ویترین شعورتان باشید،\n" +
-//                            "\n" +
-//                            "تا افکار و وجودتان خریدارهای بیشتر داشته باشد" +"زندگی همچون بادکنکی است در دستان کودکی\n" +
-//                            "که همیشه ترس از ترکیدن آن لذت داشتنش را از بین میبرد" + "زندگی به من یاد داده\n" +
-//                            "برای داشتن آرامش و آسایش\n" +
-//                            "امروز را با خدا قدم بر دارم\n" +
-//                            "و فردا را به او بسپارم" + "می\u200Cتوان با این خدا پرواز کرد\n" +
-//                            "سفره دل را برایش باز کرد\n" +
-//                            "می\u200Cتوان درباره گل حرف زد\n" +
-//                            "صاف و ساده مثل بلبل حرف زد\n" +
-//                            "چکه چکه مثل باران راز گفت\n" +
-//                            "می\u200Cتوان با او صمیمی حرف زد" + "مهم نیست که کجا و\n" +
-//                            "\n" +
-//                            "چجوری زندگی میکنی !\n" +
-//                            "\n" +
-//                            "مهم اینه که تو قلبت\n" +
-//                            "\n" +
-//                            "احساس خوشبختی کنی\n" +
-//                            "\n" +
-//                            "و چشمت به زندگی کسی نباشه"
-//            );
-//            ShowQuestionTextFragment fragInfo = ShowQuestionTextFragment.newInstance(textQuestion);
-//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//            transaction.replace(R.id.fragment_container, fragInfo);
-//            transaction.commit();
-//        }catch (Exception e){
-//
-//        }
-//        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
-////        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newAddQuestionsInstance();
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+
+//        /// todo remove these
 //        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragment_container, fragInfo);
+//        transaction.replace(R.id.fragment_container, s);
 //        transaction.commit();
-//        ProfileFragment fragInfo = ProfileFragment.newInstance();
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragment_container, fragInfo);
-//        transaction.commit();
+
 //        ParseObject firstObject = new ParseObject("FirstClass");
 //        firstObject.put("message", "Hey ! First message from android. Parse is now connected");
 //        firstObject.saveInBackground(e -> {
@@ -142,38 +101,33 @@ public class MainActivity extends AppCompatActivity {
 //        DBConnection.getInstance().addQuestionsHolder(DBConnection.getInstance().getLocalQuestionsHolder());
 //        DBConnection.getInstance().addComment(new Comment("alaki", "comment text", "سید علیرضا هاشمی"));
     }
-}
-//        ArrayList<ParseObject> tmp = new ArrayList<>();
-//
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("FirstClass");
-//        query.findInBackground(new FindCallback<ParseObject>() {
-//            public void done(List<ParseObject> scoreList, ParseException e) {
-//                if (e == null) {
-//                    tmp.add(scoreList.get(0));
-//                    tmp.add(scoreList.get(1));
-//                    Log.d("score", "Retrieved " + scoreList.size() + " scores");
-//                    for (ParseObject parseObject : tmp) {
-//                        Log.e("Salam", parseObject.getParseFile("image").getUrl());
-//                        Log.e("Salam", parseObject.getParseFile("image").getName());
-//                        try {
-//                            Log.e("Salam", Arrays.toString(parseObject.getParseFile("image").getData()));
-//                        } catch (ParseException parseException) {
-//                            parseException.printStackTrace();
-//                        }
-//                    }
-//                } else {
-//                    Log.d("score", "Error: " + e.getMessage());
-//                }
-//            }
-//        });
 
-//
-//        BottomNavigationView navView = findViewById(R.id.nav_view);
-////        Passing each menu ID as a set of Ids because each
-////        menu should be considered as top level destinations.
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-//                .build();
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-//        NavigationUI.setupWithNavController(navView, navController);
+    public static class MyHandler extends Handler {
+
+        public static final int START_PROGRESS_BAR = 1;
+        public static final int STOP_PROGRESS_BAR = 2;
+        public static final int NOTIFY_RECYCLER_VIEW = 3;
+        private final WeakReference<MainActivity> mainActivityWeakReference;
+
+        public MyHandler(MainActivity mainActivity) {
+            this.mainActivityWeakReference = new WeakReference<>(mainActivity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Log.e("HANDLER", String.valueOf(msg.what));
+            MainActivity mainActivity = mainActivityWeakReference.get();
+            if (mainActivity == null)
+                return;
+            if (msg.what == START_PROGRESS_BAR) {
+                mainActivity.progressIndicator.setVisibility(View.VISIBLE);
+            }
+            if (msg.what == STOP_PROGRESS_BAR) {
+                mainActivity.progressIndicator.setVisibility(View.INVISIBLE);
+            }
+            if (msg.what == NOTIFY_RECYCLER_VIEW) {
+                mainActivity.searchFragment.adapter.notifyDataSetChanged();
+            }
+        }
+    }
+}

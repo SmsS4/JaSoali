@@ -1,10 +1,10 @@
 package com.example.jasoali.api;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.example.jasoali.MainActivity;
-import com.example.jasoali.R;
 import com.example.jasoali.exceptions.LengthExceeded;
 import com.example.jasoali.exceptions.NetworkError;
 import com.example.jasoali.models.Category;
@@ -17,8 +17,6 @@ import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -26,40 +24,42 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.boltsinternal.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBConnection {
-    final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
-    static private DBConnection instance = new DBConnection();
     static private User user = null;
+    final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
+    private final Handler handler;
 
-    private DBConnection() {
+    public DBConnection(Handler handler) {
+        this.handler = handler;
     }
 
-    static public DBConnection getInstance() {
-        return DBConnection.instance;
+    private void sendMessage(int msgId) {
+        Message msg = new Message();
+        msg.what = msgId;
+        handler.sendMessage(msg);
     }
 
 
     public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
-        getQuestionsHolderByCategories(null, new ArrayList<>(), adapter);
+        getQuestionsHolderByCategories(new ArrayList<>(), adapter);
     }
 
-    public void getQuestionsHolderByCategories(String name, ArrayList<Category> categories, QuestionHolderRecyclerViewAdapter adapter) {
+    public void getQuestionsHolderByCategories(ArrayList<Category> categories, QuestionHolderRecyclerViewAdapter adapter) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
-        if (name != null) {
-            query.whereContains("title", name);
-        }
+
         for (Category category : categories) {
-            query.whereEqualTo(category.getType().toString(), category.getValue());
+            if (category.getValue() != null && !category.getValue().equals(""))
+                query.whereEqualTo(category.getType().toString(), category.getValue());
         }
 
-        Log.e("INDICATOR", "start");
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
+
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
-            Log.e("INDICATOR", "stop");
+            Log.e("FETCH", "2");
             ParseException error = (ParseException) task.getError();
             ArrayList<QuestionsHolder> result = new ArrayList<>();
             if (error == null) {
@@ -77,10 +77,13 @@ public class DBConnection {
                             getQuestionsListFromParseObject(parseObject)
                     ));
                 }
+                Log.e("FETCH", "3" + result.size());
                 adapter.replaceData(result);
+                sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
             }
             return query.fromNetwork().findInBackground();
         }).continueWithTask((task -> {
+            Log.e("FETCH", "4");
             ParseException error = (ParseException) task.getError();
             ArrayList<QuestionsHolder> result = new ArrayList<>();
             if (error == null) {
@@ -99,35 +102,18 @@ public class DBConnection {
                     ));
                 }
                 ParseObject.unpinAllInBackground(QUESTION_HOLDERS, questionHoldersList, e -> {
-                    if (e != null) {
-                        // There was some error.
-                        return;
+                    if (e == null) {
+                        // Add the latest results for this query to the cache.
+                        ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
                     }
-                    // Add the latest results for this query to the cache.
-                    ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
                 });
-//                adapter.replaceData(result);
+                adapter.replaceData(result);
+                Log.e("FETCH", "5" + result.size());
+                sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+                sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
             }
             return task;
         }));
-
-//        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
-//        query.findInBackground((questionHoldersList, e) -> {
-//            for (ParseObject parseObject : questionHoldersList) {
-//                ParseUser user = getUserFromParseObject(parseObject, "creator");
-//                result.add(new QuestionsHolder(
-//                        parseObject.getString("id"),
-//                        parseObject.getString("title"),
-//                        parseObject.getString("description"),
-//                        user.getObjectId(),
-//                        user.getString("name"),
-//                        getCategoryListFromParseObject(parseObject),
-//                        getCommentsListFromParseObject(parseObject),
-//                        getQuestionsListFromParseObject(parseObject)
-//                ));
-//            }
-//            adapter.replaceData(result);
-//        });
     }
 
     public ArrayList<QuestionsHolder> getFavouritesQuestionsHolder(String userId) throws NetworkError {
@@ -146,11 +132,13 @@ public class DBConnection {
         for (Category category : questionsHolder.getCategories()) {
             parseObject.put(category.getType().toString().toLowerCase(), category.getValue());
         }
-        ArrayList<ParseObject> parseComments = new ArrayList<>();
-        for (Comment comment : questionsHolder.getComments()) {
-            parseComments.add(getCommentAsParseObject(comment));
-        }
-        parseObject.put("comments", parseComments);
+
+        // todo: delete
+//        ArrayList<ParseObject> parseComments = new ArrayList<>();
+//        for (Comment comment : questionsHolder.getComments()) {
+//            parseComments.add(getCommentAsParseObject(comment));
+//        }
+//        parseObject.put("comments", parseComments);
 
         ArrayList<ParseObject> parseQuestions = new ArrayList<>();
         for (Question question : questionsHolder.getQuestions()) {
@@ -306,6 +294,8 @@ public class DBConnection {
         return null;
     }
 
+    ////////////////////////
+
     private ParseObject getQuestionAsParseObject(Question question) {
         ParseObject parseObject = new ParseObject("Question");
         parseObject.put("title", question.getTitle());
@@ -322,6 +312,9 @@ public class DBConnection {
         ParseObject parseObject = new ParseObject("Comment");
         parseObject.put("maker", ParseUser.getCurrentUser());
         parseObject.put("text", comment.getText());
+        ParseObject questionHolder = new ParseObject("QuestionHolder");
+        questionHolder.setObjectId(comment.getQuestionsHolderId());
+        parseObject.put("questionHolder", questionHolder);
         return parseObject;
     }
 
@@ -357,8 +350,7 @@ public class DBConnection {
                         user.getObjectId(),
                         parseComment.getString("text"),
                         user.getString("name"),
-                        user.getString("questionsHolderId") //todo ( changed this line check it XD)
-                        )
+                        parseComment.getString("questionsHolder"))
                 );
             } catch (ParseException e) {
                 e.printStackTrace();

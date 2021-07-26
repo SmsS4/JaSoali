@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jasoali.MainActivity;
 import com.example.jasoali.R;
 import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.custom_packacges.RoundedBackgroundSpan;
@@ -51,10 +52,15 @@ import java.util.ArrayList;
 public class ShowQuestionsHolderFragment extends Fragment {
 
     public static final String QUESTIONS_HOLDER_ID = "questionsHolderId";
-
+    public static final int ADD_QUESTIONS_ID = -1;
+    private static final int PICKFILE_RESULT_CODE = -1;
+    private static final String[] mimes = new String[]{"image/*", "application/pdf"};
+    private final DBConnection db = new DBConnection(MainActivity.getHandler());
+    boolean addQuestionMode;
+    boolean added = false;
+    File source;
     private QuestionsHolder questionsHolder;
     private User user;
-    private final DBConnection db = DBConnection.getInstance();
 
     private EditText title;
     private EditText description;
@@ -63,15 +69,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private RecyclerView questionsRecyclerView;
     private RecyclerView recyclerViewComments;
     private RecyclerView recyclerViewTags;
-
-
     private View view;
-
-    boolean addQuestionMode;
-    boolean added = false;
-
-    File source;
-
     private QuestionsAdapter questionsAdapter;
     private TagsAdapter tagsAdapter;
 
