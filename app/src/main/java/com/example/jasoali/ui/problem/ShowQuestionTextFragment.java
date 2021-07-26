@@ -1,49 +1,45 @@
 package com.example.jasoali.ui.problem;
 
+import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.jasoali.R;
+import androidx.annotation.RequiresApi;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ShowQuestionTextFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.example.jasoali.R;
+import com.example.jasoali.models.TextQuestion;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
+
+
 public class ShowQuestionTextFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_TITLE = "title";
+    private static final String ARG_TEXT = "text";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String title;
+    private String text;
+    private boolean dark = true;
+    private MaterialTextView titleView;
+    private MaterialTextView textView ;
+    private MaterialButton darkMode;
+    private View view;
 
-    public ShowQuestionTextFragment() {
-        // Required empty public constructor
-    }
+    SharedPreferences sharedPref;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ShowQuestionTextFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ShowQuestionTextFragment newInstance(String param1, String param2) {
+    public static ShowQuestionTextFragment newInstance(TextQuestion textQuestion) {
         ShowQuestionTextFragment fragment = new ShowQuestionTextFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_TITLE, textQuestion.getTitle());
+        args.putString(ARG_TEXT, textQuestion.getText());
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,15 +48,42 @@ public class ShowQuestionTextFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            title = getArguments().getString(ARG_TITLE);
+            text = getArguments().getString(ARG_TEXT);
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void changeDarkMode(boolean newMode){
+        dark = newMode;
+        sharedPref.edit().putBoolean(view.getContext().getString(R.string.dark_mode_preferences), dark).apply();
+        textView.setEnabled(!dark);
+        titleView.setEnabled(!dark);
+        if (dark){
+            view.setBackgroundColor(view.getContext().getColor(R.color.darkmode));
+            darkMode.setText("روشن");
+        }else{
+            view.setBackgroundColor(view.getContext().getColor(R.color.lightmode));
+            darkMode.setText("تاریک");
+        }
+        darkMode.setOnClickListener(v -> changeDarkMode(!dark));
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_show_question_text, container, false);
+        view = inflater.inflate(R.layout.fragment_show_question_text, container, false);
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        dark = sharedPref.getBoolean(getString(R.string.dark_mode_preferences), false);
+
+        titleView = view.findViewById(R.id.text_view_id);
+        textView = view.findViewById(R.id.text_box);
+        darkMode = view.findViewById(R.id.dark_mdoe);
+        titleView.setText(title);
+        textView.setText(text);
+        changeDarkMode(dark);
+        return view;
     }
 }

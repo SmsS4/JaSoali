@@ -36,6 +36,10 @@ public class DBConnection {
 
 
     public DBConnection(Handler handler) {
+        System.out.println("hey");
+        if(handler == null){
+            System.out.println("fuck");
+        }
         this.handler = handler;
     }
 
@@ -380,4 +384,12 @@ public class DBConnection {
         return result;
     }
 
+    public void updateName(String userId, String newName){
+        /// this method should update name of user in db
+        /// optional: update comments name too XD
+    }
+
+    public void adminRequest(String userId){
+
+    }
 }

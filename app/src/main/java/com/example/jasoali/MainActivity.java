@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jasoali.ui.problem.SearchFragment;
+import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
 import com.example.jasoali.ui.sign_in_up.RegisterActivity;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getSupportActionBar().hide(); //<< this
 
         setContentView(R.layout.activity_main);
 
