@@ -3,6 +3,8 @@ package com.example.jasoali.api;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import com.example.jasoali.MainActivity;
+import com.example.jasoali.R;
 import com.example.jasoali.exceptions.LengthExceeded;
 import com.example.jasoali.exceptions.NetworkError;
 import com.example.jasoali.models.Category;
@@ -55,7 +57,9 @@ public class DBConnection {
             query.whereEqualTo(category.getType().toString(), category.getValue());
         }
 
+        Log.e("INDICATOR", "start");
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            Log.e("INDICATOR", "stop");
             ParseException error = (ParseException) task.getError();
             ArrayList<QuestionsHolder> result = new ArrayList<>();
             if (error == null) {
@@ -102,7 +106,7 @@ public class DBConnection {
                     // Add the latest results for this query to the cache.
                     ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
                 });
-                adapter.replaceData(result);
+//                adapter.replaceData(result);
             }
             return task;
         }));

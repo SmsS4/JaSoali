@@ -23,8 +23,8 @@ import java.util.List;
 public class QuestionHolderRecyclerViewAdapter
         extends RecyclerView.Adapter<QuestionHolderHolder> {
 
-    private List<QuestionsHolder> mData = new ArrayList<>();
-    private List<QuestionsHolder> mDataCopy = new ArrayList<>();
+    private final List<QuestionsHolder> mData = new ArrayList<>();
+    private final List<QuestionsHolder> mDataCopy = new ArrayList<>();
     private final LayoutInflater mInflater;
     public ItemClickListener mClickListener;
 
@@ -36,7 +36,7 @@ public class QuestionHolderRecyclerViewAdapter
 
 
     public void replaceData(List<QuestionsHolder> newData) {
-        mData = newData;
+        mData.addAll(newData);
         mDataCopy.addAll(newData);
         notifyDataSetChanged();
     }
