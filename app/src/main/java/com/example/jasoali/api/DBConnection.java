@@ -387,4 +387,12 @@ public class DBConnection {
         return result;
     }
 
+    public void updateName(String userId, String newName){
+        /// this method should update name of user in db
+        /// optional: update comments name too XD
+    }
+
+    public void adminRequest(String userId){
+
+    }
 }

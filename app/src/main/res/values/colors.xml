@@ -19,4 +19,9 @@
     <color name="tags6">#FF3700B3</color>
     <color name="tags7">#FF625F60</color>
 
+    <color name="light_bg">#000000</color>
+    <color name="dark_bg">#FFFFFF</color>
+    <color name="darkmode">#2F2F2F</color>
+    <color name="lightmode">#DFDFDF</color>
+
 </resources>

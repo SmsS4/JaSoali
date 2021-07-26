@@ -2,6 +2,9 @@ package com.example.jasoali.ui.problem;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -11,6 +14,7 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -73,7 +77,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     public static final int ADD_QUESTIONS_ID = -1;
     private static final int PICKFILE_RESULT_CODE = -1;
-    private static final String[] mimes = new String[]{"image/*", "application/pdf"};
+    private static final String[] MIMES = new String[]{"image/*", "application/pdf"};
 
 
     public ShowQuestionsHolderFragment() {
@@ -112,6 +116,39 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     private void setEditButtonToEdit() {
         editButton.setOnClickListener(v -> enterEditMode());
+    }
+
+    private void showTextQuestion(TextQuestion textQuestion) {
+        ShowQuestionTextFragment fragInfo = ShowQuestionTextFragment.newInstance(textQuestion);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragInfo);
+        transaction.commit();
+    }
+
+    public String getMimeType(Uri uri) {
+        String mimeType = null;
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            ContentResolver cr = view.getContext().getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+    private void showFileQuestion(FileQuestion fileQuestion) {
+        Uri path = Uri.fromFile(fileQuestion.getFile());
+        Intent pdfOpenintent = new Intent(Intent.ACTION_VIEW);
+        pdfOpenintent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        pdfOpenintent.setDataAndType(path, getMimeType(path));
+        try {
+            startActivity(pdfOpenintent);
+        }
+        catch (ActivityNotFoundException e) {
+
+        }
     }
 
     private void changeMode(boolean show) {
@@ -210,7 +247,11 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
             @Override
             public void onQuestionClicked(Question question) {
-                System.out.println(question.getTitle());
+                if (question instanceof TextQuestion) {
+                    showTextQuestion((TextQuestion) question);
+                } else {
+                    showFileQuestion((FileQuestion) question);
+                }
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -218,8 +259,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
             public void selectFile() {
                 Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
                 chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-                chooseFile.setType(String.join(mimes[0], mimes[1]));
-                chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimes);
+                chooseFile.setType(String.join(MIMES[0], MIMES[1]));
+                chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, MIMES);
                 startActivityForResult(
                         Intent.createChooser(chooseFile, "Choose a file"),
                         PICKFILE_RESULT_CODE
@@ -239,7 +280,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
             @Override
             public FileQuestion submitFile(String title) {
-                if (source == null){
+                if (source == null) {
                     return null;
                 }
                 try {

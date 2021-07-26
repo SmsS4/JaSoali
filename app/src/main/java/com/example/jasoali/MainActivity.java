@@ -13,8 +13,11 @@ import android.widget.ProgressBar;
 
 import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.models.Comment;
+import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.ui.problem.SearchFragment;
+import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
+import com.example.jasoali.ui.profile.ProfileFragment;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getSupportActionBar().hide(); //<< this
 
         setContentView(R.layout.activity_main);
 
@@ -62,13 +66,51 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.fragment_container, searchFragment).commit();
 
-        /// todo remove these
-        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
-//        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newAddQuestionsInstance();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragInfo);
-        transaction.commit();
-
+//        // todo remove these
+//        try {
+//            TextQuestion textQuestion = new TextQuestion(
+//                    "یک عنوان خوب",
+//                    "دهان شماخروجی افکار شماست\n" +
+//                            "\n" +
+//                            "وقتی باز میشود سریعترین راه برای درک شخصیتتان دراختیار مخاطب قرار میگیرد\n" +
+//                            "\n" +
+//                            "مواظب ویترین شعورتان باشید،\n" +
+//                            "\n" +
+//                            "تا افکار و وجودتان خریدارهای بیشتر داشته باشد" +"زندگی همچون بادکنکی است در دستان کودکی\n" +
+//                            "که همیشه ترس از ترکیدن آن لذت داشتنش را از بین میبرد" + "زندگی به من یاد داده\n" +
+//                            "برای داشتن آرامش و آسایش\n" +
+//                            "امروز را با خدا قدم بر دارم\n" +
+//                            "و فردا را به او بسپارم" + "می\u200Cتوان با این خدا پرواز کرد\n" +
+//                            "سفره دل را برایش باز کرد\n" +
+//                            "می\u200Cتوان درباره گل حرف زد\n" +
+//                            "صاف و ساده مثل بلبل حرف زد\n" +
+//                            "چکه چکه مثل باران راز گفت\n" +
+//                            "می\u200Cتوان با او صمیمی حرف زد" + "مهم نیست که کجا و\n" +
+//                            "\n" +
+//                            "چجوری زندگی میکنی !\n" +
+//                            "\n" +
+//                            "مهم اینه که تو قلبت\n" +
+//                            "\n" +
+//                            "احساس خوشبختی کنی\n" +
+//                            "\n" +
+//                            "و چشمت به زندگی کسی نباشه"
+//            );
+//            ShowQuestionTextFragment fragInfo = ShowQuestionTextFragment.newInstance(textQuestion);
+//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//            transaction.replace(R.id.fragment_container, fragInfo);
+//            transaction.commit();
+//        }catch (Exception e){
+//
+//        }
+//        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
+////        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newAddQuestionsInstance();
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//        transaction.replace(R.id.fragment_container, fragInfo);
+//        transaction.commit();
+//        ProfileFragment fragInfo = ProfileFragment.newInstance();
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//        transaction.replace(R.id.fragment_container, fragInfo);
+//        transaction.commit();
 //        ParseObject firstObject = new ParseObject("FirstClass");
 //        firstObject.put("message", "Hey ! First message from android. Parse is now connected");
 //        firstObject.saveInBackground(e -> {
