@@ -1,12 +1,10 @@
 package com.example.jasoali.api;
 
-import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.example.jasoali.MainActivity;
-import com.example.jasoali.R;
 import com.example.jasoali.exceptions.LengthExceeded;
 import com.example.jasoali.exceptions.NetworkError;
 import com.example.jasoali.models.Category;
@@ -19,8 +17,6 @@ import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -28,24 +24,18 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.boltsinternal.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBConnection {
-    final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
-    static private DBConnection instance = new DBConnection();
     static private User user = null;
-    static private final MainActivity.MyHandler handler = MainActivity.getHandler();
+    final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
+    private final Handler handler;
 
-    private DBConnection() {
+    private DBConnection(Handler handler) {
+        this.handler = handler;
     }
-
-    static public DBConnection getInstance() {
-        return DBConnection.instance;
-    }
-
 
     public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
         getQuestionsHolderByCategories(new ArrayList<>(), adapter);
@@ -60,7 +50,10 @@ public class DBConnection {
         }
 
 
-        MainActivity.getHandler().sendMessage(MainActivity.getHandler().START_PROGRESS_BAR);
+        Message startProgressMsg = new Message();
+        startProgressMsg.what = MainActivity.MyHandler.START_PROGRESS_BAR;
+        handler.sendMessage(startProgressMsg);
+
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
             Log.e("FETCH", "2");
             ParseException error = (ParseException) task.getError();
@@ -82,7 +75,9 @@ public class DBConnection {
                 }
                 Log.e("FETCH", "3" + result.size());
                 adapter.replaceData(result);
-                MainActivity.getHandler().sendMessage(MainActivity.getHandler().NOTIFY_RECYCLER_VIEW);
+                Message msg = new Message();
+                msg.what = MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW;
+                handler.sendMessage(msg);
             }
             return query.fromNetwork().findInBackground();
         }).continueWithTask((task -> {
@@ -112,8 +107,14 @@ public class DBConnection {
                 });
                 adapter.replaceData(result);
                 Log.e("FETCH", "5" + result.size());
-                MainActivity.getHandler().sendMessage(MainActivity.getHandler().STOP_PROGRESS_BAR);
-                MainActivity.getHandler().sendMessage(MainActivity.getHandler().NOTIFY_RECYCLER_VIEW);
+
+                Message msg = new Message();
+                msg.what = MainActivity.MyHandler.STOP_PROGRESS_BAR;
+                handler.sendMessage(msg);
+
+                msg = new Message();
+                msg.what = MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW;
+                handler.sendMessage(msg);
             }
             return task;
         }));

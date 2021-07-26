@@ -2,86 +2,34 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
-
-
-import com.example.jasoali.api.DBConnection;
-import com.example.jasoali.models.Comment;
-import com.example.jasoali.ui.problem.SearchFragment;
-import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-//import com.parse.ParseObject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jasoali.ui.problem.SearchFragment;
+import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.parse.Parse;
+
 import java.lang.ref.WeakReference;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+//import com.parse.ParseObject;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    public LinearProgressIndicator progressIndicator;
     private final SearchFragment searchFragment = new SearchFragment();
+    public LinearProgressIndicator progressIndicator;
     ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
 
-    public static MyHandler handler;
+    private MyHandler handler;
 
-
-    public static class MyHandler extends Handler {
-
-        public int START_PROGRESS_BAR = 1;
-        public int STOP_PROGRESS_BAR = 2;
-        public int NOTIFY_RECYCLER_VIEW = 3;
-
-        private final WeakReference<MainActivity> mainActivityWeakReference;
-
-        public MyHandler(MainActivity mainActivity) {
-            this.mainActivityWeakReference = new WeakReference<>(mainActivity);
-        }
-
-        public void sendMessage(int message) {
-            Message msg = new Message();
-            msg.what = message;
-            sendMessage(msg);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            Log.e("HANDLER", String.valueOf(msg.what));
-            MainActivity mainActivity = mainActivityWeakReference.get();
-            if (msg.what == START_PROGRESS_BAR) {
-                mainActivity.progressIndicator.setVisibility(View.VISIBLE);
-            }
-            if (msg.what == STOP_PROGRESS_BAR) {
-                mainActivity.progressIndicator.setVisibility(View.INVISIBLE);
-            }
-            if (msg.what == NOTIFY_RECYCLER_VIEW) {
-                mainActivity.searchFragment.adapter.notifyDataSetChanged();
-            }
-        }
-    }
-
-
-    public static MyHandler getHandler() {
+    private MyHandler getHandler() {
         return handler;
     }
 
@@ -145,6 +93,41 @@ public class MainActivity extends AppCompatActivity {
 
 //        DBConnection.getInstance().addQuestionsHolder(DBConnection.getInstance().getLocalQuestionsHolder());
 //        DBConnection.getInstance().addComment(new Comment("alaki", "comment text", "سید علیرضا هاشمی"));
+    }
+
+    public static class MyHandler extends Handler {
+
+        private final WeakReference<MainActivity> mainActivityWeakReference;
+        public static final int START_PROGRESS_BAR = 1;
+        public static final int STOP_PROGRESS_BAR = 2;
+        public static final int NOTIFY_RECYCLER_VIEW = 3;
+
+        public MyHandler(MainActivity mainActivity) {
+            this.mainActivityWeakReference = new WeakReference<>(mainActivity);
+        }
+
+        public void sendMessage(int message) {
+            Message msg = new Message();
+            msg.what = message;
+            sendMessage(msg);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Log.e("HANDLER", String.valueOf(msg.what));
+            MainActivity mainActivity = mainActivityWeakReference.get();
+            if (mainActivity == null)
+                return;
+            if (msg.what == START_PROGRESS_BAR) {
+                mainActivity.progressIndicator.setVisibility(View.VISIBLE);
+            }
+            if (msg.what == STOP_PROGRESS_BAR) {
+                mainActivity.progressIndicator.setVisibility(View.INVISIBLE);
+            }
+            if (msg.what == NOTIFY_RECYCLER_VIEW) {
+                mainActivity.searchFragment.adapter.notifyDataSetChanged();
+            }
+        }
     }
 }
 //        ArrayList<ParseObject> tmp = new ArrayList<>();
