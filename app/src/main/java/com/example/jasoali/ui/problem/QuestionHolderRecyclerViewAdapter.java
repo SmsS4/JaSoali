@@ -80,38 +80,6 @@ public class QuestionHolderRecyclerViewAdapter
     }
 
 
-    // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView term;
-        TextView courseName;
-        TextView university;
-        TextView professor;
-        MaterialCardView card;
-
-        ViewHolder(View itemView, int a) {
-            super(itemView);
-            title = itemView.findViewById(R.id.question_holder_title);
-            term = itemView.findViewById(R.id.question_holder_term);
-            courseName = itemView.findViewById(R.id.question_holder_course_name);
-            university = itemView.findViewById(R.id.question_holder_university);
-            professor = itemView.findViewById(R.id.question_holder_professor);
-            card = itemView.findViewById(R.id.question_holder_card);
-            card.setOnClickListener(view -> {
-//                    if (view.equals(deleteButton)) {
-//                        mClickListener.onDeleteButtonClick(getAdapterPosition());
-//                        mData.remove(getAdapterPosition());
-//                        notifyItemRemoved(getAdapterPosition());
-//                        notifyItemRangeChanged(getAdapterPosition(), mData.size());
-//                    } else if (mClickListener != null) {
-//                        mClickListener.onItemClick(view, getAdapterPosition());
-//                    }
-                Log.e("On Click!", "salam");
-            });
-        }
-
-    }
-
     public void filter(String text) {
         mData.clear();
         if (text.isEmpty()) {
@@ -127,15 +95,18 @@ public class QuestionHolderRecyclerViewAdapter
         notifyDataSetChanged();
     }
 
+
     // convenience method for getting data at click position
     public QuestionsHolder getItem(int id) {
         return mData.get(id);
     }
 
+
     // allows clicks events to be caught
     public void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
+
 
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {

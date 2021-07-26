@@ -17,6 +17,7 @@ import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
+import com.parse.DeleteCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -95,15 +96,11 @@ public class DBConnection {
                 for (ParseObject parseObject : questionHoldersList) {
                     ParseUser user = getUserFromParseObject(parseObject, "creator");
                     result.add(new QuestionsHolder(
-                            parseObject.getString("id"),
+                            parseObject.getObjectId(),
                             parseObject.getString("title"),
                             parseObject.getString("description"),
                             user.getObjectId(),
-                            user.getString("name"),
-                            getCategoryListFromParseObject(parseObject),
-                            getCommentsListFromParseObject(parseObject),
-                            getQuestionsListFromParseObject(parseObject)
-                    ));
+                            user.getString("name")));
                 }
                 ParseObject.unpinAllInBackground(QUESTION_HOLDERS, questionHoldersList, e -> {
                     if (e == null) {
@@ -137,38 +134,33 @@ public class DBConnection {
             parseObject.put(category.getType().toString().toLowerCase(), category.getValue());
         }
 
-        // todo: delete
-//        ArrayList<ParseObject> parseComments = new ArrayList<>();
-//        for (Comment comment : questionsHolder.getComments()) {
-//            parseComments.add(getCommentAsParseObject(comment));
-//        }
-//        parseObject.put("comments", parseComments);
-
         ArrayList<ParseObject> parseQuestions = new ArrayList<>();
         for (Question question : questionsHolder.getQuestions()) {
             parseQuestions.add(getQuestionAsParseObject(question));
         }
         parseObject.put("questions", parseQuestions);
 
-        parseObject.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.e("Hoora!", "object saved!");
-                } else {
-                    e.printStackTrace();
-                }
+        parseObject.saveInBackground(e -> {
+            if (e == null) {
+                //todo: add notification of creating object
+                Log.e("Hoora!", "object saved!");
+            } else {
+                e.printStackTrace();
             }
         });
-    }
-
-    public void removeQuestionsHolder(String questionsHolderId) {
-
     }
 
     public void editQuestionsHolder(QuestionsHolder newQuestionsHolder) {
         removeQuestionsHolder(newQuestionsHolder.getId());
         addQuestionsHolder(newQuestionsHolder);
+    }
+
+    public void removeQuestionsHolder(String questionsHolderId) {
+        ParseObject questionHolder = new ParseObject("QuestionHolder");
+        questionHolder.setObjectId(questionsHolderId);
+        questionHolder.deleteInBackground(e -> {
+            //todo: add notification of deleting object
+        });
     }
 
     public void addComment(Comment comment) {
@@ -274,7 +266,7 @@ public class DBConnection {
         parseUser.setPassword(user.getPassword());
         parseUser.setEmail(user.getEmail());
         parseUser.put("name", user.getName());
-        parseUser.put("isAdmin", user.isAdmin());
+        parseUser.put("isAdmin", false);
         parseUser.put("image", null); //todo: add image
         try {
             parseUser.signUp();
