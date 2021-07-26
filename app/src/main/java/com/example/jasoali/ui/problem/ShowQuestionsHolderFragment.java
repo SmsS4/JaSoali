@@ -57,6 +57,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     File source;
     private QuestionsHolder questionsHolder;
     private User user;
+
     private EditText title;
     private EditText description;
     private EditText tags;

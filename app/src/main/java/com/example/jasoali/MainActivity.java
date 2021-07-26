@@ -129,37 +129,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-//        ArrayList<ParseObject> tmp = new ArrayList<>();
-//
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("FirstClass");
-//        query.findInBackground(new FindCallback<ParseObject>() {
-//            public void done(List<ParseObject> scoreList, ParseException e) {
-//                if (e == null) {
-//                    tmp.add(scoreList.get(0));
-//                    tmp.add(scoreList.get(1));
-//                    Log.d("score", "Retrieved " + scoreList.size() + " scores");
-//                    for (ParseObject parseObject : tmp) {
-//                        Log.e("Salam", parseObject.getParseFile("image").getUrl());
-//                        Log.e("Salam", parseObject.getParseFile("image").getName());
-//                        try {
-//                            Log.e("Salam", Arrays.toString(parseObject.getParseFile("image").getData()));
-//                        } catch (ParseException parseException) {
-//                            parseException.printStackTrace();
-//                        }
-//                    }
-//                } else {
-//                    Log.d("score", "Error: " + e.getMessage());
-//                }
-//            }
-//        });
-
-//
-//        BottomNavigationView navView = findViewById(R.id.nav_view);
-////        Passing each menu ID as a set of Ids because each
-////        menu should be considered as top level destinations.
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-//                .build();
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-//        NavigationUI.setupWithNavController(navView, navController);

@@ -1,6 +1,7 @@
 package com.example.jasoali.models;
 
 public class Comment {
+    private String id;
     private String makerId;
     private String questionsHolderId;
     private String name;
@@ -11,6 +12,14 @@ public class Comment {
         this.text = text;
         this.name = name;
         this.questionsHolderId = questionsHolderId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getMakerId() {

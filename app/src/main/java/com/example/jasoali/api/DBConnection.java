@@ -43,6 +43,7 @@ public class DBConnection {
         handler.sendMessage(msg);
     }
 
+
     public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
         getQuestionsHolderByCategories(new ArrayList<>(), adapter);
     }
@@ -77,6 +78,7 @@ public class DBConnection {
                     ));
                 }
                 Log.e("FETCH", "3" + result.size());
+                adapter.replaceData(result);
                 sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
             }
             return query.fromNetwork().findInBackground();
@@ -107,30 +109,11 @@ public class DBConnection {
                 });
                 adapter.replaceData(result);
                 Log.e("FETCH", "5" + result.size());
-
                 sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
                 sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
             }
             return task;
         }));
-
-//        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
-//        query.findInBackground((questionHoldersList, e) -> {
-//            for (ParseObject parseObject : questionHoldersList) {
-//                ParseUser user = getUserFromParseObject(parseObject, "creator");
-//                result.add(new QuestionsHolder(
-//                        parseObject.getString("id"),
-//                        parseObject.getString("title"),
-//                        parseObject.getString("description"),
-//                        user.getObjectId(),
-//                        user.getString("name"),
-//                        getCategoryListFromParseObject(parseObject),
-//                        getCommentsListFromParseObject(parseObject),
-//                        getQuestionsListFromParseObject(parseObject)
-//                ));
-//            }
-//            adapter.replaceData(result);
-//        });
     }
 
     public ArrayList<QuestionsHolder> getFavouritesQuestionsHolder(String userId) throws NetworkError {
@@ -149,11 +132,13 @@ public class DBConnection {
         for (Category category : questionsHolder.getCategories()) {
             parseObject.put(category.getType().toString().toLowerCase(), category.getValue());
         }
-        ArrayList<ParseObject> parseComments = new ArrayList<>();
-        for (Comment comment : questionsHolder.getComments()) {
-            parseComments.add(getCommentAsParseObject(comment));
-        }
-        parseObject.put("comments", parseComments);
+
+        // todo: delete
+//        ArrayList<ParseObject> parseComments = new ArrayList<>();
+//        for (Comment comment : questionsHolder.getComments()) {
+//            parseComments.add(getCommentAsParseObject(comment));
+//        }
+//        parseObject.put("comments", parseComments);
 
         ArrayList<ParseObject> parseQuestions = new ArrayList<>();
         for (Question question : questionsHolder.getQuestions()) {
@@ -190,13 +175,6 @@ public class DBConnection {
             e.printStackTrace();
         }
     }
-
-//    Message msg = new Message();
-//    Bundle bundle = new Bundle();
-//            bundle.putSerializable(MainActivity.FOUND_LOCATIONS,foundLocations);
-//            msg.setData(bundle);
-//    msg.what = MainActivity.RESULTS;
-//            handler.sendMessage(msg);
 
     public FileData getFile(String fileId) throws NetworkError {
         /// download and store file
@@ -316,6 +294,8 @@ public class DBConnection {
         return null;
     }
 
+    ////////////////////////
+
     private ParseObject getQuestionAsParseObject(Question question) {
         ParseObject parseObject = new ParseObject("Question");
         parseObject.put("title", question.getTitle());
@@ -332,6 +312,9 @@ public class DBConnection {
         ParseObject parseObject = new ParseObject("Comment");
         parseObject.put("maker", ParseUser.getCurrentUser());
         parseObject.put("text", comment.getText());
+        ParseObject questionHolder = new ParseObject("QuestionHolder");
+        questionHolder.setObjectId(comment.getQuestionsHolderId());
+        parseObject.put("questionHolder", questionHolder);
         return parseObject;
     }
 
@@ -364,11 +347,10 @@ public class DBConnection {
                 parseComment.fetch();
                 ParseUser user = parseComment.getParseUser("maker");
                 result.add(new Comment(
-                                user.getObjectId(),
-                                parseComment.getString("text"),
-                                user.getString("name"),
-                                user.getString("questionsHolderId") //todo ( changed this line check it XD)
-                        )
+                        user.getObjectId(),
+                        parseComment.getString("text"),
+                        user.getString("name"),
+                        parseComment.getString("questionsHolder"))
                 );
             } catch (ParseException e) {
                 e.printStackTrace();
