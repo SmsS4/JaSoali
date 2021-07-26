@@ -1,5 +1,7 @@
 package com.example.jasoali.api;
 
+import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -35,6 +37,7 @@ public class DBConnection {
     final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
     static private DBConnection instance = new DBConnection();
     static private User user = null;
+    static private final MainActivity.MyHandler handler = MainActivity.getHandler();
 
     private DBConnection() {
     }
@@ -45,21 +48,22 @@ public class DBConnection {
 
 
     public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
-        getQuestionsHolderByCategories(null, new ArrayList<>(), adapter);
+        getQuestionsHolderByCategories(new ArrayList<>(), adapter);
     }
 
-    public void getQuestionsHolderByCategories(String name, ArrayList<Category> categories, QuestionHolderRecyclerViewAdapter adapter) {
+    public void getQuestionsHolderByCategories(ArrayList<Category> categories, QuestionHolderRecyclerViewAdapter adapter) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
-        if (name != null) {
-            query.whereContains("title", name);
-        }
+
         for (Category category : categories) {
             query.whereEqualTo(category.getType().toString(), category.getValue());
         }
 
-        Log.e("INDICATOR", "start");
+        Log.e("CATEGORY", String.valueOf(categories.size()));
+
+        MainActivity.getHandler().sendMessage(MainActivity.getHandler().START_PROGRESS_BAR);
+        Log.e("FETCH", "1");
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
-            Log.e("INDICATOR", "stop");
+            Log.e("FETCH", "2");
             ParseException error = (ParseException) task.getError();
             ArrayList<QuestionsHolder> result = new ArrayList<>();
             if (error == null) {
@@ -77,10 +81,13 @@ public class DBConnection {
                             getQuestionsListFromParseObject(parseObject)
                     ));
                 }
+                Log.e("FETCH", "3" + result.size());
                 adapter.replaceData(result);
+                MainActivity.getHandler().sendMessage(MainActivity.getHandler().NOTIFY_RECYCLER_VIEW);
             }
             return query.fromNetwork().findInBackground();
         }).continueWithTask((task -> {
+            Log.e("FETCH", "4");
             ParseException error = (ParseException) task.getError();
             ArrayList<QuestionsHolder> result = new ArrayList<>();
             if (error == null) {
@@ -99,14 +106,15 @@ public class DBConnection {
                     ));
                 }
                 ParseObject.unpinAllInBackground(QUESTION_HOLDERS, questionHoldersList, e -> {
-                    if (e != null) {
-                        // There was some error.
-                        return;
+                    if (e == null) {
+                        // Add the latest results for this query to the cache.
+                        ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
                     }
-                    // Add the latest results for this query to the cache.
-                    ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
                 });
-//                adapter.replaceData(result);
+                adapter.replaceData(result);
+                Log.e("FETCH", "5" + result.size());
+                MainActivity.getHandler().sendMessage(MainActivity.getHandler().STOP_PROGRESS_BAR);
+                MainActivity.getHandler().sendMessage(MainActivity.getHandler().NOTIFY_RECYCLER_VIEW);
             }
             return task;
         }));
@@ -187,6 +195,13 @@ public class DBConnection {
             e.printStackTrace();
         }
     }
+
+//    Message msg = new Message();
+//    Bundle bundle = new Bundle();
+//            bundle.putSerializable(MainActivity.FOUND_LOCATIONS,foundLocations);
+//            msg.setData(bundle);
+//    msg.what = MainActivity.RESULTS;
+//            handler.sendMessage(msg);
 
     public FileData getFile(String fileId) throws NetworkError {
         /// download and store file
@@ -354,10 +369,10 @@ public class DBConnection {
                 parseComment.fetch();
                 ParseUser user = parseComment.getParseUser("maker");
                 result.add(new Comment(
-                        user.getObjectId(),
-                        parseComment.getString("text"),
-                        user.getString("name"),
-                        user.getString("questionsHolderId") //todo ( changed this line check it XD)
+                                user.getObjectId(),
+                                parseComment.getString("text"),
+                                user.getString("name"),
+                                user.getString("questionsHolderId") //todo ( changed this line check it XD)
                         )
                 );
             } catch (ParseException e) {

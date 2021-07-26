@@ -36,9 +36,10 @@ public class QuestionHolderRecyclerViewAdapter
 
 
     public void replaceData(List<QuestionsHolder> newData) {
+        mData.clear();
+        mDataCopy.clear();
         mData.addAll(newData);
         mDataCopy.addAll(newData);
-        notifyDataSetChanged();
     }
 
 

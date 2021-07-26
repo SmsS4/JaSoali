@@ -34,9 +34,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="4dp"
                 android:hint="کدوم درس؟"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                tools:ignore="RtlCompat">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_course"
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
                     android:inputType="none" />
@@ -54,9 +56,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="4dp"
                 android:hint="کدوم استاد؟"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                tools:ignore="RtlCompat">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_professor"
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
                     android:inputType="none" />
@@ -74,9 +78,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="4dp"
                 android:hint="کدوم دانشگاه؟"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                tools:ignore="RtlCompat">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_university"
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
                     android:inputType="none" />
@@ -94,9 +100,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="4dp"
                 android:hint="کدوم دانشکده؟"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                tools:ignore="RtlCompat">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_department"
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
                     android:inputType="none" />
@@ -114,9 +122,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:hint="کدوم ترم؟"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                tools:ignore="RtlCompat">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_term"
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
                     android:inputType="none" />
