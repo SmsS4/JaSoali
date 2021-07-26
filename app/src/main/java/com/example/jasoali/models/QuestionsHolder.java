@@ -2,18 +2,19 @@ package com.example.jasoali.models;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestionsHolder {
     private int id;
     private String title;
     private String description;
-    private int creatorId;
+    private String creatorId;
     private String creatorName;
     private ArrayList<Category> categories;
     private ArrayList<Comment> comments;
     private ArrayList<Question> questions;
 
-    public QuestionsHolder(int id, String title, String description, int creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
+    public QuestionsHolder(int id, String title, String description, String  creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -24,7 +25,18 @@ public class QuestionsHolder {
         this.questions = questions;
     }
 
-    public QuestionsHolder(int id, int creatorId, String creatorName) {
+    public QuestionsHolder(String creatorId, String creatorName){
+        this.id = (int)(Math.random() * Integer.MAX_VALUE);
+        this.title = "";
+        this.description = "";
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
+        this.categories = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.questions = new ArrayList<>();
+    }
+
+    public QuestionsHolder(int id, String  creatorId, String creatorName) {
         this.id = id;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
@@ -57,11 +69,11 @@ public class QuestionsHolder {
     }
 
 
-    public int getCreatorId() {
+    public String  getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(int creatorId) {
+    public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
     }
 

@@ -1,54 +1,49 @@
 package com.example.jasoali.ui.problem;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.nfc.Tag;
-import android.os.Bundle;
-
+import android.app.Activity;
 import android.app.Fragment;
-
-import android.text.Editable;
-import android.text.Html;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.jasoali.MainActivity;
 import com.example.jasoali.R;
 import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.custom_packacges.RoundedBackgroundSpan;
+import com.example.jasoali.exceptions.LengthExceeded;
 import com.example.jasoali.models.Category;
 import com.example.jasoali.models.CategoryType;
+import com.example.jasoali.models.Comment;
+import com.example.jasoali.models.FileQuestion;
 import com.example.jasoali.models.Question;
 import com.example.jasoali.models.QuestionsHolder;
+import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.questionsholder.CommentsAdapter;
 import com.example.jasoali.ui.questionsholder.QuestionsAdapter;
 import com.example.jasoali.ui.questionsholder.TagsAdapter;
+import com.example.jasoali.utils.KeyboardHider;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ShowQuestionsHolderFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ShowQuestionsHolderFragment extends Fragment {
 
     public static final String QUESTIONS_HOLDER_ID = "questionsHolderId";
@@ -66,24 +61,25 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private RecyclerView recyclerViewTags;
 
 
-
     private View view;
 
-    private boolean onEditMode = false;
+    boolean addQuestionMode;
+    boolean added = false;
+
+    File source;
 
     private QuestionsAdapter questionsAdapter;
     private TagsAdapter tagsAdapter;
 
+    public static final int ADD_QUESTIONS_ID = -1;
+    private static final int PICKFILE_RESULT_CODE = -1;
+    private static final String[] mimes = new String[]{"image/*", "application/pdf"};
+
+
     public ShowQuestionsHolderFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment ShowQuestionsHolderFragment.
-     */
+
     public static ShowQuestionsHolderFragment newInstance(int questionsHolderId) {
         ShowQuestionsHolderFragment fragment = new ShowQuestionsHolderFragment();
         Bundle args = new Bundle();
@@ -92,28 +88,30 @@ public class ShowQuestionsHolderFragment extends Fragment {
         return fragment;
     }
 
+    public static ShowQuestionsHolderFragment newAddQuestionsInstance() {
+        return newInstance(ADD_QUESTIONS_ID);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            int questionsHolderId = getArguments().getInt(QUESTIONS_HOLDER_ID);
-            questionsHolder = db.getLocalQuestionsHolder(questionsHolderId);
-//            user = db.getLocalUser(); todo
+            //            user = db.getLocalUser(); todo
             user = new User("pppfff", "fafsadfa", "ffffff", "f@f.com", "fff", null, true);
 
-
+            int questionsHolderId = getArguments().getInt(QUESTIONS_HOLDER_ID);
+            if (questionsHolderId != ADD_QUESTIONS_ID) {
+                questionsHolder = db.getLocalQuestionsHolder(questionsHolderId);
+                addQuestionMode = false;
+            } else {
+                questionsHolder = new QuestionsHolder(user.getId(), user.getName());
+                addQuestionMode = true;
+            }
         }
-
-        System.out.println("finish");
     }
 
     private void setEditButtonToEdit() {
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enterEditMode();
-            }
-        });
+        editButton.setOnClickListener(v -> enterEditMode());
     }
 
     private void changeMode(boolean show) {
@@ -122,25 +120,31 @@ public class ShowQuestionsHolderFragment extends Fragment {
         tags.setEnabled(show);
     }
 
+    @NotNull
     private ArrayList<Category> getEditedTags() {
         ArrayList<Category> result = new ArrayList<>();
         String tags_string = tags.getText().toString();
-        for (String tag : tags_string.split(" ")) {
+        for (String tag : tags_string.split("[ \n]")) {
             result.add(new Category(CategoryType.OTHER, tag));
         }
         for (TagsAdapter.ViewHolder viewHolder : tagsAdapter.getViews()) {
-            result.add(
-                    new Category(
-                            Category.getCategoryByType(viewHolder.typeSpinner.getSelectedItem().toString()),
-                            viewHolder.valueTextView.getText().toString()
-                    )
-            );
+            if (!viewHolder.getValueTextView().getText().toString().equals("")) {
+                result.add(
+                        new Category(
+                                Category.getCategoryByType(viewHolder.getTypeSpinner().getSelectedItem().toString()),
+                                viewHolder.getValueTextView().getText().toString()
+                        )
+                );
+            }
         }
         return result;
     }
 
-    private ArrayList<Question> getQuestions() {
-        return new ArrayList<>(questionsAdapter.getQuestions());
+    @NotNull
+    private ArrayList<Question> getEditedQuestions() {
+        ArrayList<Question> result = new ArrayList<>(questionsAdapter.getQuestions());
+        result.remove(result.size() - 1);
+        return result;
 
     }
 
@@ -154,56 +158,116 @@ public class ShowQuestionsHolderFragment extends Fragment {
                 questionsHolder.getCreatorName(),
                 getEditedTags(),
                 questionsHolder.getComments(),
-                getQuestions()
+                getEditedQuestions()
         );
     }
 
+
     private void enterEditMode() {
-        editButton.setText("خروج");
-        editButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(view.getContext())
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton("ذخیره", (dialog, whichButton) -> {
+        tagsAdapter.enterEditMode();
+        editButton.setText("پایان");
+        editButton.setOnClickListener(v -> new MaterialAlertDialogBuilder(view.getContext())
+                .setPositiveButton("ذخیره", (dialogInterface, i) -> {
+                    tagsAdapter.exitEditMode();
+                    if (addQuestionMode && !added) {
+                        added = true;
+                        QuestionsHolder addedQuestionsHolder = getEditedQuestionsHolder();
+                        db.addQuestionsHolder(
+                                addedQuestionsHolder
+                        );
+                        questionsHolder = addedQuestionsHolder;
+                    } else {
                         QuestionsHolder editedQuestionsHolder = getEditedQuestionsHolder();
-                        DBConnection.getInstance().editQuestionsHolder(
+                        db.editQuestionsHolder(
                                 editedQuestionsHolder
                         );
                         questionsHolder = editedQuestionsHolder;
-                        exitEditMode();
-
-                    })
-                    .setNegativeButton("لغو", (dialog, whichButton) -> {
-                        showQuestionsHolder();
-                        exitEditMode();
-                    })
-                    .setNeutralButton("ادامه ویرایش", null).show();
-
-        });
-        onEditMode = true;
+                    }
+                    exitEditMode();
+                })
+                .setNegativeButton("لغو", (dialogInterface, i) -> {
+                    tagsAdapter.exitEditMode();
+                    exitEditMode();
+                }).setNeutralButton("ادامه ویرایش", null).show());
         changeMode(true);
         questionsAdapter.changeButtonVisibility(View.VISIBLE);
-        tagsAdapter.setEnable(true);
+        questionsAdapter.enterEditMode();
 
     }
 
     private void exitEditMode() {
+        showQuestionsHolder();
         editButton.setText("ویرایش");
         setEditButtonToEdit();
-        onEditMode = false;
         changeMode(false);
         questionsAdapter.changeButtonVisibility(View.INVISIBLE);
-        tagsAdapter.setEnable(false);
-
+        tagsAdapter.exitEditMode();
     }
 
+
     private void showQuestions() {
-        questionsAdapter = new QuestionsAdapter(questionsHolder.getQuestions());
+        questionsAdapter = new QuestionsAdapter(questionsHolder.getQuestions()) {
+
+            @Override
+            public void onQuestionClicked(Question question) {
+                System.out.println(question.getTitle());
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void selectFile() {
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+                chooseFile.setType(String.join(mimes[0], mimes[1]));
+                chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimes);
+                startActivityForResult(
+                        Intent.createChooser(chooseFile, "Choose a file"),
+                        PICKFILE_RESULT_CODE
+                );
+            }
+
+            @Override
+            public TextQuestion submitText(String title, String text) {
+                try {
+                    return new TextQuestion(title, text);
+                } catch (LengthExceeded e) {
+                    /// this won't happen
+                    return null;
+                }
+
+            }
+
+            @Override
+            public FileQuestion submitFile(String title) {
+                if (source == null){
+                    return null;
+                }
+                try {
+                    return new FileQuestion(title, source);
+                } catch (LengthExceeded e) {
+                    /// this won't happen
+                    return null;
+                }
+            }
+        };
         questionsRecyclerView.setAdapter(questionsAdapter);
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICKFILE_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+            Uri content_describer = data.getData();
+            String src = content_describer.getPath();
+            source = new File(src);
+        }
+    }
+
     private void showComments() {
-        CommentsAdapter adapterComments = new CommentsAdapter(questionsHolder.getComments());
-        recyclerViewComments.setAdapter(adapterComments);
+        recyclerViewComments.setAdapter(
+                new CommentsAdapter(questionsHolder.getComments())
+        );
     }
 
     private ArrayList<Category> getTags(boolean special) {
@@ -230,41 +294,56 @@ public class ShowQuestionsHolderFragment extends Fragment {
         this.tagsAdapter = tagsAdapter;
     }
 
-    private void setData() {
-    }
 
     private void initQuestionsHolder() {
         questionsRecyclerView = view.findViewById(R.id.questions);
-        GridLayoutManager glm = new GridLayoutManager(view.getContext(), 2) {
+        questionsRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2) {
             @Override
             public boolean canScrollVertically() {
                 return false;
             }
-        };
-        questionsRecyclerView.setLayoutManager(glm);
+        });
 
         recyclerViewComments = view.findViewById(R.id.comments);
         recyclerViewComments.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         recyclerViewTags = view.findViewById(R.id.special_tags);
-        recyclerViewTags.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerViewTags.setLayoutManager(new LinearLayoutManager(view.getContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
 
         title = view.findViewById(R.id.titleQH);
+        view.findViewById(R.id.submit_comment).setOnClickListener(v -> {
+            EditText newComment = view.findViewById(R.id.new_comment);
+            Comment comment = new Comment(
+                    user.getId(),
+                    newComment.getText().toString(),
+                    user.getName()
+            );
+            questionsHolder.getComments().add(0, comment);
+            db.addComment(
+                    questionsHolder.getId(),
+                    comment
+            );
+            showComments();
+            newComment.setText("");
+            KeyboardHider.HideKeyboard(view);
+        });
         description = view.findViewById(R.id.descriptionQH);
         editButton = view.findViewById(R.id.edit_btn);
 
     }
 
     private void colorFulTags() {
-        colorFulTags(null);
+        colorFulTags(getOtherTags());
     }
 
     private void colorFulTags(ArrayList<Category> source) {
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
         int tagStart = 0;
-        if (source == null) {
-            source = getOtherTags();
-        }
         for (Category category : source) {
             if (category.getType() != CategoryType.OTHER) {
                 continue;
@@ -282,64 +361,24 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     }
 
-    private String myPreviousText;
 
     private void showOtherTags() {
         tags = view.findViewById(R.id.tagQH);
-        tags.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    colorFulTags(getEditedTags());
-                }
+        tags.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                colorFulTags(getEditedTags());
             }
         });
-//            tags.addTextChangedListener(new TextWatcher() {
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                    String text = s.toString();
-//                    if(!text.equals(myPreviousText)){
-//                        myPreviousText = text;
-//                        System.out.println(text.charAt(text.length()-1));
-//                        System.out.println(text);
-//                        if( text.length() > 0 && text.charAt(text.length()-1) == ' '){
-//                            colorFulTags(getEditedTags());
-//
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start,
-//                                              int count, int after) {
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start,
-//                                          int before, int count) {
-//
-//                }
-//            });
         colorFulTags();
 
-//        tags.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                System.out.println(keyCode);
-//                return false;
-//            }
-//        });
-//        tags.setText(stringBuilder);
     }
 
     private void showQuestionsHolder() {
-
+        RoundedBackgroundSpan.resetColors();
         showQuestions();
         showComments();
         showTags();
         showOtherTags();
-
         title.setText(questionsHolder.getTitle());
         description.setText(questionsHolder.getDescription());
     }
@@ -349,14 +388,14 @@ public class ShowQuestionsHolderFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_show_questions_holder, container, false);
-
-
-        setData();
         initQuestionsHolder();
         showQuestionsHolder();
         setEditButtonToEdit();
-        changeMode(false);
-        if (!user.isAdmin()){
+        changeMode(addQuestionMode);
+        if (addQuestionMode) {
+            enterEditMode();
+        }
+        if (!user.isAdmin()) {
             editButton.setVisibility(View.INVISIBLE);
         }
         return view;

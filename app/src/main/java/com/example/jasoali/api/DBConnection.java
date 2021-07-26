@@ -113,40 +113,64 @@ public class DBConnection {
             categories.add(
                     new Category(CategoryType.TERM, "بهار ۱۴۰۰")
             );
+//            categories.add(
+//                    new Category(CategoryType.COURSE, "شبیه سازی")
+//            );
+//            categories.add(
+//                    new Category(CategoryType.DEPARTMENT, "مهندسی کامپیوتر")
+//            );
+            categories.add(
+                    new Category(CategoryType.OTHER, "سوال_سخت")
+            );
+            categories.add(
+                    new Category(CategoryType.OTHER, "مخصوص_خودته")
+            );
+            categories.add(
+                    new Category(CategoryType.OTHER, "مخصوص_خودته")
+            );
+//            categories.add(
+//                    new Category(CategoryType.TERM, "بهار ۱۴۰۰")
+//            );
             ArrayList<Question> questions = new ArrayList<>();
             questions.add(
                     new TextQuestion("سوال‌ها یک عنوان طولانی همیشگی", "بلا بلا متن سوال بلا بلا")
             );
             questions.add(
-                    new FileQuestion("جواب‌ها", new FileData(0, null, "image/jpeg"))
+                    new FileQuestion("جواب‌ها", null)
             );
             questions.add(
-                    new FileQuestion("راهنمایی‌ها", new FileData(0, null, "image/jpeg"))
+                    new FileQuestion("راهنمایی‌ها", null)
             );
             questions.add(
-                    new FileQuestion("جواب‌ها", new FileData(0, null, "image/jpeg"))
+                    new FileQuestion("جواب‌ها", null)
             );
             questions.add(
-                    new FileQuestion("راهنمایی‌ها", new FileData(0, null, "image/jpeg"))
+                    new FileQuestion("راهنمایی‌ها", null)
             );
             questions.add(
-                    new FileQuestion("جواب‌ها", new FileData(0, null, "image/jpeg"))
+                    new FileQuestion("جواب‌ها", null)
             );
             questions.add(
-                    new FileQuestion("راهنمایی‌ها", new FileData(0, null, "image/jpeg"))
+                    new FileQuestion("راهنمایی‌ها", null)
             );
             ArrayList<Comment> comments = new ArrayList<>();
             comments.add(
-                    new Comment(0, "عالی و طلایی", "ممد")
+                    new Comment("0", "عالی و طلایی", "ممد")
             );
             comments.add(
-                    new Comment(1, "ماورای تصور", "یک پدیده")
+                    new Comment("1", "ماورای تصور", "یک پدیده")
+            );
+            comments.add(
+                    new Comment("0", "عالی و طلایی", "ممد")
+            );
+            comments.add(
+                    new Comment("1", "ماورای تصور", "یک پدیده")
             );
             return new QuestionsHolder(
                     0,
                     "سلام سوال",
                     "این یک توضیحات تستی برای یک تست دستی است.",
-                    0,
+                    "0",
                     "آقا صادق",
                     categories,
                     comments,

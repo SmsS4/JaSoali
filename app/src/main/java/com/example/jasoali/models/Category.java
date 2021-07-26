@@ -21,6 +21,13 @@ public class Category {
             DEPARTMENT,
             UNIVERSITY
     };
+    final public static CategoryType[] ALL_TYPES = new CategoryType[]{
+            CategoryType.TERM,
+            CategoryType.COURSE,
+            CategoryType.PROFESSOR,
+            CategoryType.DEPARTMENT,
+            CategoryType.UNIVERSITY
+    };
     public CategoryType getType() {
         return type;
     }

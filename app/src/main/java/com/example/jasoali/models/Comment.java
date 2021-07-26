@@ -1,23 +1,21 @@
 package com.example.jasoali.models;
 
 public class Comment {
-    private int userId;
+    private String userId;
     private String name;
-
-
     private String text;
 
-    public Comment(int userId, String text, String name) {
+    public Comment(String userId, String text, String name) {
         this.userId = userId;
         this.text = text;
         this.name = name;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

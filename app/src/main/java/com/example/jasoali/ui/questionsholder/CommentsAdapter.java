@@ -1,10 +1,11 @@
 package com.example.jasoali.ui.questionsholder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,68 +13,71 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.jasoali.R;
 import com.example.jasoali.models.Comment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHolder> {
-    private List<Comment> comments;
-    // Provide a direct reference to each of the views within a data item
-    // Used to cache the views within the item layout for fast access
+    private final List<Comment> comments;
 
     public CommentsAdapter(List<Comment> comments) {
         this.comments = comments;
     }
 
-    // Usually involves inflating a layout from XML and returning the holder
+    @NotNull
     @Override
     public CommentsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-
-        // Inflate the custom layout
         View contactView = inflater.inflate(R.layout.comments_list_recycler_view, parent, false);
-
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
+        return new ViewHolder(contactView);
     }
 
-    // Involves populating data into the item through holder
+    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     @Override
-    public void onBindViewHolder(CommentsAdapter.ViewHolder holder, int position) {
-        // Get the data model based on position
+    public void onBindViewHolder(@NotNull CommentsAdapter.ViewHolder holder, int position) {
         Comment comment = comments.get(position);
-
-        // Set item views based on your views and data model
-
-        holder.nameTextView.setText(comment.getName()+":");
-        holder.valueTextView.setText(comment.getText());
-//        Button button = holder.messageButton;
-//        button.setText("blah blah");
-//        button.setText(contact.isOnline() ? "Message" : "Offline");
-//        button.setEnabled(contact.isOnline());
+        if (position % 2 == 0) {
+            holder.getCommentLayout().setBackground(
+                    holder.itemView.getResources().getDrawable(R.drawable.rounded_comments)
+            );
+        } else {
+            holder.getCommentLayout().setBackground(
+                    holder.itemView.getResources().getDrawable(R.drawable.rounded_comments_second)
+            );
+        }
+        holder.getNameTextView().setText(comment.getName() + ":");
+        holder.getValueTextView().setText(comment.getText());
     }
 
-    // Returns the total count of items in the list
     @Override
     public int getItemCount() {
         return comments.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // Your holder should contain a member variable
-        // for any view that will be set as you render a row
-        public TextView nameTextView;
-        public TextView valueTextView;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView nameTextView;
+        private final TextView valueTextView;
+        private final LinearLayout commentLayout;
 
-        // We also create a constructor that accepts the entire item row
-        // and does the view lookups to find each subview
+        public TextView getNameTextView() {
+            return nameTextView;
+        }
+
+        public TextView getValueTextView() {
+            return valueTextView;
+        }
+
+        public LinearLayout getCommentLayout() {
+            return commentLayout;
+        }
+
+
         public ViewHolder(View itemView) {
-            // Stores the itemView in a public final member variable that can be used
-            // to access the context from any ViewHolder instance.
             super(itemView);
-
-            nameTextView = (TextView) itemView.findViewById(R.id.comment_name);
-            valueTextView = (TextView) itemView.findViewById(R.id.comment_value);
+            commentLayout = itemView.findViewById(R.id.comment_holder);
+            nameTextView = itemView.findViewById(R.id.comment_name);
+            valueTextView = itemView.findViewById(R.id.comment_value);
         }
     }
 }

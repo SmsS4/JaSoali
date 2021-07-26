@@ -33,4 +33,20 @@
     <string name="professor">استاد</string>
     <string name="departemant">دانشکده</string>
     <string name="university">دانشگاه</string>
+
+    <string name="title">عنوان</string>
+    <string name="description">توضیحات</string>
+    <string name="question_text">متن سوال</string>
+    <string name="select_file">انتخاب فایل</string>
+    <string name="upload">بارگذاری</string>
+    <string name="file_question">سوال فایلی</string>
+    <string name="text_question">سوال متنی</string>
+    <string name="comment">نظر</string>
+    <string name="submit_comment">ثبت نظر</string>
+    <string name="edit">ویرایش</string>
+    <string name="text_is_empty">متن سوال خالی است</string>
+    <string name="title_is_empty">لطفا عنوان را پر کنید</string>
+    <string name="file_is_null">لطفا یک فایل انتخاب کنید</string>
+
+
 </resources>

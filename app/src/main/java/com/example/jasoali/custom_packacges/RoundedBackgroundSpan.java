@@ -26,9 +26,18 @@ public class RoundedBackgroundSpan extends ReplacementSpan {
             R.color.tags7
     };
     static int cnt = 0;
-    static public int getNextColor(){
-        cnt ++;
-        return tagsColors[(cnt-1)%tagsColors.length];
+
+    static public int getNextColor() {
+        cnt++;
+        return tagsColors[(cnt - 1) % tagsColors.length];
+    }
+
+    static public int getColor(int position) {
+        return tagsColors[position % tagsColors.length];
+    }
+
+    static public void resetColors() {
+        cnt = 0;
     }
 
     public RoundedBackgroundSpan(int backgroundColor, int textColor) {

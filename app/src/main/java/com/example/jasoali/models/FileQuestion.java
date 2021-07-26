@@ -2,19 +2,21 @@ package com.example.jasoali.models;
 
 import com.example.jasoali.exceptions.LengthExceeded;
 
-public class FileQuestion extends Question {
-    private FileData file;
+import java.io.File;
 
-    public FileQuestion(String description, FileData file) throws LengthExceeded {
+public class FileQuestion extends Question {
+    private File file;
+
+    public FileQuestion(String description, File file) throws LengthExceeded {
         super(description);
         this.file = file;
     }
 
-    public FileData getFile() {
+    public File getFile() {
         return file;
     }
 
-    public void setFile(FileData file) {
+    public void setFile(File file) {
         this.file = file;
     }
 

@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 
 
 import com.example.jasoali.ui.problem.SearchFragment;
+import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -88,12 +89,11 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 //        });
-
-
-//        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.your_placeholder, fragInfo);
-//        transaction.commit();
+        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
+//        ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newAddQuestionsInstance();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragInfo);
+        transaction.commit();
 //
 //        BottomNavigationView navView = findViewById(R.id.nav_view);
 ////        Passing each menu ID as a set of Ids because each

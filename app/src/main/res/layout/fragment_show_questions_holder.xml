@@ -31,7 +31,7 @@
                     android:layout_marginRight="8dp"
                     android:minWidth="0dp"
                     android:minHeight="0dp"
-                    android:text="ویرایش"
+                    android:text="@string/edit"
 
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -48,14 +48,15 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/titleQH"
                         android:layout_width="match_parent"
-                        android:background="@drawable/light_frame"
-
                         android:layout_height="wrap_content"
+                        android:maxLength="19"
                         android:layout_weight="1"
+                        android:background="@drawable/light_frame"
                         android:ems="10"
                         android:gravity="center|center_horizontal|center_vertical"
+                        android:hint="@string/title"
                         android:inputType="textPersonName"
-                        android:text="عنوان"
+                        android:text="@string/title"
                         android:textColor="@drawable/edit_text_selector"
                         android:textSize="24sp" />
 
@@ -67,6 +68,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/description"
                 app:layout_constraintTop_toTopOf="parent">
 
 
@@ -75,42 +77,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/light_frame"
                     android:gravity="start|top"
                     android:inputType="textMultiLine"
                     android:text="توضیحات"
-                    android:background="@drawable/light_frame"
 
                     android:textColor="@drawable/edit_text_selector" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/special_tags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="5dp"
+                android:background="@drawable/light_frame"
+                android:nestedScrollingEnabled="false" />
 
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/special_tags"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/light_frame"
-
-                    />
-
-                <EditText
-                    android:id="@+id/tagQH"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:paddingBottom="20dp"
-                    android:text="#شریف #کامپیوتر"
-                    android:textColor="@drawable/edit_text_selector" />
-
-            </LinearLayout>
+            <EditText
+                android:id="@+id/tagQH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:paddingBottom="20dp"
+                android:text="#شریف #کامپیوتر"
+                android:textColor="@drawable/edit_text_selector" />
 
 
             <RelativeLayout
@@ -122,19 +114,67 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:spanCount="2" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/comemnt_section"
+                    android:layout_below="@+id/questions"
+
+                    >
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/submit_comment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="73dp"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:text="@string/submit_comment"
+                        >
+
+                    </com.google.android.material.button.MaterialButton>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="4dp"
+                        android:hint="@string/comment"
+
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/new_comment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/light_frame"
+                            android:gravity="start|top"
+                            android:inputType="textMultiLine"
+
+
+                            android:textColor="@drawable/edit_text_selector" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/comments"
+                    android:layout_below="@+id/comemnt_section"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/questions"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
+                    android:padding="5dp"
 
                     />
             </RelativeLayout>
-
         </LinearLayout>
     </ScrollView>
 
