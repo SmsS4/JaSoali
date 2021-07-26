@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
         progressIndicator = findViewById(R.id.progress_bar);
         progressIndicator.setVisibility(View.INVISIBLE);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, searchFragment).commit();
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.fragment_container, searchFragment).commit();
 
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
