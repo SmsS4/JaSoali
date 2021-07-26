@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jasoali.MainActivity;
 import com.example.jasoali.R;
 import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.models.Category;
@@ -27,13 +28,14 @@ public class SearchFragment extends Fragment {
     private RecyclerView questionHolders;
     private SearchView searchField;
     private ArrayList<QuestionsHolder> mQuestionsHolders = new ArrayList<>();
+    private final DBConnection db = new DBConnection(MainActivity.getHandler());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         getActivity().setTitle("جستجو بین جاسوالی‌ها");
         super.onCreate(savedInstanceState);
         adapter = new QuestionHolderRecyclerViewAdapter(getActivity());
-        DBConnection.getInstance().getAllQuestionsHolder(adapter);
+        db.getAllQuestionsHolder(adapter);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class SearchFragment extends Fragment {
             categories.add(new Category(CategoryType.DEPARTMENT, inputDepartment.getText().toString()));
             categories.add(new Category(CategoryType.UNIVERSITY, inputUniversity.getText().toString()));
             categories.add(new Category(CategoryType.TERM, inputTerm.getText().toString()));
-            DBConnection.getInstance().getQuestionsHolderByCategories(categories, adapter);
+            db.getQuestionsHolderByCategories(categories, adapter);
             Log.e("CLICK", "click");
         });
 

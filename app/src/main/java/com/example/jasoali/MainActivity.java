@@ -2,6 +2,7 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
+import com.example.jasoali.ui.sign_in_up.RegisterActivity;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.Parse;
 
@@ -27,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
     public LinearProgressIndicator progressIndicator;
     ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
 
-    private MyHandler handler;
+    private static MyHandler handler;
 
-    private MyHandler getHandler() {
+    public static MyHandler getHandler() {
         return handler;
     }
 
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, searchFragment).commit();
+
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
 
 //        /// todo remove these
 //        FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -97,10 +102,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static class MyHandler extends Handler {
 
-        private final WeakReference<MainActivity> mainActivityWeakReference;
         public static final int START_PROGRESS_BAR = 1;
         public static final int STOP_PROGRESS_BAR = 2;
         public static final int NOTIFY_RECYCLER_VIEW = 3;
+        private final WeakReference<MainActivity> mainActivityWeakReference;
 
         public MyHandler(MainActivity mainActivity) {
             this.mainActivityWeakReference = new WeakReference<>(mainActivity);
