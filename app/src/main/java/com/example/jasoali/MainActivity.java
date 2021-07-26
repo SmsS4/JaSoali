@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 
+import com.example.jasoali.api.DBConnection;
+import com.example.jasoali.models.Comment;
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.FindCallback;
@@ -67,23 +69,26 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                Log.e("COUNT", String.valueOf(objects.size()));
-                ParseObject parseObject = objects.get(0);
-                ParseUser user = null;
-                try {
-                    user = parseObject.getParseUser("maker").fetch();
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
+//        query.findInBackground(new FindCallback<ParseObject>() {
+//            @Override
+//            public void done(List<ParseObject> objects, ParseException e) {
+//                Log.e("COUNT", String.valueOf(objects.size()));
+//                ParseObject parseObject = objects.get(0);
+//                ParseUser user = null;
+//                try {
+//                    user = parseObject.getParseUser("maker").fetch();
+//
+//                } catch (ParseException parseException) {
+//                    parseException.printStackTrace();
+//                }
+//                Log.e("COUNT", String.valueOf(objects.size()));
+//                Log.e("COUNT", user != null ? user.getString("name") : "sss");
+//            }
+//        });
 
-                } catch (ParseException parseException) {
-                    parseException.printStackTrace();
-                }
-                Log.e("COUNT", String.valueOf(objects.size()));
-                Log.e("COUNT", user != null ? user.getString("name") : "sss");
-            }
-        });
+//        DBConnection.getInstance().addQuestionsHolder(DBConnection.getInstance().getLocalQuestionsHolder());
+//        DBConnection.getInstance().addComment(new Comment("alaki", "comment text", "سید علیرضا هاشمی"));
     }
 }
 //        ArrayList<ParseObject> tmp = new ArrayList<>();

@@ -19,6 +19,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,28 +49,24 @@ public class DBConnection {
             query.whereEqualTo(category.getType().toString(), category.getValue());
         }
         ArrayList<QuestionsHolder> result = new ArrayList<>();
-        query.findInBackground((questionHolderList, e) -> {
-            if (e == null) {
-                for (ParseObject parseObject : questionHolderList) {
-                    ParseUser user = getUserFromParseObject(parseObject);
-                    result.add(new QuestionsHolder(
-                            parseObject.getString("id"),
-                            parseObject.getString("title"),
-                            parseObject.getString("description"),
-                            user.getObjectId(),
-                            user.getString("name"),
-                            getCategoryListFromParseObject(parseObject),
-                            getCommentsListFromParseObject(parseObject),
-                            getQuestionsListFromParseObject(parseObject)
-                    ));
-                }
-                Log.d("score", "Retrieved " + questionHolderList.size() + " scores");
-            } else {
-                Log.d("score", "Error: " + e.getMessage());
+        try {
+            List<ParseObject> questionHolderList = query.find();
+            for (ParseObject parseObject : questionHolderList) {
+                ParseUser user = getUserFromParseObject(parseObject, "creator");
+                result.add(new QuestionsHolder(
+                        parseObject.getString("id"),
+                        parseObject.getString("title"),
+                        parseObject.getString("description"),
+                        user.getObjectId(),
+                        user.getString("name"),
+                        getCategoryListFromParseObject(parseObject),
+                        getCommentsListFromParseObject(parseObject),
+                        getQuestionsListFromParseObject(parseObject)
+                ));
             }
-        });
-        /// returns list of questions that has this categories
-        // and has name in title (if name is not null)
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -82,9 +79,35 @@ public class DBConnection {
     }
 
     public void addQuestionsHolder(QuestionsHolder questionsHolder) {
-        QuestionsHolder qh;
         ParseObject parseObject = new ParseObject("QuestionHolder");
+        parseObject.put("title", questionsHolder.getTitle());
+        parseObject.put("description", questionsHolder.getDescription());
+        parseObject.put("creator", ParseUser.getCurrentUser());
+        for (Category category : questionsHolder.getCategories()) {
+            parseObject.put(category.getType().toString().toLowerCase(), category.getValue());
+        }
+        ArrayList<ParseObject> parseComments = new ArrayList<>();
+        for (Comment comment : questionsHolder.getComments()) {
+            parseComments.add(getCommentAsParseObject(comment));
+        }
+        parseObject.put("comments", parseComments);
 
+        ArrayList<ParseObject> parseQuestions = new ArrayList<>();
+        for (Question question : questionsHolder.getQuestions()) {
+            parseQuestions.add(getQuestionAsParseObject(question));
+        }
+        parseObject.put("questions", parseQuestions);
+
+        parseObject.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.e("Hoora!", "object saved!");
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void removeQuestionsHolder(String questionsHolderId) {
@@ -96,8 +119,13 @@ public class DBConnection {
         addQuestionsHolder(newQuestionsHolder);
     }
 
-    public void addComment(String questionsHolderId, Comment comment) {
-
+    public void addComment(Comment comment) {
+        ParseObject parseObject = getCommentAsParseObject(comment);
+        try {
+            parseObject.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public FileData getFile(String fileId) throws NetworkError {
@@ -105,7 +133,7 @@ public class DBConnection {
         return null;
     }
 
-    public QuestionsHolder getLocalQuestionsHolder(String questionsHolderId) {
+    public QuestionsHolder getLocalQuestionsHolder() {
         String currentUserId = ParseUser.getCurrentUser().getObjectId();
         // todo
         ArrayList<Category> categories = new ArrayList<>();
@@ -129,30 +157,30 @@ public class DBConnection {
             questions.add(
                     new TextQuestion("سوال‌ها یک عنوان طولانی همیشگی", "بلا بلا متن سوال بلا بلا")
             );
-            questions.add(
-                    new FileQuestion("جواب‌ها", null)
-            );
-            questions.add(
-                    new FileQuestion("راهنمایی‌ها", null)
-            );
-            questions.add(
-                    new FileQuestion("جواب‌ها", null)
-            );
-            questions.add(
-                    new FileQuestion("راهنمایی‌ها", null)
-            );
-            questions.add(
-                    new FileQuestion("جواب‌ها", null)
-            );
-            questions.add(
-                    new FileQuestion("راهنمایی‌ها", null)
-            );
+//            questions.add(
+//                    new FileQuestion("جواب‌ها", null)
+//            );
+//            questions.add(
+//                    new FileQuestion("راهنمایی‌ها", null)
+//            );
+//            questions.add(
+//                    new FileQuestion("جواب‌ها", null)
+//            );
+//            questions.add(
+//                    new FileQuestion("راهنمایی‌ها", null)
+//            );
+//            questions.add(
+//                    new FileQuestion("جواب‌ها", null)
+//            );
+//            questions.add(
+//                    new FileQuestion("راهنمایی‌ها", null)
+//            );
             ArrayList<Comment> comments = new ArrayList<>();
             comments.add(
-                    new Comment(currentUserId, questionsHolderId, "عالی و طلایی", "ممد")
+                    new Comment(currentUserId, "عالی و طلایی", "ممد")
             );
             comments.add(
-                    new Comment(currentUserId, questionsHolderId, "ماورای تصور", "یک پدیده")
+                    new Comment(currentUserId, "ماورای تصور", "یک پدیده")
             );
             return new QuestionsHolder(
                     "0",
@@ -225,32 +253,33 @@ public class DBConnection {
             parseObject.put("text", ((TextQuestion) question).getText());
         }
         if (question instanceof FileQuestion) {
-            parseObject.put("file", ((FileQuestion) question).getFile()); //todo: clean FileData
+            parseObject.put("file", ((FileQuestion) question).getFile());
         }
         return parseObject;
     }
 
     private ParseObject getCommentAsParseObject(Comment comment) {
         ParseObject parseObject = new ParseObject("Comment");
-        parseObject.put("makerId", comment.getMakerId());
-        parseObject.put("questionHolderId", comment.getQuestionHolderId());
+        parseObject.put("maker", ParseUser.getCurrentUser());
         parseObject.put("text", comment.getText());
         return parseObject;
     }
 
 
+    ////////////////////////
+
     private ArrayList<Category> getCategoryListFromParseObject(ParseObject parseObject) {
         ArrayList<Category> result = new ArrayList<>();
         for (CategoryType categoryType : CategoryType.values()) {
-            result.add(new Category(categoryType, parseObject.getString(categoryType.toString())));
+            result.add(new Category(categoryType, parseObject.getString(categoryType.toString().toLowerCase())));
         }
         return result;
     }
 
-    private ParseUser getUserFromParseObject(ParseObject parseObject) {
+    private ParseUser getUserFromParseObject(ParseObject parseObject, String key) {
         ParseUser user = null;
         try {
-            user = parseObject.getParseUser("creator").fetch();
+            user = parseObject.getParseUser(key).fetchIfNeeded();
         } catch (ParseException parseException) {
             parseException.printStackTrace();
         }
@@ -260,17 +289,12 @@ public class DBConnection {
     private ArrayList<Comment> getCommentsListFromParseObject(ParseObject parseObject) {
         ArrayList<Comment> result = new ArrayList<>();
         List<ParseObject> parseComments = parseObject.getList("comments");
-        if (parseComments == null) return result;
-        Log.e("EMPTY", "SALAM!");
         for (ParseObject parseComment : parseComments) {
-            ParseUser user;
-            ParseUser questionHolder;
             try {
-                user = parseComment.getParseUser("maker").fetch();
-                questionHolder = parseComment.getParseObject("questionHolder").fetch();
+                parseComment.fetch();
+                ParseUser user = parseComment.getParseUser("maker");
                 result.add(new Comment(
                         user.getObjectId(),
-                        questionHolder.getObjectId(),
                         parseComment.getString("text"),
                         user.getString("name")));
             } catch (ParseException e) {
@@ -283,12 +307,11 @@ public class DBConnection {
     private ArrayList<Question> getQuestionsListFromParseObject(ParseObject parseObject) {
         ArrayList<Question> result = new ArrayList<>();
         List<ParseObject> parseQuestions = parseObject.getList("questions");
-        if (parseQuestions == null) return result;
-        Log.e("EMPTY", "SALAM!");
         for (ParseObject parseQuestion : parseQuestions) {
-            ParseFile parseFile = parseQuestion.getParseFile("file");
-            String text = parseQuestion.getString("text");
             try {
+                parseQuestion.fetch();
+                ParseFile parseFile = parseQuestion.getParseFile("file");
+                String text = parseQuestion.getString("text");
                 if (parseFile != null) {
                     result.add(new FileQuestion(parseQuestion.getString("title"), parseFile.getFile()));
                 } else if (text != null) {
