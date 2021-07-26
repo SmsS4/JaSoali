@@ -34,6 +34,10 @@ public class DBConnection {
     private final Handler handler;
 
     public DBConnection(Handler handler) {
+        System.out.println("hey");
+        if(handler == null){
+            System.out.println("fuck");
+        }
         this.handler = handler;
     }
 

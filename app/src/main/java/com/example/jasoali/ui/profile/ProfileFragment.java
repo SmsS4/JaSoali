@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
+import com.example.jasoali.MainActivity;
 import com.example.jasoali.R;
 import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.models.User;
@@ -34,6 +35,7 @@ public class ProfileFragment extends Fragment {
     private MaterialButton changeProfile;
     private ScrollView scrollView;
     boolean isBlockedScrollView = false;
+    private final DBConnection db = new DBConnection(MainActivity.getHandler());
 
     View.OnClickListener onChange;
     View.OnClickListener onSubmit;
@@ -77,7 +79,7 @@ public class ProfileFragment extends Fragment {
             name.setEnabled(false);
             isBlockedScrollView = false;
             changeAlphaForChange(1f);
-            DBConnection.getInstance().updateName(finalUser.getId(), name.getText().toString());
+            db.updateName(finalUser.getId(), name.getText().toString());
 
         };
         changeProfile.setOnClickListener(onChange);
@@ -125,7 +127,7 @@ public class ProfileFragment extends Fragment {
 
         }else{
             addQuestion.setOnClickListener(v -> {
-                DBConnection.getInstance().adminRequest(user.getId());
+                db.adminRequest(user.getId());
                 addQuestion.setEnabled(false);
                 addQuestion.setText(view.getContext().getString(R.string.admin_request_done));
             });
@@ -136,16 +138,16 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_profile, container, false);
-        user = DBConnection.getInstance().getLocalUser();
-        user = new User(
-                "test",
-                "AghaSadegh",
-                "nemigam",
-                "smss.lite@gmail.com",
-                "سید مهدی صادق شبیری",
-                null,
-                false
-        );
+        user = db.getLocalUser();
+//        user = new User(
+//                "test",
+//                "AghaSadegh",
+//                "nemigam",
+//                "smss.lite@gmail.com",
+//                "سید مهدی صادق شبیری",
+//                null,
+//                false
+//        );
 
         findElements();
         setText();

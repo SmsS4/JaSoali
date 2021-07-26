@@ -73,8 +73,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private QuestionsAdapter questionsAdapter;
     private TagsAdapter tagsAdapter;
 
-    public static final int ADD_QUESTIONS_ID = -1;
-    private static final int PICKFILE_RESULT_CODE = -1;
     private static final String[] MIMES = new String[]{"image/*", "application/pdf"};
 
 
