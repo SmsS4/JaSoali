@@ -10,10 +10,9 @@ public class QuestionsHolder {
     private String description;
     private String creatorId;
     private String creatorName;
-    private ArrayList<Category> categories;
-    private ArrayList<Comment> comments;
-    private ArrayList<Question> questions;
-
+    private ArrayList<Category> categories = new ArrayList<>();
+    private ArrayList<Comment> comments = new ArrayList<>();
+    private ArrayList<Question> questions = new ArrayList<>();
 
 
     public QuestionsHolder(String id, String title, String description, String creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
@@ -27,9 +26,17 @@ public class QuestionsHolder {
         this.questions = questions;
     }
 
+    public QuestionsHolder(String id, String title, String description, String creatorId, String creatorName) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
+    }
 
-    public QuestionsHolder(String creatorId, String creatorName){
-        this.id = String.valueOf((int)(Math.random() * Integer.MAX_VALUE));
+
+    public QuestionsHolder(String creatorId, String creatorName) {
+        this.id = String.valueOf((int) (Math.random() * Integer.MAX_VALUE));
         this.title = "";
         this.description = "";
         this.creatorId = creatorId;
@@ -38,6 +45,7 @@ public class QuestionsHolder {
         this.comments = new ArrayList<>();
         this.questions = new ArrayList<>();
     }
+
     public QuestionsHolder(String id, String creatorId, String creatorName) {
         this.id = id;
         this.creatorId = creatorId;

@@ -27,8 +27,8 @@ public class SearchFragment extends Fragment {
     public QuestionHolderRecyclerViewAdapter adapter;
     private RecyclerView questionHolders;
     private SearchView searchField;
-    private ArrayList<QuestionsHolder> mQuestionsHolders = new ArrayList<>();
-    private DBConnection dbConnection = new DBConnection(MainActivity.getHandler());
+    private final ArrayList<QuestionsHolder> mQuestionsHolders = new ArrayList<>();
+    private final DBConnection dbConnection = new DBConnection(MainActivity.getHandler());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,6 @@ public class SearchFragment extends Fragment {
             categories.add(new Category(CategoryType.UNIVERSITY, inputUniversity.getText().toString()));
             categories.add(new Category(CategoryType.TERM, inputTerm.getText().toString()));
             dbConnection.getQuestionsHolderByCategories(categories, adapter);
-            Log.e("CLICK", "click");
         });
 
         searchField = view.findViewById(R.id.search_fragment_search_field);

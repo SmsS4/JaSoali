@@ -26,6 +26,7 @@ public class QuestionHolderHolder extends RecyclerView.ViewHolder {
         professor = itemView.findViewById(R.id.question_holder_professor);
         card = itemView.findViewById(R.id.question_holder_card);
         card.setOnClickListener(view -> {
+            //todo: go to view question holder page
             Log.e("Card", "salam!");
         });
     }
