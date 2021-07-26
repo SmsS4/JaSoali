@@ -55,13 +55,12 @@ public class DBConnection {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
 
         for (Category category : categories) {
-            query.whereEqualTo(category.getType().toString(), category.getValue());
+            if (category.getValue() != null && !category.getValue().equals(""))
+                query.whereEqualTo(category.getType().toString(), category.getValue());
         }
 
-        Log.e("CATEGORY", String.valueOf(categories.size()));
 
         MainActivity.getHandler().sendMessage(MainActivity.getHandler().START_PROGRESS_BAR);
-        Log.e("FETCH", "1");
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
             Log.e("FETCH", "2");
             ParseException error = (ParseException) task.getError();
