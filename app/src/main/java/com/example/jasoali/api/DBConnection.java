@@ -34,9 +34,11 @@ public class DBConnection {
     final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
     private final Handler handler;
 
+
     public DBConnection(Handler handler) {
         this.handler = handler;
     }
+
 
     private void sendMessage(int msgId) {
         Message msg = new Message();
@@ -48,6 +50,13 @@ public class DBConnection {
     public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
         getQuestionsHolderByCategories(new ArrayList<>(), adapter);
     }
+
+
+    public QuestionsHolder getWholeQuestionHolderData(String questionHolderId) {
+        // todo: آصادق این تابع منتظر استفاده‌ی شماست!
+        return null;
+    }
+
 
     public void getQuestionsHolderByCategories(ArrayList<Category> categories, QuestionHolderRecyclerViewAdapter adapter) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
