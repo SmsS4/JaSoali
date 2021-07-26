@@ -1,7 +1,7 @@
 package com.example.jasoali.ui.sign_in_up;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -29,28 +29,25 @@ public class RegisterActivity extends AppCompatActivity {
         EditText password2EditText = findViewById(R.id.registerPassword2EditText);
 
         Button loginBtn = findViewById(R.id.registerBtn);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String password = passwordEditText.toString();
-                String repeatPassword = password2EditText.toString();
-                if (password != repeatPassword) {
-                    Toast toast = Toast.makeText(
-                            RegisterActivity.this,
-                            "عدم تطابق رمزهای عبور",
-                            Toast.LENGTH_LONG
-                    );
-                    return;
-                }
-
-                String name = nameEditText.toString();
-                String username = usernameEditText.toString();
-                String email = emailEditText.toString();
-
-                User user = new User("", username, password, email, name, null, false);
-                DBConnection db = new DBConnection(null);
-                db.register(user);
+        loginBtn.setOnClickListener(v -> {
+            String password = passwordEditText.toString();
+            String repeatPassword = password2EditText.toString();
+            if (!password.equals(repeatPassword)) {
+                @SuppressLint("ShowToast") Toast toast = Toast.makeText(
+                        RegisterActivity.this,
+                        "عدم تطابق رمزهای عبور",
+                        Toast.LENGTH_LONG
+                );
+                return;
             }
+
+            String name = nameEditText.toString();
+            String username = usernameEditText.toString();
+            String email = emailEditText.toString();
+
+            User user = new User("", username, password, email, name, null, false);
+            DBConnection db = new DBConnection(null);
+            db.register(user);
         });
     }
 }
