@@ -6,22 +6,28 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 
+import com.example.jasoali.api.DBConnection;
+import com.example.jasoali.models.Comment;
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 //import com.parse.ParseObject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,13 +36,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public LinearProgressIndicator progressIndicator;
-    private SearchFragment searchFragment = new SearchFragment();
+    private final SearchFragment searchFragment = new SearchFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /// hides keyboard on start
+        // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        setContentView(R.layout.activity_main);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(getString(R.string.back4app_app_id))
@@ -44,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
                 .server(getString(R.string.back4app_server_url))
                 .enableLocalDataStore()
                 .build());
-
-        setContentView(R.layout.activity_main);
 
         progressIndicator = findViewById(R.id.progress_bar);
         progressIndicator.setVisibility(View.VISIBLE);
@@ -64,7 +70,28 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
+//        query.findInBackground(new FindCallback<ParseObject>() {
+//            @Override
+//            public void done(List<ParseObject> objects, ParseException e) {
+//                Log.e("COUNT", String.valueOf(objects.size()));
+//                ParseObject parseObject = objects.get(0);
+//                ParseUser user = null;
+//                try {
+//                    user = parseObject.getParseUser("maker").fetch();
+//
+//                } catch (ParseException parseException) {
+//                    parseException.printStackTrace();
+//                }
+//                Log.e("COUNT", String.valueOf(objects.size()));
+//                Log.e("COUNT", user != null ? user.getString("name") : "sss");
+//            }
+//        });
 
+//        DBConnection.getInstance().addQuestionsHolder(DBConnection.getInstance().getLocalQuestionsHolder());
+//        DBConnection.getInstance().addComment(new Comment("alaki", "comment text", "سید علیرضا هاشمی"));
+    }
+}
 //        ArrayList<ParseObject> tmp = new ArrayList<>();
 //
 //        ParseQuery<ParseObject> query = ParseQuery.getQuery("FirstClass");
@@ -104,6 +131,3 @@ public class MainActivity extends AppCompatActivity {
 //        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 //        NavigationUI.setupWithNavController(navView, navController);
-    }
-
-}

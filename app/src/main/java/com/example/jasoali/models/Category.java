@@ -21,12 +21,13 @@ public class Category {
             DEPARTMENT,
             UNIVERSITY
     };
+
     public CategoryType getType() {
         return type;
     }
 
-    static public CategoryType getCategoryByType(String typeString){
-        switch (typeString){
+    static public CategoryType getCategoryByType(String typeString) {
+        switch (typeString) {
             case Category.TERM:
                 return CategoryType.TERM;
             case Category.COURSE:
@@ -43,7 +44,7 @@ public class Category {
     }
 
     public String getStringType() {
-        switch (type){
+        switch (type) {
             case TERM:
                 return Category.TERM;
             case COURSE:
