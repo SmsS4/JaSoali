@@ -1,27 +1,42 @@
 package com.example.jasoali.models;
 
+import java.io.File;
+
 public class FileData {
-    private int id;
+    private String id;
+    private File file;
     private String path;
     private String mime;
 
-    public FileData(int id, String path, String mime) {
+    public FileData(String id, String path, String mime) {
         this.id = id;
         this.path = path;
         this.mime = mime;
     }
 
-    public FileData(int id, String mime) {
+    public FileData(String id, String mime) {
         this.id = id;
         this.path = null;
         this.mime = mime;
     }
 
-    public int getId() {
+    public FileData(File file) {
+        this.file = file;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -40,5 +55,4 @@ public class FileData {
     public void setMime(String mime) {
         this.mime = mime;
     }
-
 }

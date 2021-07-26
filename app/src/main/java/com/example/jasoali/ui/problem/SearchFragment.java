@@ -1,6 +1,7 @@
 package com.example.jasoali.ui.problem;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,10 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        getActivity().setTitle("جستجو بین جاسوالی‌ها");
         super.onCreate(savedInstanceState);
-        mQuestionsHolders = DBConnection.getInstance().getAllQuestionsHolder();
+        adapter = new QuestionHolderRecyclerViewAdapter(getActivity());
+        DBConnection.getInstance().getAllQuestionsHolder(adapter);
     }
 
     @Override
@@ -34,7 +37,6 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         questionHolders = view.findViewById(R.id.question_holder_recycler_view);
         questionHolders.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new QuestionHolderRecyclerViewAdapter(getActivity(), mQuestionsHolders);
         questionHolders.setAdapter(adapter);
 
         searchField = view.findViewById(R.id.search_fragment_search_field);

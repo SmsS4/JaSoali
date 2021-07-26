@@ -50,7 +50,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     private QuestionsHolder questionsHolder;
     private User user;
-    private DBConnection db = DBConnection.getInstance();
+    private final DBConnection db = DBConnection.getInstance();
 
     private EditText title;
     private EditText description;
@@ -96,12 +96,12 @@ public class ShowQuestionsHolderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            //            user = db.getLocalUser(); todo
-            user = new User("pppfff", "fafsadfa", "ffffff", "f@f.com", "fff", null, true);
 
+//            user = db.getLocalUser(); todo
+            user = new User("pppfff", "fafsadfa", "ffffff", "f@f.com", "fff", null, true);
             int questionsHolderId = getArguments().getInt(QUESTIONS_HOLDER_ID);
             if (questionsHolderId != ADD_QUESTIONS_ID) {
-                questionsHolder = db.getLocalQuestionsHolder(questionsHolderId);
+                questionsHolder = db.getLocalQuestionsHolder();
                 addQuestionMode = false;
             } else {
                 questionsHolder = new QuestionsHolder(user.getId(), user.getName());
@@ -321,13 +321,11 @@ public class ShowQuestionsHolderFragment extends Fragment {
             Comment comment = new Comment(
                     user.getId(),
                     newComment.getText().toString(),
-                    user.getName()
+                    user.getName(),
+                    questionsHolder.getId()
             );
             questionsHolder.getComments().add(0, comment);
-            db.addComment(
-                    questionsHolder.getId(),
-                    comment
-            );
+            db.addComment(comment);
             showComments();
             newComment.setText("");
             KeyboardHider.HideKeyboard(view);

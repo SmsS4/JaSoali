@@ -1,22 +1,24 @@
 package com.example.jasoali.models;
 
 public class Comment {
-    private String userId;
+    private String makerId;
+    private String questionsHolderId;
     private String name;
     private String text;
 
-    public Comment(String userId, String text, String name) {
-        this.userId = userId;
+    public Comment(String userId, String text, String name, String questionsHolderId) {
+        this.makerId = userId;
         this.text = text;
         this.name = name;
+        this.questionsHolderId = questionsHolderId;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getMakerId() {
+        return makerId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setMakerId(String makerId) {
+        this.makerId = makerId;
     }
 
     public String getText() {
@@ -33,6 +35,14 @@ public class Comment {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getQuestionsHolderId() {
+        return questionsHolderId;
+    }
+
+    public void setQuestionsHolderId(String questionsHolderId) {
+        this.questionsHolderId = questionsHolderId;
     }
 
 }

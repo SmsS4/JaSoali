@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/purple_200"
@@ -11,10 +13,123 @@
         android:layout_height="wrap_content"
         android:background="@color/teal_200" />
 
-    <FrameLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/teal_700" />
+        android:layout_height="90dp"
+        android:background="@color/teal_700"
+        android:gravity="center_horizontal"
+        android:isScrollContainer="true"
+        android:textAlignment="center">
+
+        <LinearLayout
+            android:id="@+id/search_question_holders_fields"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:hint="کدوم درس؟"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:inputType="none" />
+
+                <ListView
+                    android:id="@+id/recommended_courses"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:hint="کدوم استاد؟"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:inputType="none" />
+
+                <ListView
+                    android:id="@+id/recommended_professors"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:hint="کدوم دانشگاه؟"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:inputType="none" />
+
+                <ListView
+                    android:id="@+id/recommended_universities"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:hint="کدوم دانشکده؟"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:inputType="none" />
+
+                <ListView
+                    android:id="@+id/recommended_departments"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:hint="کدوم ترم؟"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:inputType="none" />
+
+                <ListView
+                    android:id="@+id/recommended_terms"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/question_holder_recycler_view"

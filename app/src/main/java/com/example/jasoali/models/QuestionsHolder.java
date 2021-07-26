@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestionsHolder {
-    private int id;
+    private String id;
     private String title;
     private String description;
     private String creatorId;
@@ -14,7 +14,9 @@ public class QuestionsHolder {
     private ArrayList<Comment> comments;
     private ArrayList<Question> questions;
 
-    public QuestionsHolder(int id, String title, String description, String  creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
+
+
+    public QuestionsHolder(String id, String title, String description, String creatorId, String creatorName, ArrayList<Category> categories, ArrayList<Comment> comments, ArrayList<Question> questions) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -25,8 +27,9 @@ public class QuestionsHolder {
         this.questions = questions;
     }
 
+
     public QuestionsHolder(String creatorId, String creatorName){
-        this.id = (int)(Math.random() * Integer.MAX_VALUE);
+        this.id = String.valueOf((int)(Math.random() * Integer.MAX_VALUE));
         this.title = "";
         this.description = "";
         this.creatorId = creatorId;
@@ -35,8 +38,7 @@ public class QuestionsHolder {
         this.comments = new ArrayList<>();
         this.questions = new ArrayList<>();
     }
-
-    public QuestionsHolder(int id, String  creatorId, String creatorName) {
+    public QuestionsHolder(String id, String creatorId, String creatorName) {
         this.id = id;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
@@ -44,11 +46,12 @@ public class QuestionsHolder {
         this.questions = new ArrayList<>();
     }
 
-    public int getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -69,7 +72,7 @@ public class QuestionsHolder {
     }
 
 
-    public String  getCreatorId() {
+    public String getCreatorId() {
         return creatorId;
     }
 

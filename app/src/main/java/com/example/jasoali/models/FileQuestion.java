@@ -7,8 +7,8 @@ import java.io.File;
 public class FileQuestion extends Question {
     private File file;
 
-    public FileQuestion(String description, File file) throws LengthExceeded {
-        super(description);
+    public FileQuestion(String title, File file) throws LengthExceeded {
+        super(title);
         this.file = file;
     }
 
