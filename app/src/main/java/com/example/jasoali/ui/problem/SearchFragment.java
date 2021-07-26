@@ -52,26 +52,11 @@ public class SearchFragment extends Fragment {
         Button searchButton = view.findViewById(R.id.search_fragment_button);
         searchButton.setOnClickListener(v -> {
             ArrayList<Category> categories = new ArrayList<>();
-
-            if (inputCourse != null)
-                categories.add(new Category(CategoryType.COURSE, inputCourse.getText().toString()));
-
-            if (inputProfessor != null)
-                categories.add(new Category(CategoryType.PROFESSOR, inputProfessor.getText().toString()));
-
-            if (inputDepartment != null)
-                categories.add(new Category(CategoryType.DEPARTMENT, inputDepartment.getText().toString()));
-
-            if (inputUniversity != null)
-                categories.add(new Category(CategoryType.UNIVERSITY, inputUniversity.getText().toString()));
-
-            if (inputTerm != null)
-                categories.add(new Category(CategoryType.TERM, inputTerm.getText().toString()));
-
-
-            Log.e("INPUT", inputCourse.getText().toString());
-            Log.e("INPUT", inputDepartment.getText().toString());
-            Log.e("INPUT", inputTerm.getText().toString());
+            categories.add(new Category(CategoryType.COURSE, inputCourse.getText().toString()));
+            categories.add(new Category(CategoryType.PROFESSOR, inputProfessor.getText().toString()));
+            categories.add(new Category(CategoryType.DEPARTMENT, inputDepartment.getText().toString()));
+            categories.add(new Category(CategoryType.UNIVERSITY, inputUniversity.getText().toString()));
+            categories.add(new Category(CategoryType.TERM, inputTerm.getText().toString()));
             DBConnection.getInstance().getQuestionsHolderByCategories(categories, adapter);
             Log.e("CLICK", "click");
         });
