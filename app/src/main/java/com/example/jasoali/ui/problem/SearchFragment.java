@@ -1,7 +1,6 @@
 package com.example.jasoali.ui.problem;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,7 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        questionHolders = view.findViewById(R.id.question_holder_recycler_view);
+        questionHolders = view.findViewById(R.id.search_question_holders_fragment_recycler_view);
         questionHolders.setLayoutManager(new LinearLayoutManager(getActivity()));
         questionHolders.setAdapter(adapter);
 
@@ -51,7 +50,7 @@ public class SearchFragment extends Fragment {
         TextInputEditText inputUniversity = view.findViewById(R.id.input_university);
         TextInputEditText inputTerm = view.findViewById(R.id.input_term);
 
-        Button searchButton = view.findViewById(R.id.search_fragment_button);
+        Button searchButton = view.findViewById(R.id.search_question_holders_fragment_button);
         searchButton.setOnClickListener(v -> {
             ArrayList<Category> categories = new ArrayList<>();
             categories.add(new Category(CategoryType.COURSE, inputCourse.getText().toString()));
@@ -62,7 +61,7 @@ public class SearchFragment extends Fragment {
             dbConnection.getQuestionsHolderByCategories(categories, adapter);
         });
 
-        searchField = view.findViewById(R.id.search_fragment_search_field);
+        searchField = view.findViewById(R.id.search_question_holders_fragment_search_field);
         searchField.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

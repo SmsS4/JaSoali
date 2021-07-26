@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/purple_200"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <SearchView
-        android:id="@+id/search_fragment_search_field"
+        android:id="@+id/search_question_holders_fragment_search_field"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/teal_200" />
@@ -142,13 +143,13 @@
     </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/question_holder_recycler_view"
+        android:id="@+id/search_question_holders_fragment_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/search_fragment_button"
+        android:id="@+id/search_question_holders_fragment_button"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_gravity="bottom"
