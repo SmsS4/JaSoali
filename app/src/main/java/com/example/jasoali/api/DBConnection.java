@@ -33,7 +33,7 @@ public class DBConnection {
     final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
     private final Handler handler;
 
-    private DBConnection(Handler handler) {
+    public DBConnection(Handler handler) {
         this.handler = handler;
     }
 

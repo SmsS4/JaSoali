@@ -31,7 +31,8 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameEditText.toString();
                 String email = emailEditText.toString();
                 String password = passwordEditText.toString();
-                DBConnection.getInstance().login(username, password, email);
+                DBConnection db = new DBConnection(null);
+                db.login(username, password, email);
             }
         });
     }
