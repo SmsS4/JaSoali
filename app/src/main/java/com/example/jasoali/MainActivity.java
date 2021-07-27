@@ -3,6 +3,7 @@ package com.example.jasoali;
 //import com.parse.Parse;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
@@ -121,6 +122,15 @@ public class MainActivity extends AppCompatActivity {
 //        DBConnection.getInstance().addComment(new Comment("alaki", "comment text", "سید علیرضا هاشمی"));
     }
 
+    @Override
+    public void onBackPressed(){
+        FragmentManager fm = getFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
     void showProfileFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
