@@ -9,6 +9,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".application.App"
         android:theme="@style/Theme.JaSoali">
         <activity android:name=".ui.profile.ProfileActivity"></activity>
         <activity
