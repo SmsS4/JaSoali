@@ -79,12 +79,14 @@ public class ProfileFragment extends Fragment {
         email.setAlpha(alpha);
         username.setAlpha(alpha);
         addQuestion.setAlpha(alpha);
+        logout.setAlpha(alpha);
     }
 
 
     private void setChangeProfileListeners() {
         onChange = v -> {
             addQuestion.setOnClickListener(null);
+            logout.setOnClickListener(null);
             changeProfile.setText(view.getContext().getString(R.string.submit_changes));
             changeProfile.setOnClickListener(onSubmit);
             name.setEnabled(true);
@@ -94,7 +96,7 @@ public class ProfileFragment extends Fragment {
         User finalUser = user;
         onSubmit = v -> {
             setAddQuestionListener();
-
+            logout.setOnClickListener(v2 -> logoutUser());
             changeProfile.setText(view.getContext().getString(R.string.change_user));
             changeProfile.setOnClickListener(onChange);
             name.setEnabled(false);
@@ -115,13 +117,12 @@ public class ProfileFragment extends Fragment {
         addQuestion = view.findViewById(R.id.addQuestion);
         changeProfile = view.findViewById(R.id.uploadInformation);
         logout = view.findViewById(R.id.logout);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                db.logout();
-                ((MainActivity)context).checkUserState();
-            }
-        });
+        logout.setOnClickListener(v -> logoutUser());
+    }
+
+    private void logoutUser(){
+        db.logout();
+        ((MainActivity)context).checkUserState();
     }
 
     private void setText() {

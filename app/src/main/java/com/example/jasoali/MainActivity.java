@@ -13,6 +13,7 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.ui.problem.MyFavoriteQuestionHoldersFragment;
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
@@ -65,15 +66,15 @@ public class MainActivity extends AppCompatActivity {
 
 //        /// todo remove these
 //        new DBConnection(null).login("SmsS132", "1122qqww", "smss.lite2@gmail.com");
-////                new User(
-////                        "a2",
-////                        "SmsS132",
-////                        "1122qqww",
-////                        "smss.lite2@gmail.com",
-////                        "سید مهدی صادق شبیری",
-////                        true
-////                )
-////        );
+//                new User(
+//                        "a2",
+//                        "SmsS132",
+//                        "1122qqww",
+//                        "smss.lite2@gmail.com",
+//                        "سید مهدی صادق شبیری",
+//                        true
+//                )
+//        );
 //        ProfileFragment fragInfo = ProfileFragment.newInstance();
 //        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 //        transaction.replace(R.id.fragment_container, fragInfo);
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    void showSearchFragment() {
+    public void showSearchFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, searchFragment)

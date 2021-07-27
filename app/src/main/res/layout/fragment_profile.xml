@@ -29,8 +29,8 @@
 
             <ImageView
                 android:id="@+id/profileImage"
-                android:layout_width="356dp"
-                android:layout_height="348dp"
+                android:layout_width="298dp"
+                android:layout_height="280dp"
                 android:layout_gravity="center|center_horizontal|center_vertical"
                 tools:src="@tools:sample/avatars" />
 

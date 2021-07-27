@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -95,6 +96,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private ImageView favButton;
     private ScrollView scrollView;
     private ProgressBar progressBar;
+    private LinearLayout comemntSection;
 
     private boolean editModeActive = false;
 
@@ -234,6 +236,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
                                 addedQuestionsHolder
                         );
                         questionsHolder = addedQuestionsHolder;
+                        ((MainActivity)context).showSearchFragment();
                     } else {
                         QuestionsHolder editedQuestionsHolder = getEditedQuestionsHolder();
                         db.editQuestionsHolder(
@@ -241,6 +244,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
                         );
                         questionsHolder = editedQuestionsHolder;
                     }
+//
+
                     exitEditMode();
                 })
                 .setNegativeButton("لغو", (dialogInterface, i) -> {
@@ -465,15 +470,18 @@ public class ShowQuestionsHolderFragment extends Fragment {
         tags = view.findViewById(R.id.tagQH);
         scrollView = view.findViewById(R.id.mainScroller);
         progressBar = view.findViewById(R.id.progressBar);
+        comemntSection = view.findViewById(R.id.comemnt_section);
+
     }
 
     private void start() {
-        findViews();
         initQuestionsHolder();
         showQuestionsHolder();
         setEditButtonToEdit();
         changeMode(addQuestionMode);
         if (addQuestionMode) {
+            comemntSection.setVisibility(View.GONE);
+            favButton.setVisibility(View.GONE);
             editModeActive = true;
             enterEditMode();
         }
@@ -487,6 +495,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_show_questions_holder, container, false);
+        findViews();
+
         fetchHandler.sendEmptyMessage(FetchHandler.START_FETCH_USER);
         return view;
     }
@@ -506,9 +516,13 @@ public class ShowQuestionsHolderFragment extends Fragment {
         public void handleMessage(Message msg) {
             Log.e("HANDLER", String.valueOf(msg.what));
             ShowQuestionsHolderFragment fragment = fragmentWeakReference.get();
+
             if (fragment == null)
                 return;
+
             if (msg.what == SHOW) {
+                fragment.scrollView.setVisibility(View.VISIBLE);
+                fragment.progressBar.setVisibility(View.GONE);
                 fragment.start();
             }
         }
@@ -541,8 +555,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
                     fragment.questionsHolder = new QuestionsHolder(fragment.user.getId(), fragment.user.getName());
                     fragment.addQuestionMode = true;
                 }
-                fragment.scrollView.setVisibility(View.VISIBLE);
-                fragment.progressBar.setVisibility(View.GONE);
+
                 this.showHandler.sendEmptyMessage(ShowHandler.SHOW);
             }
         }
