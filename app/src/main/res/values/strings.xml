@@ -52,6 +52,7 @@
 
     <string name="name">نام</string>
     <string name="change_user">تغییر نام</string>
+    <string name="logout">خروج</string>
     <string name="submit_changes">ثبت تغییر</string>
     <string name="admin_request">درخواست مدیریت</string>
     <string name="add_question">اضافه کردن سوال</string>

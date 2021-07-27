@@ -106,7 +106,7 @@
                 <Button
                     android:id="@+id/uploadInformation"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="70dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
@@ -114,14 +114,26 @@
 
                     />
 
+
                 <Button
                     android:id="@+id/addQuestion"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="70dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:text="@string/admin_request" />
+
+                <Button
+                    android:id="@+id/logout"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/logout"
+
+                    />
             </LinearLayout>
 
         </LinearLayout>

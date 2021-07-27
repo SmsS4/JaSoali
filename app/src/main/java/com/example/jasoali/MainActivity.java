@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void checkUserState() {
+    public void checkUserState() {
         DBConnection db = new DBConnection(null);
         if (db.getLocalUser() != null)
             return;

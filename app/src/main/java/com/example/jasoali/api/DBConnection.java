@@ -480,5 +480,8 @@ public class DBConnection {
         }
         return result;
     }
-
+    public void logout(){
+        /// todo?
+        ParseUser.logOut();
+    }
 }

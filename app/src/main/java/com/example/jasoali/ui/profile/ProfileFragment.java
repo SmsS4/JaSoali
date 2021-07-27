@@ -46,6 +46,7 @@ public class ProfileFragment extends Fragment {
     private ImageView profile;
     private MaterialButton addQuestion;
     private MaterialButton changeProfile;
+    private MaterialButton logout;
     private ScrollView scrollView;
     private ProgressBar progressBar;
 
@@ -113,6 +114,14 @@ public class ProfileFragment extends Fragment {
         profile = view.findViewById(R.id.profileImage);
         addQuestion = view.findViewById(R.id.addQuestion);
         changeProfile = view.findViewById(R.id.uploadInformation);
+        logout = view.findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.logout();
+                ((MainActivity)context).checkUserState();
+            }
+        });
     }
 
     private void setText() {
