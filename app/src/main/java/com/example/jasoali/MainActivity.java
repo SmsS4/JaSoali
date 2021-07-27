@@ -2,6 +2,9 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -65,8 +68,9 @@ public class MainActivity extends AppCompatActivity {
         configNavigationMenu();
         showSearchFragment();
 
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+
+//        Intent intent = new Intent(this, RegisterActivity.class);
+//        startActivity(intent);
 
 //        /// todo remove these
 //        new DBConnection(null).register(
@@ -81,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 //        );
 //        ProfileFragment fragInfo = ProfileFragment.newInstance();
 //        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragment_container, searchFragment);
+//        transaction.replace(R.id.fragment_container, fragInfo);
 //        transaction.commit();
 
 //        ParseObject firstObject = new ParseObject("FirstClass");
@@ -116,6 +120,15 @@ public class MainActivity extends AppCompatActivity {
 //        DBConnection.getInstance().addComment(new Comment("alaki", "comment text", "سید علیرضا هاشمی"));
     }
 
+    @Override
+    public void onBackPressed(){
+        FragmentManager fm = getFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
     void showProfileFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
