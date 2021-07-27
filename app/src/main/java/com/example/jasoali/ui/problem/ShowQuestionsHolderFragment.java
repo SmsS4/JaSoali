@@ -111,9 +111,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             user = db.getLocalUser();
-            if(user == null){
-                System.out.println("wht");
-            }
             String questionsHolderId = getArguments().getString(QUESTIONS_HOLDER_ID);
             if (!questionsHolderId.equals(ADD_QUESTIONS_ID)) {
                 questionsHolder = db.getWholeQuestionHolderData(questionsHolderId);
@@ -413,29 +410,16 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     private void initQuestionsHolder() {
         favButton = view.findViewById(R.id.favButton);
-//        favButton.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                return false;
-//            }
-//        });
         favButton.setClickable(true);
         favButton.bringToFront();
-        favButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("hey");
-                db.addToFavouriteQuestionsHolders(questionsHolder.getId());
-                Toast.makeText(view.getContext(),
-                        view.getResources().getString(R.string.added_to_favs),
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
+        favButton.setOnClickListener(v -> {
+            System.out.println("hey");
+            db.addToFavouriteQuestionsHolders(questionsHolder.getId());
+            Toast.makeText(view.getContext(),
+                    view.getResources().getString(R.string.added_to_favs),
+                    Toast.LENGTH_SHORT
+            ).show();
         });
-//        favButton.setOnClickListener(v -> {
-//
-//        });
         questionsRecyclerView = view.findViewById(R.id.questions);
         questionsRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2) {
             @Override
@@ -465,6 +449,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
                     questionsHolder.getId()
             );
             questionsHolder.getComments().add(0, comment);
+            System.out.println(questionsHolder.getId());
             db.addComment(comment);
             showComments();
             newComment.setText("");

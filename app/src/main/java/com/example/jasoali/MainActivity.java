@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         handler = new MyHandler(this);
         searchFragment = new SearchFragment();
 //        fragInfo = ShowQuestionsHolderFragment.newInstance("0", this);
@@ -132,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void showProfileFragment() {
+        System.out.println("111");
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, profileFragment)
