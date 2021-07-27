@@ -365,7 +365,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     private void initQuestionsHolder() {
         favButton = view.findViewById(R.id.favButton);
-        favButton.setOnClickListener(v -> db.addToFavouriteQuestionsHolders(questionsHolder.getId(), user.getId()));
+        favButton.setOnClickListener(v -> db.addToFavouriteQuestionsHolders(questionsHolder.getId()));
         questionsRecyclerView = view.findViewById(R.id.questions);
         questionsRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2) {
             @Override
