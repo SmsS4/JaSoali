@@ -16,11 +16,13 @@ import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
 import com.example.jasoali.ui.sign_in_up.LoginActivity;
+import com.example.jasoali.ui.sign_in_up.RegisterActivity;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -325,11 +327,17 @@ public class DBConnection {
         parseUser.setEmail(user.getEmail());
         parseUser.put("name", user.getName());
         parseUser.put("isAdmin", false);
-        try {
-            parseUser.signUp();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        parseUser.signUpInBackground(e -> {
+            if (e == null) {
+                sendMessage(RegisterActivity.REGISTER_SUCCESSFUL_RESULT_CODE);
+            } else {
+                e.printStackTrace();
+                Message msg = new Message();
+                msg.what = RegisterActivity.REGISTER_FAILED_RESULT_CODE;
+                msg.obj = e.getLocalizedMessage();
+                handler.sendMessage(msg);
+            }
+        });
     }
 
 
