@@ -20,6 +20,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -169,7 +170,32 @@ public class DBConnection {
 
 
     public void addToFavouriteQuestionsHolders(String questionsHolderId) {
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
+
         ParseObject favoriteQuestionHolder = new ParseObject("FavoriteQuestionHolder");
+        favoriteQuestionHolder.put("user", ParseUser.getCurrentUser());
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
+        ParseObject questionHolder = null;
+        try {
+            // todo: handle in a better way
+            questionHolder = query.fromLocalDatastore().get(questionsHolderId);
+            if (questionHolder == null) {
+                questionHolder = query.fromNetwork().get(questionsHolderId);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        favoriteQuestionHolder.put("questionHolder", questionHolder);
+
+        favoriteQuestionHolder.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+                }
+            }
+        });
     }
 
 
