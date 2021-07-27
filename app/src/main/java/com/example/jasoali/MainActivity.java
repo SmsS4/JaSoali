@@ -2,10 +2,7 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,8 +12,6 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.jasoali.api.DBConnection;
-import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
 import com.example.jasoali.ui.profile.ProfileFragment;
@@ -25,7 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.Parse;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 
 //import com.parse.ParseObject;
@@ -35,8 +29,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static MyHandler handler;
     public LinearProgressIndicator progressIndicator;
-    ShowQuestionsHolderFragment fragInfo;
+    private ShowQuestionsHolderFragment fragInfo;
     private SearchFragment searchFragment;
+    private ProfileFragment profileFragment;
 
     public static MyHandler getHandler() {
         return handler;
@@ -49,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         handler = new MyHandler(this);
         searchFragment = new SearchFragment();
         fragInfo = ShowQuestionsHolderFragment.newInstance(0);
+        profileFragment = ProfileFragment.newInstance();
 
         // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -68,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         configNavigationMenu();
         showSearchFragment();
-
 
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
@@ -124,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     void showProfileFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, searchFragment).commit();
+                .replace(R.id.fragment_container, profileFragment).commit();
     }
 
     void showFavoritesFragment() {
@@ -135,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void showSearchFragment() {
-        // TODO
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, searchFragment).commit();

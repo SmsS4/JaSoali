@@ -1,16 +1,15 @@
 package com.example.jasoali.ui.profile;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
-
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.jasoali.MainActivity;
 import com.example.jasoali.R;
@@ -25,6 +24,10 @@ import fr.tkeunebr.gravatar.Gravatar;
 
 public class ProfileFragment extends Fragment {
 
+    private final DBConnection db = new DBConnection(MainActivity.getHandler());
+    boolean isBlockedScrollView = false;
+    View.OnClickListener onChange;
+    View.OnClickListener onSubmit;
     private User user;
     private View view;
     private EditText email;
@@ -34,11 +37,6 @@ public class ProfileFragment extends Fragment {
     private MaterialButton addQuestion;
     private MaterialButton changeProfile;
     private ScrollView scrollView;
-    boolean isBlockedScrollView = false;
-    private final DBConnection db = new DBConnection(MainActivity.getHandler());
-
-    View.OnClickListener onChange;
-    View.OnClickListener onSubmit;
 
     public ProfileFragment() {
     }
@@ -115,9 +113,10 @@ public class ProfileFragment extends Fragment {
         }
 
     }
-    
-    public void setAddQuestionListener(){
-        if(user.isAdmin()){
+
+    public void setAddQuestionListener() {
+        // TODO for Sadegh
+        if (user.isAdmin()) {
             addQuestion.setOnClickListener(v -> {
                 ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newAddQuestionsInstance();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -125,7 +124,7 @@ public class ProfileFragment extends Fragment {
                 transaction.commit();
             });
 
-        }else{
+        } else {
             addQuestion.setOnClickListener(v -> {
                 db.adminRequest(user.getId());
                 addQuestion.setEnabled(false);
