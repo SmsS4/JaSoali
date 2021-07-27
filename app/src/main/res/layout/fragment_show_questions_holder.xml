@@ -23,12 +23,16 @@
                 android:layout_width="match_parent"
                 android:id="@+id/tafasd"
                 android:layout_height="wrap_content">
-                <ImageButton
+                <ImageView
                     android:id="@+id/favButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_alignParentLeft="true"
-                    app:srcCompat="@android:drawable/btn_star_big_off" />
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/heart"
+                    />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/edit_btn"

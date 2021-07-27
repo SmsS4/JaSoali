@@ -12,12 +12,15 @@ import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
@@ -75,7 +78,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private View view;
     private QuestionsAdapter questionsAdapter;
     private TagsAdapter tagsAdapter;
-    private ImageButton favButton;
+    private ImageView favButton;
 
     private boolean editModeActive = false;
 
@@ -103,7 +106,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
             user = db.getLocalUser();
             String questionsHolderId = getArguments().getString(QUESTIONS_HOLDER_ID);
             if (!questionsHolderId.equals(ADD_QUESTIONS_ID)) {
@@ -367,7 +369,29 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     private void initQuestionsHolder() {
         favButton = view.findViewById(R.id.favButton);
-        favButton.setOnClickListener(v -> db.addToFavouriteQuestionsHolders(questionsHolder.getId()));
+//        favButton.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                return false;
+//            }
+//        });
+        favButton.setClickable(true);
+        favButton.bringToFront();
+        favButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("hey");
+                db.addToFavouriteQuestionsHolders(questionsHolder.getId());
+                Toast.makeText(view.getContext(),
+                        view.getResources().getString(R.string.added_to_favs),
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+//        favButton.setOnClickListener(v -> {
+//
+//        });
         questionsRecyclerView = view.findViewById(R.id.questions);
         questionsRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2) {
             @Override
