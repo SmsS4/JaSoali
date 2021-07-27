@@ -15,7 +15,6 @@ import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
-import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBConnection {
-    static private User user = null;
+
     final String QUESTION_HOLDERS = "QUESTION_HOLDERS";
     private final Handler handler;
 
@@ -44,6 +43,9 @@ public class DBConnection {
 
 
     public QuestionsHolder getWholeQuestionHolderData(String questionHolderId) {
+
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
         ParseObject parseQuestionHolder = null;
         try {
@@ -58,7 +60,7 @@ public class DBConnection {
         }
 
         ParseUser creator = getUserFromParseObject(parseQuestionHolder, "creator");
-        return new QuestionsHolder(
+        QuestionsHolder questionsHolder = new QuestionsHolder(
                 parseQuestionHolder.getObjectId(),
                 parseQuestionHolder.getString("title"),
                 parseQuestionHolder.getString("description"),
@@ -67,6 +69,9 @@ public class DBConnection {
                 getCategoryListFromParseObject(parseQuestionHolder),
                 getCommentsListFromParseObject(parseQuestionHolder),
                 getQuestionsListFromParseObject(parseQuestionHolder));
+
+        sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+        return questionsHolder;
     }
 
 
@@ -84,7 +89,6 @@ public class DBConnection {
         }
 
         sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
-
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
             Log.e("FETCH", "2");
             ParseException error = (ParseException) task.getError();
@@ -130,8 +134,8 @@ public class DBConnection {
                         ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
                     }
                 });
-                adapter.replaceData(result);
                 Log.e("FETCH", "5" + result.size());
+                adapter.replaceData(result);
                 sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
                 sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
             }
@@ -139,17 +143,40 @@ public class DBConnection {
         }));
     }
 
-    public ArrayList<QuestionsHolder> getFavouriteQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
-        return new ArrayList<>();
+
+    public void getFavouriteQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("FavoriteQuestionHolder");
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
+        ArrayList<QuestionsHolder> favoriteQuestionHolders = new ArrayList<>();
+        query.findInBackground((parseFavoriteQuestionHolders, e) -> {
+            for (ParseObject parseFavoriteQuestionHolder : parseFavoriteQuestionHolders) {
+                ParseUser creator = getUserFromParseObject(parseFavoriteQuestionHolder, "creator");
+                favoriteQuestionHolders.add(new QuestionsHolder(
+                        parseFavoriteQuestionHolder.getObjectId(),
+                        parseFavoriteQuestionHolder.getString("title"),
+                        parseFavoriteQuestionHolder.getString("description"),
+                        creator.getObjectId(),
+                        creator.getString("name"),
+                        getCategoryListFromParseObject(parseFavoriteQuestionHolder)));
+            }
+            adapter.replaceData(favoriteQuestionHolders);
+            sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+            sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
+        });
     }
 
+
     public void addToFavouriteQuestionsHolders(String questionsHolderId) {
-        // todo
+        ParseObject favoriteQuestionHolder = new ParseObject("FavoriteQuestionHolder");
     }
+
 
     public void removeFromFavouriteQuestionsHolder(String questionsHolderId) {
 
     }
+
 
     public void addQuestionsHolder(QuestionsHolder questionsHolder) {
         ParseObject parseObject = new ParseObject("QuestionHolder");
@@ -176,18 +203,33 @@ public class DBConnection {
         });
     }
 
+
     public void editQuestionsHolder(QuestionsHolder newQuestionsHolder) {
         removeQuestionsHolder(newQuestionsHolder.getId());
         addQuestionsHolder(newQuestionsHolder);
     }
 
+
     public void removeQuestionsHolder(String questionsHolderId) {
-        ParseObject questionHolder = new ParseObject("QuestionHolder");
-        questionHolder.setObjectId(questionsHolderId);
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
+        ParseObject questionHolder = null;
+        try {
+            // todo: handle in a better way
+            questionHolder = query.fromLocalDatastore().get(questionsHolderId);
+            if (questionHolder == null) {
+                questionHolder = query.fromNetwork().get(questionsHolderId);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         questionHolder.deleteInBackground(e -> {
             //todo: add notification of deleting object
+            sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
         });
     }
+
 
     public void addComment(Comment comment) {
         ParseObject parseObject = getCommentAsParseObject(comment);
@@ -198,70 +240,72 @@ public class DBConnection {
         }
     }
 
-//    public QuestionsHolder getLocalQuestionsHolder() {
-//        String currentUserId = ParseUser.getCurrentUser().getObjectId();
-//        // todo
-//        ArrayList<Category> categories = new ArrayList<>();
-//        try {
-//            categories.add(
-//                    new Category(CategoryType.COURSE, "شبیه سازی")
-//            );
-//            categories.add(
-//                    new Category(CategoryType.DEPARTMENT, "مهندسی کامپیوتر")
-//            );
-//            categories.add(
-//                    new Category(CategoryType.OTHER, "سوال_سخت")
-//            );
-//            categories.add(
-//                    new Category(CategoryType.OTHER, "مخصوص_خودته")
-//            );
-//            categories.add(
-//                    new Category(CategoryType.TERM, "بهار ۱۴۰۰")
-//            );
-//            ArrayList<Question> questions = new ArrayList<>();
+
+    public QuestionsHolder getLocalQuestionsHolder() {
+        String currentUserId = ParseUser.getCurrentUser().getObjectId();
+        // todo
+        ArrayList<Category> categories = new ArrayList<>();
+        try {
+            categories.add(
+                    new Category(CategoryType.COURSE, "شبیه سازی")
+            );
+            categories.add(
+                    new Category(CategoryType.DEPARTMENT, "مهندسی کامپیوتر")
+            );
+            categories.add(
+                    new Category(CategoryType.OTHER, "سوال_سخت")
+            );
+            categories.add(
+                    new Category(CategoryType.OTHER, "مخصوص_خودته")
+            );
+            categories.add(
+                    new Category(CategoryType.TERM, "بهار ۱۴۰۰")
+            );
+            ArrayList<Question> questions = new ArrayList<>();
+            questions.add(
+                    new TextQuestion("سوال‌ها یک عنوان طولانی همیشگی", "بلا بلا متن سوال بلا بلا")
+            );
 //            questions.add(
-//                    new TextQuestion("سوال‌ها یک عنوان طولانی همیشگی", "بلا بلا متن سوال بلا بلا")
+//                    new FileQuestion("جواب‌ها", null)
 //            );
-////            questions.add(
-////                    new FileQuestion("جواب‌ها", null)
-////            );
-////            questions.add(
-////                    new FileQuestion("راهنمایی‌ها", null)
-////            );
-////            questions.add(
-////                    new FileQuestion("جواب‌ها", null)
-////            );
-////            questions.add(
-////                    new FileQuestion("راهنمایی‌ها", null)
-////            );
-////            questions.add(
-////                    new FileQuestion("جواب‌ها", null)
-////            );
-////            questions.add(
-////                    new FileQuestion("راهنمایی‌ها", null)
-////            );
-//            ArrayList<Comment> comments = new ArrayList<>();
-//            comments.add(
-//                    new Comment(currentUserId, "عالی و طلایی", "ممد", "0")
+//            questions.add(
+//                    new FileQuestion("راهنمایی‌ها", null)
 //            );
-//            comments.add(
-//                    new Comment(currentUserId, "ماورای تصور", "یک پدیده", "0")
+//            questions.add(
+//                    new FileQuestion("جواب‌ها", null)
 //            );
-//            return new QuestionsHolder(
-//                    "0",
-//                    "سلام سوال",
-//                    "این یک توضیحات تستی برای یک تست دستی است.",
-//                    currentUserId,
-//                    "آقا صادق",
-//                    categories,
-//                    comments,
-//                    questions
+//            questions.add(
+//                    new FileQuestion("راهنمایی‌ها", null)
 //            );
-//        } catch (LengthExceeded le) {
-//            return null;
-//        }
-//
-//    }
+//            questions.add(
+//                    new FileQuestion("جواب‌ها", null)
+//            );
+//            questions.add(
+//                    new FileQuestion("راهنمایی‌ها", null)
+//            );
+            ArrayList<Comment> comments = new ArrayList<>();
+            comments.add(
+                    new Comment(currentUserId, "عالی و طلایی", "ممد", "0")
+            );
+            comments.add(
+                    new Comment(currentUserId, "ماورای تصور", "یک پدیده", "0")
+            );
+            return new QuestionsHolder(
+                    "0",
+                    "سلام سوال",
+                    "این یک توضیحات تستی برای یک تست دستی است.",
+                    currentUserId,
+                    "آقا صادق",
+                    categories,
+                    comments,
+                    questions
+            );
+        } catch (LengthExceeded le) {
+            return null;
+        }
+
+    }
+
 
     public void login(String username, String password, String email) {
         ParseUser parseUser = new ParseUser();
@@ -269,17 +313,15 @@ public class DBConnection {
         parseUser.setPassword(password);
         parseUser.setEmail(email);
         ParseUser.logInInBackground(username, password,
-                new LogInCallback() {
-                    @Override
-                    public void done(ParseUser user, ParseException e) {
-                        if (user != null) {
-                            // Hooray! The user is logged in.
-                        } else {
-                            // Signup failed. Look at the ParseException to see what happened.
-                        }
+                (user, e) -> {
+                    if (user != null) {
+                        // Hooray! The user is logged in.
+                    } else {
+                        // Signup failed. Look at the ParseException to see what happened.
                     }
                 });
     }
+
 
     public void register(User user) {
         ParseUser parseUser = new ParseUser();
@@ -288,7 +330,6 @@ public class DBConnection {
         parseUser.setEmail(user.getEmail());
         parseUser.put("name", user.getName());
         parseUser.put("isAdmin", false);
-        //parseUser.put("image", null); //todo: add image
         try {
             parseUser.signUp();
         } catch (ParseException e) {
@@ -296,8 +337,14 @@ public class DBConnection {
         }
     }
 
+
     public User getLocalUser() {
-        ParseUser user = ParseUser.getCurrentUser();
+        ParseUser user = null;
+        try {
+            user = ParseUser.getCurrentUser().fetch();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (user != null) {
             return new User(
                     user.getObjectId(),
@@ -310,7 +357,21 @@ public class DBConnection {
         return null;
     }
 
+
+    public void updateName(String userId, String newName) {
+        /// this method should update name of user in db
+        /// optional: update comments name too XD
+        // todo:
+    }
+
+
+    public void adminRequest(String userId) {
+        // todo:
+    }
+
+
     ////////////////////////
+
 
     private ParseObject getQuestionAsParseObject(Question question) {
         ParseObject parseObject = new ParseObject("Question");
@@ -323,6 +384,7 @@ public class DBConnection {
         }
         return parseObject;
     }
+
 
     private ParseObject getCommentAsParseObject(Comment comment) {
         ParseObject parseObject = new ParseObject("Comment");
@@ -347,13 +409,6 @@ public class DBConnection {
 
     ////////////////////////
 
-    private ArrayList<Category> getCategoryListFromParseObject(ParseObject parseObject) {
-        ArrayList<Category> result = new ArrayList<>();
-        for (CategoryType categoryType : CategoryType.values()) {
-            result.add(new Category(categoryType, parseObject.getString(categoryType.toString().toLowerCase())));
-        }
-        return result;
-    }
 
     private ParseUser getUserFromParseObject(ParseObject parseObject, String key) {
         ParseUser user = null;
@@ -364,6 +419,18 @@ public class DBConnection {
         }
         return user;
     }
+
+
+    private ArrayList<Category> getCategoryListFromParseObject(ParseObject parseObject) {
+        ArrayList<Category> result = new ArrayList<>();
+        for (CategoryType categoryType : CategoryType.values()) {
+            String value = parseObject.getString(categoryType.toString().toLowerCase());
+            if (value == null) value = "";
+            result.add(new Category(categoryType, value));
+        }
+        return result;
+    }
+
 
     private ArrayList<Comment> getCommentsListFromParseObject(ParseObject parseObject) {
         ArrayList<Comment> result = new ArrayList<>();
@@ -386,9 +453,11 @@ public class DBConnection {
         return result;
     }
 
+
     private ArrayList<Question> getQuestionsListFromParseObject(ParseObject parseObject) {
         ArrayList<Question> result = new ArrayList<>();
         List<ParseObject> parseQuestions = parseObject.getList("questions");
+        if (parseQuestions == null) return result;
         for (ParseObject parseQuestion : parseQuestions) {
             try {
                 parseQuestion.fetch();
@@ -406,13 +475,4 @@ public class DBConnection {
         return result;
     }
 
-    public void updateName(String userId, String newName) {
-        /// this method should update name of user in db
-        /// optional: update comments name too XD
-        // todo:
-    }
-
-    public void adminRequest(String userId) {
-        // todo:
-    }
 }
