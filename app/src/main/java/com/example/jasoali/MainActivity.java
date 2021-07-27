@@ -2,10 +2,7 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
-import android.app.Activity;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,9 +13,9 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jasoali.ui.problem.SearchFragment;
+import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
 import com.example.jasoali.ui.profile.ProfileFragment;
-import com.example.jasoali.ui.sign_in_up.RegisterActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.Parse;
@@ -46,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         handler = new MyHandler(this);
         searchFragment = new SearchFragment();
-        fragInfo = ShowQuestionsHolderFragment.newInstance(0);
-        profileFragment = ProfileFragment.newInstance();
+        fragInfo = ShowQuestionsHolderFragment.newInstance(0, this);
+        profileFragment = ProfileFragment.newInstance(this);
 
         // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -121,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         FragmentManager fm = getFragmentManager();
         if (fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
@@ -129,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
     void showProfileFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -146,6 +144,22 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, searchFragment).commit();
+    }
+
+    public void showInfoFragment(ShowQuestionsHolderFragment frag) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, frag)
+                .commit();
+    }
+
+    public void addInfoFragment(ShowQuestionTextFragment frag) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(frag, "detail")
+                .replace(R.id.fragment_container, frag)
+                .addToBackStack(null)
+                .commit();
     }
 
     void configNavigationMenu() {

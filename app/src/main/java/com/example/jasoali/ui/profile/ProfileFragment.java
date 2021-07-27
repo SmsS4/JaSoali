@@ -1,5 +1,6 @@
 package com.example.jasoali.ui.profile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import fr.tkeunebr.gravatar.Gravatar;
 public class ProfileFragment extends Fragment {
 
     private final DBConnection db = new DBConnection(MainActivity.getHandler());
+    private final Context context;
     boolean isBlockedScrollView = false;
     View.OnClickListener onChange;
     View.OnClickListener onSubmit;
@@ -38,12 +40,13 @@ public class ProfileFragment extends Fragment {
     private MaterialButton changeProfile;
     private ScrollView scrollView;
 
-    public ProfileFragment() {
+    public ProfileFragment(Context context) {
+        this.context = context;
     }
 
 
-    public static ProfileFragment newInstance() {
-        ProfileFragment fragment = new ProfileFragment();
+    public static ProfileFragment newInstance(Context context) {
+        ProfileFragment fragment = new ProfileFragment(context);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -115,13 +118,11 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setAddQuestionListener() {
-        // TODO for Sadegh
         if (user.isAdmin()) {
             addQuestion.setOnClickListener(v -> {
-                ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newAddQuestionsInstance();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, fragInfo);
-                transaction.commit();
+                ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newAddQuestionsInstance(context);
+                MainActivity activity = (MainActivity) ProfileFragment.this.context;
+                activity.showInfoFragment(fragInfo);
             });
 
         } else {

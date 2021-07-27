@@ -1,19 +1,15 @@
 package com.example.jasoali.ui.problem;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 
 import com.example.jasoali.R;
 import com.example.jasoali.models.TextQuestion;
@@ -25,16 +21,14 @@ public class ShowQuestionTextFragment extends Fragment {
 
     private static final String ARG_TITLE = "title";
     private static final String ARG_TEXT = "text";
-
+    SharedPreferences sharedPref;
     private String title;
     private String text;
     private boolean dark = true;
     private MaterialTextView titleView;
-    private MaterialTextView textView ;
+    private MaterialTextView textView;
     private MaterialButton darkMode;
     private View view;
-
-    SharedPreferences sharedPref;
 
     public static ShowQuestionTextFragment newInstance(TextQuestion textQuestion) {
         ShowQuestionTextFragment fragment = new ShowQuestionTextFragment();
@@ -56,15 +50,15 @@ public class ShowQuestionTextFragment extends Fragment {
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    void changeDarkMode(boolean newMode){
+    void changeDarkMode(boolean newMode) {
         dark = newMode;
         sharedPref.edit().putBoolean(view.getContext().getString(R.string.dark_mode_preferences), dark).apply();
         textView.setEnabled(!dark);
         titleView.setEnabled(!dark);
-        if (dark){
+        if (dark) {
             view.setBackgroundColor(view.getContext().getColor(R.color.darkmode));
             darkMode.setText("روشن");
-        }else{
+        } else {
             view.setBackgroundColor(view.getContext().getColor(R.color.lightmode));
             darkMode.setText("تاریک");
         }

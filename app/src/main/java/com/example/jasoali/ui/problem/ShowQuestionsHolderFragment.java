@@ -1,10 +1,10 @@
 package com.example.jasoali.ui.problem;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -20,6 +20,7 @@ import android.widget.EditText;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,6 +57,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private static final int PICKFILE_RESULT_CODE = -1;
     private static final String[] mimes = new String[]{"image/*", "application/pdf"};
     private final DBConnection db = new DBConnection(MainActivity.getHandler());
+    private final Context context;
     boolean addQuestionMode;
     boolean added = false;
     File source;
@@ -78,20 +80,21 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private static final String[] MIMES = new String[]{"image/*", "application/pdf"};
 
 
-    public ShowQuestionsHolderFragment() {
+    public ShowQuestionsHolderFragment(Context context) {
+        this.context = context;
     }
 
 
-    public static ShowQuestionsHolderFragment newInstance(int questionsHolderId) {
-        ShowQuestionsHolderFragment fragment = new ShowQuestionsHolderFragment();
+    public static ShowQuestionsHolderFragment newInstance(int questionsHolderId, Context context) {
+        ShowQuestionsHolderFragment fragment = new ShowQuestionsHolderFragment(context);
         Bundle args = new Bundle();
         args.putInt(QUESTIONS_HOLDER_ID, questionsHolderId);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static ShowQuestionsHolderFragment newAddQuestionsInstance() {
-        return newInstance(ADD_QUESTIONS_ID);
+    public static ShowQuestionsHolderFragment newAddQuestionsInstance(Context context) {
+        return newInstance(ADD_QUESTIONS_ID, context);
     }
 
     @Override
@@ -118,9 +121,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     private void showTextQuestion(TextQuestion textQuestion) {
         ShowQuestionTextFragment fragInfo = ShowQuestionTextFragment.newInstance(textQuestion);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction().add(fragInfo, "detail").addToBackStack(null);
-        transaction.replace(R.id.fragment_container, fragInfo);
-        transaction.commit();
+        MainActivity activity = (MainActivity) this.context;
+        activity.addInfoFragment(fragInfo);
     }
 
     public String getMimeType(Uri uri) {
