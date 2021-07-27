@@ -22,6 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -304,10 +308,43 @@ public class ShowQuestionsHolderFragment extends Fragment {
         };
         questionsRecyclerView.setAdapter(questionsAdapter);
     }
+    public void openSomeActivityForResult() {
 
+    }
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        System.out.println("yyyyyyyyyyes");
+                    }
+                }
+            });
     public void qhSelectFile(){
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
+//        Intent intent = new Intent(context, );
+//            Intent intent = new Intent(this, SomeActivity.class);
+//        someActivityResultLauncher.launch(intent);
+
+
+//        registerForActivityResult(new ActivityResultContracts.OpenDocument(){
+//
+//        });
+//        registerForActivityResult(ActivityResultContracts.OpenDocument()){
+//            // Obtained file uri
+//        }.launch(arrayOf("image/*","text/plain"));
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*|application/pdf");
+//        registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+//            @Override
+//            public void onActivityResult(Uri result) {
+//                System.out.println("yyyyyyyyyyyyye");
+//            }
+//        }).launch(new Intent(view.getContext(), MainActivity.class));
         startActivityForResult(intent, PICKFILE_RESULT_CODE);
 //        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
 //
@@ -322,13 +359,17 @@ public class ShowQuestionsHolderFragment extends Fragment {
 //                PICKFILE_RESULT_CODE
 //        );
     }
+    public void callback(){
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println(requestCode);
-        System.out.println(PICKFILE_RESULT_CODE);
-        System.out.println(resultCode);
-        System.out.println(Activity.RESULT_OK);
+//        System.out.println(requestCode);
+//        System.out.println(PICKFILE_RESULT_CODE);
+//        System.out.println(resultCode);
+//        System.out.println(Activity.RESULT_OK);
         if (requestCode == PICKFILE_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri content_describer = data.getData();
             String src = content_describer.getPath();
