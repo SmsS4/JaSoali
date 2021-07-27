@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         progressIndicator.setVisibility(View.INVISIBLE);
 
         configNavigationMenu();
-//        showSearchFragment();
+        showSearchFragment();
 
 
 //        Intent intent = new Intent(this, RegisterActivity.class);
@@ -85,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
 ////                        true
 ////                )
 ////        );
-        ProfileFragment fragInfo = ProfileFragment.newInstance();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragInfo);
-        transaction.commit();
+//        ProfileFragment fragInfo = ProfileFragment.newInstance();
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//        transaction.replace(R.id.fragment_container, fragInfo);
+//        transaction.commit();
 
 //        ParseObject firstObject = new ParseObject("FirstClass");
 //        firstObject.put("message", "Hey ! First message from android. Parse is now connected");
