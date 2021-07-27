@@ -344,7 +344,9 @@ public class DBConnection {
     public User getLocalUser() {
         ParseUser user = null;
         try {
-            user = ParseUser.getCurrentUser().fetch();
+            user = ParseUser.getCurrentUser();
+            if (user != null)
+                user = user.fetch();
         } catch (ParseException e) {
             e.printStackTrace();
         }
