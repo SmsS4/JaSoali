@@ -10,12 +10,6 @@
     android:focusable="true"
     android:visibility="visible">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <ScrollView
         android:id="@+id/mainScroller"
         android:layout_width="match_parent"

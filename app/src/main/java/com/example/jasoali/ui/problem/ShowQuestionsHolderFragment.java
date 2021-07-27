@@ -1,7 +1,6 @@
 package com.example.jasoali.ui.problem;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -16,23 +15,16 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -53,7 +45,6 @@ import com.example.jasoali.models.Question;
 import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
-import com.example.jasoali.ui.profile.ProfileFragment;
 import com.example.jasoali.ui.questionsholder.CommentsAdapter;
 import com.example.jasoali.ui.questionsholder.QuestionsAdapter;
 import com.example.jasoali.ui.questionsholder.TagsAdapter;
@@ -95,7 +86,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private TagsAdapter tagsAdapter;
     private ImageView favButton;
     private ScrollView scrollView;
-    private ProgressBar progressBar;
     private LinearLayout comemntSection;
 
     private boolean editModeActive = false;
@@ -469,7 +459,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
         editButton = view.findViewById(R.id.edit_btn);
         tags = view.findViewById(R.id.tagQH);
         scrollView = view.findViewById(R.id.mainScroller);
-        progressBar = view.findViewById(R.id.progressBar);
         comemntSection = view.findViewById(R.id.comemnt_section);
 
     }
@@ -522,7 +511,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
             if (msg.what == SHOW) {
                 fragment.scrollView.setVisibility(View.VISIBLE);
-                fragment.progressBar.setVisibility(View.GONE);
                 fragment.start();
             }
         }
