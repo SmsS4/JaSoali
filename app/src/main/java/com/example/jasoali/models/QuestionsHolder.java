@@ -35,7 +35,6 @@ public class QuestionsHolder {
 
 
     public QuestionsHolder(String creatorId, String creatorName) {
-//        this.id = String.valueOf((int) (Math.random() * Integer.MAX_VALUE));
         this.id = null;
         this.title = "";
         this.description = "";

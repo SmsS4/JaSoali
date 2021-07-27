@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         favoritesFragment = new MyFavoriteQuestionHoldersFragment();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        getSupportActionBar().hide(); //<< this
+        getSupportActionBar().hide();
 
         setContentView(R.layout.activity_main);
 
@@ -63,53 +63,7 @@ public class MainActivity extends AppCompatActivity {
         configNavigationMenu();
         showSearchFragment();
 
-//        /// todo remove these
-//        new DBConnection(null).login("SmsS132", "1122qqww", "smss.lite2@gmail.com");
-//                new User(
-//                        "a2",
-//                        "SmsS132",
-//                        "1122qqww",
-//                        "smss.lite2@gmail.com",
-//                        "سید مهدی صادق شبیری",
-//                        true
-//                )
-//        );
-//        ProfileFragment fragInfo = ProfileFragment.newInstance();
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragment_container, fragInfo);
-//        transaction.commit();
-
-//        ParseObject firstObject = new ParseObject("FirstClass");
-//        firstObject.put("message", "Hey ! First message from android. Parse is now connected");
-//        firstObject.saveInBackground(e -> {
-//            if (e != null) {
-//                Log.e("MainActivity", e.getLocalizedMessage());
-//            } else {
-//                Log.d("MainActivity", "Object saved.");
-//            }
-//        });
-
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
-//        query.findInBackground(new FindCallback<ParseObject>() {
-//            @Override
-//            public void done(List<ParseObject> objects, ParseException e) {
-//                Log.e("COUNT", String.valueOf(objects.size()));
-//                ParseObject parseObject = objects.get(0);
-//                ParseUser user = null;
-//                try {
-//                    user = parseObject.getParseUser("maker").fetch();
-//
-//                } catch (ParseException parseException) {
-//                    parseException.printStackTrace();
-//                }
-//                Log.e("COUNT", String.valueOf(objects.size()));
-//                Log.e("COUNT", user != null ? user.getString("name") : "sss");
-//            }
-//        });
-
-//        DBConnection.getInstance().addQuestionsHolder(DBConnection.getInstance().getLocalQuestionsHolder());
-//        DBConnection.getInstance().addComment(new Comment("alaki", "comment text", "سید علیرضا هاشمی"));
-    }
+     }
 
     @Override
     public void onBackPressed() {
