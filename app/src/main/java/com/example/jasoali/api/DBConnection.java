@@ -122,11 +122,15 @@ public class DBConnection {
         }));
     }
 
-    public ArrayList<QuestionsHolder> getFavouritesQuestionsHolder(String userId) throws NetworkError {
+    public ArrayList<QuestionsHolder> getFavouriteQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
         return new ArrayList<>();
     }
 
-    public void addFavouritesQuestionsHolder(String questionsHolderId, String userId) throws NetworkError {
+    public void addToFavouriteQuestionsHolders(String questionsHolderId) {
+
+    }
+
+    public void removeFromFavouriteQuestionsHolder(String questionsHolderId) {
 
     }
 
@@ -379,12 +383,13 @@ public class DBConnection {
         return result;
     }
 
-    public void updateName(String userId, String newName){
+    public void updateName(String userId, String newName) {
         /// this method should update name of user in db
         /// optional: update comments name too XD
+        // todo:
     }
 
-    public void adminRequest(String userId){
-
+    public void adminRequest(String userId) {
+        // todo:
     }
 }

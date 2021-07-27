@@ -30,7 +30,7 @@ class MyFavoriteQuestionsHoldersFragment extends Fragment {
         super.onCreate(savedInstanceState);
         getActivity().setTitle("مورد‌علاقه‌ها");
         adapter = new QuestionHolderRecyclerViewAdapter(getActivity());
-        dbConnection.getAllQuestionsHolder(adapter);
+        dbConnection.getFavouriteQuestionsHolder(adapter);
     }
 
     @Override
@@ -41,6 +41,20 @@ class MyFavoriteQuestionsHoldersFragment extends Fragment {
         questionHolders.setLayoutManager(new LinearLayoutManager(getActivity()));
         questionHolders.setAdapter(adapter);
 
+        searchField = view.findViewById(R.id.favorite_question_holders_fragment_search_field);
+        searchField.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
         return view;
     }
 }
