@@ -3,6 +3,7 @@ package com.example.jasoali;
 //import com.parse.Parse;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,11 +13,13 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.ui.problem.MyFavoriteQuestionHoldersFragment;
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
 import com.example.jasoali.ui.profile.ProfileFragment;
+import com.example.jasoali.ui.sign_in_up.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.Parse;
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static MyHandler handler;
     public LinearProgressIndicator progressIndicator;
-//    private ShowQuestionsHolderFragment fragInfo;
+    //    private ShowQuestionsHolderFragment fragInfo;
     private SearchFragment searchFragment;
     private ProfileFragment profileFragment;
     private MyFavoriteQuestionHoldersFragment favoritesFragment;
@@ -43,9 +46,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Parse.initialize(new Parse.Configuration.Builder(this)
+                .applicationId(getString(R.string.back4app_app_id))
+                .clientKey(getString(R.string.back4app_client_key))
+                .server(getString(R.string.back4app_server_url))
+                .enableLocalDataStore()
+                .build());
+
+        checkUserState();
+
         handler = new MyHandler(this);
         searchFragment = new SearchFragment();
-//        fragInfo = ShowQuestionsHolderFragment.newInstance("0", this);
         profileFragment = ProfileFragment.newInstance(this);
         favoritesFragment = new MyFavoriteQuestionHoldersFragment();
 
@@ -54,13 +65,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide(); //<< this
 
         setContentView(R.layout.activity_main);
-
-        Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId(getString(R.string.back4app_app_id))
-                .clientKey(getString(R.string.back4app_client_key))
-                .server(getString(R.string.back4app_server_url))
-                .enableLocalDataStore()
-                .build());
 
         progressIndicator = findViewById(R.id.progress_bar);
         progressIndicator.setVisibility(View.INVISIBLE);
@@ -128,6 +132,15 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    void checkUserState() {
+        DBConnection db = new DBConnection(null);
+        if (db.getLocalUser() != null)
+            return;
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     void showProfileFragment() {

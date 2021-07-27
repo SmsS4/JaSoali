@@ -15,6 +15,7 @@ import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
+import com.example.jasoali.ui.sign_in_up.LoginActivity;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -251,9 +252,12 @@ public class DBConnection {
                     @Override
                     public void done(ParseUser user, ParseException e) {
                         if (user != null) {
-                            // Hooray! The user is logged in.
+                            sendMessage(LoginActivity.LOGIN_SUCCESSFUL_RESULT_CODE);
                         } else {
-                            // Signup failed. Look at the ParseException to see what happened.
+                            Message msg = new Message();
+                            msg.what = LoginActivity.LOGIN_FAILED_RESULT_CODE;
+                            msg.obj = e.getLocalizedMessage();
+                            handler.sendMessage(msg);
                         }
                     }
                 });
