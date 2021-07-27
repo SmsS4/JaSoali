@@ -16,7 +16,6 @@ import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
 import com.example.jasoali.ui.sign_in_up.LoginActivity;
-import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -306,17 +305,14 @@ public class DBConnection {
         parseUser.setPassword(password);
         parseUser.setEmail(email);
         ParseUser.logInInBackground(username, password,
-                new LogInCallback() {
-                    @Override
-                    public void done(ParseUser user, ParseException e) {
-                        if (user != null) {
-                            sendMessage(LoginActivity.LOGIN_SUCCESSFUL_RESULT_CODE);
-                        } else {
-                            Message msg = new Message();
-                            msg.what = LoginActivity.LOGIN_FAILED_RESULT_CODE;
-                            msg.obj = e.getLocalizedMessage();
-                            handler.sendMessage(msg);
-                        }
+                (user, e) -> {
+                    if (user != null) {
+                        sendMessage(LoginActivity.LOGIN_SUCCESSFUL_RESULT_CODE);
+                    } else {
+                        Message msg = new Message();
+                        msg.what = LoginActivity.LOGIN_FAILED_RESULT_CODE;
+                        msg.obj = e.getLocalizedMessage();
+                        handler.sendMessage(msg);
                     }
                 });
     }
