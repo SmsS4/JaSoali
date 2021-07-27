@@ -301,18 +301,21 @@ public class ShowQuestionsHolderFragment extends Fragment {
     }
 
     public void qhSelectFile(){
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICKFILE_RESULT_CODE);
+//        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+//
 //        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-//        chooseFile.setType(String.join(MIMES[0], MIMES[1]));
-        chooseFile.setType("*/*");
-
-
-//        chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, MIMES);
-        startActivityForResult(
-                Intent.createChooser(chooseFile, "Choose a file"),
-                PICKFILE_RESULT_CODE
-        );
+////        chooseFile.setType(String.join(MIMES[0], MIMES[1]));
+//        chooseFile.setType("*/*");
+//
+//
+////        chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, MIMES);
+//        startActivityForResult(
+//                Intent.createChooser(chooseFile, "Choose a file"),
+//                PICKFILE_RESULT_CODE
+//        );
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
