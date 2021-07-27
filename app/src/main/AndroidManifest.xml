@@ -9,18 +9,17 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".application.App"
         android:theme="@style/Theme.JaSoali">
         <activity android:name=".ui.profile.ProfileActivity"></activity>
         <activity
             android:name=".ui.TestActivity"
             android:label="@string/title_activity_test"
             android:theme="@style/Theme.JaSoali.NoActionBar" />
-        <activity android:name=".ui.sign_in_up.RegisterActivity" />
-        <activity android:name=".ui.sign_in_up.LoginActivity" />
-        <activity android:name=".ui.LoginActivity" />
         <activity
-            android:name=".ui.login.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:name=".ui.sign_in_up.RegisterActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".ui.sign_in_up.LoginActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

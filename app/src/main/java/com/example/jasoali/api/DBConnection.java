@@ -15,11 +15,14 @@ import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
+import com.example.jasoali.ui.sign_in_up.LoginActivity;
+import com.example.jasoali.ui.sign_in_up.RegisterActivity;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -327,9 +330,12 @@ public class DBConnection {
         ParseUser.logInInBackground(username, password,
                 (user, e) -> {
                     if (user != null) {
-                        // Hooray! The user is logged in.
+                        sendMessage(LoginActivity.LOGIN_SUCCESSFUL_RESULT_CODE);
                     } else {
-                        // Signup failed. Look at the ParseException to see what happened.
+                        Message msg = new Message();
+                        msg.what = LoginActivity.LOGIN_FAILED_RESULT_CODE;
+                        msg.obj = e.getLocalizedMessage();
+                        handler.sendMessage(msg);
                     }
                 });
     }
@@ -342,18 +348,26 @@ public class DBConnection {
         parseUser.setEmail(user.getEmail());
         parseUser.put("name", user.getName());
         parseUser.put("isAdmin", false);
-        try {
-            parseUser.signUp();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        parseUser.signUpInBackground(e -> {
+            if (e == null) {
+                sendMessage(RegisterActivity.REGISTER_SUCCESSFUL_RESULT_CODE);
+            } else {
+                e.printStackTrace();
+                Message msg = new Message();
+                msg.what = RegisterActivity.REGISTER_FAILED_RESULT_CODE;
+                msg.obj = e.getLocalizedMessage();
+                handler.sendMessage(msg);
+            }
+        });
     }
 
 
     public User getLocalUser() {
         ParseUser user = null;
         try {
-            user = ParseUser.getCurrentUser().fetch();
+            user = ParseUser.getCurrentUser();
+            if (user != null)
+                user = user.fetch();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -431,6 +445,7 @@ public class DBConnection {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
         ParseObject questionHolder = null;
+        System.out.println(comment.getQuestionsHolderId());
         try {
             // todo: handle in a better way
             questionHolder = query.fromLocalDatastore().get(comment.getQuestionsHolderId());

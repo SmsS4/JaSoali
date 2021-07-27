@@ -7,11 +7,20 @@
     android:layout_margin="8dp"
     android:checkable="true"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:visibility="visible">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <ScrollView
+        android:id="@+id/mainScroller"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/testfsa"
@@ -20,19 +29,19 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_width="match_parent"
                 android:id="@+id/tafasd"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <ImageView
                     android:id="@+id/favButton"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/heart"
-                    />
+                    android:src="@drawable/heart" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/edit_btn"
@@ -60,13 +69,13 @@
                         android:id="@+id/titleQH"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLength="19"
                         android:layout_weight="1"
                         android:background="@drawable/light_frame"
                         android:ems="10"
                         android:gravity="center|center_horizontal|center_vertical"
                         android:hint="@string/title"
                         android:inputType="textPersonName"
+                        android:maxLength="19"
                         android:text="@string/title"
                         android:textColor="@drawable/edit_text_selector"
                         android:textSize="24sp" />
@@ -129,12 +138,12 @@
                     app:spanCount="2" />
 
                 <LinearLayout
+                    android:id="@+id/comemnt_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/questions"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:id="@+id/comemnt_section"
-                    android:layout_below="@+id/questions"
 
                     >
 
@@ -145,8 +154,7 @@
                         android:layout_height="73dp"
                         android:minWidth="0dp"
                         android:minHeight="0dp"
-                        android:text="@string/submit_comment"
-                        >
+                        android:text="@string/submit_comment">
 
                     </com.google.android.material.button.MaterialButton>
 
@@ -179,9 +187,9 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/comments"
-                    android:layout_below="@+id/comemnt_section"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_below="@+id/comemnt_section"
                     android:layout_marginTop="20dp"
                     android:padding="5dp"
 

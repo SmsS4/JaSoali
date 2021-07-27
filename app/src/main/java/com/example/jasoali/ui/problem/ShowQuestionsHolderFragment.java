@@ -9,8 +9,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +24,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -46,6 +52,7 @@ import com.example.jasoali.models.Question;
 import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
+import com.example.jasoali.ui.profile.ProfileFragment;
 import com.example.jasoali.ui.questionsholder.CommentsAdapter;
 import com.example.jasoali.ui.questionsholder.QuestionsAdapter;
 import com.example.jasoali.ui.questionsholder.TagsAdapter;
@@ -55,6 +62,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 
@@ -75,7 +83,9 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private EditText title;
     private EditText description;
     private EditText tags;
+    private EditText newComment;
     private Button editButton;
+    private Button submitComment;
     private RecyclerView questionsRecyclerView;
     private RecyclerView recyclerViewComments;
     private RecyclerView recyclerViewTags;
@@ -83,13 +93,22 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private QuestionsAdapter questionsAdapter;
     private TagsAdapter tagsAdapter;
     private ImageView favButton;
+    private ScrollView scrollView;
+    private ProgressBar progressBar;
 
     private boolean editModeActive = false;
 
     private static final String[] MIMES = new String[]{"image/*", "application/pdf"};
 
+    String questionsHolderId;
+
+    private HandlerThread mHandlerThread;
+    FetchHandler fetchHandler;
 
     public ShowQuestionsHolderFragment(Context context) {
+        mHandlerThread = new HandlerThread("FetchHandlerThread");
+        mHandlerThread.start();
+        fetchHandler = new FetchHandler(this, mHandlerThread);
         this.context = context;
     }
 
@@ -111,17 +130,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             user = db.getLocalUser();
-            if(user == null){
-                System.out.println("wht");
-            }
-            String questionsHolderId = getArguments().getString(QUESTIONS_HOLDER_ID);
-            if (!questionsHolderId.equals(ADD_QUESTIONS_ID)) {
-                questionsHolder = db.getWholeQuestionHolderData(questionsHolderId);
-                addQuestionMode = false;
-            } else {
-                questionsHolder = new QuestionsHolder(user.getId(), user.getName());
-                addQuestionMode = true;
-            }
+            questionsHolderId = getArguments().getString(QUESTIONS_HOLDER_ID);
+
         }
     }
 
@@ -148,6 +158,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
         }
         return mimeType;
     }
+
     private void showFileQuestion(FileQuestion fileQuestion) {
         Uri path = Uri.fromFile(fileQuestion.getFile());
         Intent pdfOpenintent = new Intent(Intent.ACTION_VIEW);
@@ -155,8 +166,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
         pdfOpenintent.setDataAndType(path, getMimeType(path));
         try {
             startActivity(pdfOpenintent);
-        }
-        catch (ActivityNotFoundException e) {
+        } catch (ActivityNotFoundException e) {
 
         }
     }
@@ -259,7 +269,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
             @Override
             public void onQuestionClicked(Question question) {
-                if(editModeActive){
+                if (editModeActive) {
                     return;
                 }
                 if (question instanceof TextQuestion) {
@@ -273,14 +283,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
             @Override
             public void selectFile() {
                 qhSelectFile();
-//                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-//                chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-//                chooseFile.setType(String.join(MIMES[0], MIMES[1]));
-//                chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, MIMES);
-//                startActivityForResult(
-//                        Intent.createChooser(chooseFile, "Choose a file"),
-//                        PICKFILE_RESULT_CODE
-//                );
             }
 
             @Override
@@ -311,68 +313,18 @@ public class ShowQuestionsHolderFragment extends Fragment {
         };
         questionsRecyclerView.setAdapter(questionsAdapter);
     }
-    public void openSomeActivityForResult() {
 
-    }
-    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
-                        Intent data = result.getData();
-                        System.out.println("yyyyyyyyyyes");
-                    }
-                }
-            });
-    public void qhSelectFile(){
 
+    public void qhSelectFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        Intent intent = new Intent(context, );
-//            Intent intent = new Intent(this, SomeActivity.class);
-//        someActivityResultLauncher.launch(intent);
-
-
-//        registerForActivityResult(new ActivityResultContracts.OpenDocument(){
-//
-//        });
-//        registerForActivityResult(ActivityResultContracts.OpenDocument()){
-//            // Obtained file uri
-//        }.launch(arrayOf("image/*","text/plain"));
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*|application/pdf");
-//        registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
-//            @Override
-//            public void onActivityResult(Uri result) {
-//                System.out.println("yyyyyyyyyyyyye");
-//            }
-//        }).launch(new Intent(view.getContext(), MainActivity.class));
         startActivityForResult(intent, PICKFILE_RESULT_CODE);
-//        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-//
-//        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-////        chooseFile.setType(String.join(MIMES[0], MIMES[1]));
-//        chooseFile.setType("*/*");
-//
-//
-////        chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, MIMES);
-//        startActivityForResult(
-//                Intent.createChooser(chooseFile, "Choose a file"),
-//                PICKFILE_RESULT_CODE
-//        );
     }
-    public void callback(){
 
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        System.out.println(requestCode);
-//        System.out.println(PICKFILE_RESULT_CODE);
-//        System.out.println(resultCode);
-//        System.out.println(Activity.RESULT_OK);
         if (requestCode == PICKFILE_RESULT_CODE && resultCode == Activity.RESULT_OK) {
             Uri content_describer = data.getData();
             String src = content_describer.getPath();
@@ -412,31 +364,16 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
 
     private void initQuestionsHolder() {
-        favButton = view.findViewById(R.id.favButton);
-//        favButton.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                return false;
-//            }
-//        });
         favButton.setClickable(true);
         favButton.bringToFront();
-        favButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("hey");
-                db.addToFavouriteQuestionsHolders(questionsHolder.getId());
-                Toast.makeText(view.getContext(),
-                        view.getResources().getString(R.string.added_to_favs),
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
+        favButton.setOnClickListener(v -> {
+            System.out.println("hey");
+            db.addToFavouriteQuestionsHolders(questionsHolder.getId());
+            Toast.makeText(view.getContext(),
+                    view.getResources().getString(R.string.added_to_favs),
+                    Toast.LENGTH_SHORT
+            ).show();
         });
-//        favButton.setOnClickListener(v -> {
-//
-//        });
-        questionsRecyclerView = view.findViewById(R.id.questions);
         questionsRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2) {
             @Override
             public boolean canScrollVertically() {
@@ -444,10 +381,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
             }
         });
 
-        recyclerViewComments = view.findViewById(R.id.comments);
         recyclerViewComments.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        recyclerViewTags = view.findViewById(R.id.special_tags);
         recyclerViewTags.setLayoutManager(new LinearLayoutManager(view.getContext()) {
             @Override
             public boolean canScrollVertically() {
@@ -455,9 +390,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
             }
         });
 
-        title = view.findViewById(R.id.titleQH);
-        view.findViewById(R.id.submit_comment).setOnClickListener(v -> {
-            EditText newComment = view.findViewById(R.id.new_comment);
+        submitComment.setOnClickListener(v -> {
             Comment comment = new Comment(
                     user.getId(),
                     newComment.getText().toString(),
@@ -465,13 +398,12 @@ public class ShowQuestionsHolderFragment extends Fragment {
                     questionsHolder.getId()
             );
             questionsHolder.getComments().add(0, comment);
+            System.out.println(questionsHolder.getId());
             db.addComment(comment);
             showComments();
             newComment.setText("");
             KeyboardHider.HideKeyboard(view);
         });
-        description = view.findViewById(R.id.descriptionQH);
-        editButton = view.findViewById(R.id.edit_btn);
 
     }
 
@@ -501,7 +433,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
 
     private void showOtherTags() {
-        tags = view.findViewById(R.id.tagQH);
         tags.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 colorFulTags(getEditedTags());
@@ -521,11 +452,23 @@ public class ShowQuestionsHolderFragment extends Fragment {
         description.setText(questionsHolder.getDescription());
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    private void findViews() {
+        favButton = view.findViewById(R.id.favButton);
+        questionsRecyclerView = view.findViewById(R.id.questions);
+        recyclerViewComments = view.findViewById(R.id.comments);
+        recyclerViewTags = view.findViewById(R.id.special_tags);
+        title = view.findViewById(R.id.titleQH);
+        submitComment = view.findViewById(R.id.submit_comment);
+        newComment = view.findViewById(R.id.new_comment);
+        description = view.findViewById(R.id.descriptionQH);
+        editButton = view.findViewById(R.id.edit_btn);
+        tags = view.findViewById(R.id.tagQH);
+        scrollView = view.findViewById(R.id.mainScroller);
+        progressBar = view.findViewById(R.id.progressBar);
+    }
 
-        view = inflater.inflate(R.layout.fragment_show_questions_holder, container, false);
+    private void start() {
+        findViews();
         initQuestionsHolder();
         showQuestionsHolder();
         setEditButtonToEdit();
@@ -537,6 +480,71 @@ public class ShowQuestionsHolderFragment extends Fragment {
         if (!user.isAdmin()) {
             editButton.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        view = inflater.inflate(R.layout.fragment_show_questions_holder, container, false);
+        fetchHandler.sendEmptyMessage(FetchHandler.START_FETCH_USER);
         return view;
+    }
+
+
+    public static class ShowHandler extends Handler {
+
+        public static final int SHOW = 2;
+        private final WeakReference<ShowQuestionsHolderFragment> fragmentWeakReference;
+
+        public ShowHandler(ShowQuestionsHolderFragment fragment) {
+            super();
+            this.fragmentWeakReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Log.e("HANDLER", String.valueOf(msg.what));
+            ShowQuestionsHolderFragment fragment = fragmentWeakReference.get();
+            if (fragment == null)
+                return;
+            if (msg.what == SHOW) {
+                fragment.start();
+            }
+        }
+    }
+
+    public static class FetchHandler extends Handler {
+
+        public static final int START_FETCH_USER = 1;
+        private final WeakReference<ShowQuestionsHolderFragment> fragmentWeakReference;
+        private ShowQuestionsHolderFragment.ShowHandler showHandler;
+
+        public FetchHandler(ShowQuestionsHolderFragment fragment, HandlerThread handlerLoop) {
+            super(handlerLoop.getLooper());
+            this.fragmentWeakReference = new WeakReference<>(fragment);
+            this.showHandler = new ShowQuestionsHolderFragment.ShowHandler(fragment);
+
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Log.e("HANDLER", String.valueOf(msg.what));
+            ShowQuestionsHolderFragment fragment = fragmentWeakReference.get();
+            if (fragment == null)
+                return;
+            if (msg.what == START_FETCH_USER) {
+                if (!fragment.questionsHolderId.equals(ADD_QUESTIONS_ID)) {
+                    fragment.questionsHolder = fragment.db.getWholeQuestionHolderData(fragment.questionsHolderId);
+                    fragment.addQuestionMode = false;
+                } else {
+                    fragment.questionsHolder = new QuestionsHolder(fragment.user.getId(), fragment.user.getName());
+                    fragment.addQuestionMode = true;
+                }
+                fragment.scrollView.setVisibility(View.VISIBLE);
+                fragment.progressBar.setVisibility(View.GONE);
+                this.showHandler.sendEmptyMessage(ShowHandler.SHOW);
+            }
+        }
     }
 }

@@ -2,11 +2,16 @@ package com.example.jasoali.ui.profile;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import androidx.fragment.app.Fragment;
@@ -14,10 +19,14 @@ import androidx.fragment.app.Fragment;
 import com.example.jasoali.MainActivity;
 import com.example.jasoali.R;
 import com.example.jasoali.api.DBConnection;
+import com.example.jasoali.exceptions.MessageException;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
 import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
+
+import java.lang.ref.WeakReference;
+import java.sql.Struct;
 
 import fr.tkeunebr.gravatar.Gravatar;
 
@@ -38,9 +47,16 @@ public class ProfileFragment extends Fragment {
     private MaterialButton addQuestion;
     private MaterialButton changeProfile;
     private ScrollView scrollView;
+    private ProgressBar progressBar;
+
+    private HandlerThread mHandlerThread;
+    private ProfileHandler handler;
 
     public ProfileFragment(Context context) {
         this.context = context;
+        mHandlerThread = new HandlerThread("HandlerThread");
+        mHandlerThread.start();
+        handler = new ProfileHandler(this, mHandlerThread);
     }
 
 
@@ -54,6 +70,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     private void changeAlphaForChange(float alpha) {
@@ -66,6 +83,7 @@ public class ProfileFragment extends Fragment {
 
     private void setChangeProfileListeners() {
         onChange = v -> {
+            addQuestion.setOnClickListener(null);
             changeProfile.setText(view.getContext().getString(R.string.submit_changes));
             changeProfile.setOnClickListener(onSubmit);
             name.setEnabled(true);
@@ -74,6 +92,8 @@ public class ProfileFragment extends Fragment {
         };
         User finalUser = user;
         onSubmit = v -> {
+            setAddQuestionListener();
+
             changeProfile.setText(view.getContext().getString(R.string.change_user));
             changeProfile.setOnClickListener(onChange);
             name.setEnabled(false);
@@ -137,25 +157,63 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_profile, container, false);
-        user = db.getLocalUser();
-//        user = new User(
-//                "test",
-//                "AghaSadegh",
-//                "nemigam",
-//                "smss.lite@gmail.com",
-//                "سید مهدی صادق شبیری",
-//                null,
-//                false
-//        );
-
-        findElements();
-        setText();
-        getProfileImage();
-        setChangeProfileListeners();
-        email.setEnabled(false);
-        name.setEnabled(false);
-        username.setEnabled(false);
-        setAddQuestionListener();
+        Message fetch = new Message();
+        fetch.what = ProfileHandler.START_FETCH_PROFILE;
+        handler.sendMessage(fetch);
         return view;
     }
+
+    public static class ImageHandler extends Handler {
+        WeakReference<ProfileFragment> fragmentWeakReference;
+
+        public ImageHandler(ProfileFragment fragment) {
+            super();
+            this.fragmentWeakReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            ProfileFragment fragment = this.fragmentWeakReference.get();
+            if (fragment == null)
+                return;
+            fragment.getProfileImage();
+            fragment.view.findViewById(R.id.scroller).setVisibility(View.VISIBLE);
+            fragment.view.findViewById(R.id.fetchProfileBar).setVisibility(View.GONE);
+        }
+    }
+
+    public static class ProfileHandler extends Handler {
+
+        public static final int START_FETCH_PROFILE = 1;
+        private final WeakReference<ProfileFragment> profileFragmentWeakReference;
+        private ImageHandler imageHandler;
+
+        public ProfileHandler(ProfileFragment fragment, HandlerThread handlerLoop) {
+            super(handlerLoop.getLooper());
+            this.profileFragmentWeakReference = new WeakReference<>(fragment);
+            this.imageHandler = new ImageHandler(fragment);
+
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Log.e("HANDLER", String.valueOf(msg.what));
+            ProfileFragment fragment = profileFragmentWeakReference.get();
+            if (fragment == null)
+                return;
+            if (msg.what == START_FETCH_PROFILE) {
+                fragment.user = fragment.db.getLocalUser();
+                fragment.findElements();
+                fragment.setText();
+                this.imageHandler.sendEmptyMessage(0);
+                fragment.setChangeProfileListeners();
+                fragment.email.setEnabled(false);
+                fragment.name.setEnabled(false);
+                fragment.username.setEnabled(false);
+                fragment.setAddQuestionListener();
+
+            }
+        }
+    }
+
 }

@@ -31,7 +31,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="16dp"
-                android:text="ورود"
+                android:text="@string/login"
                 android:textSize="30sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="نام کاربری"
+                android:text="@string/username"
                 app:layout_constraintEnd_toEndOf="@+id/registerHeader"
                 app:layout_constraintTop_toBottomOf="@+id/registerHeader" />
 
@@ -49,6 +49,7 @@
                 android:id="@+id/loginUsernameEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
                 android:inputType="textPersonName"
                 app:layout_constraintStart_toStartOf="@+id/usernameInputTitle"
@@ -59,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="ایمیل"
+                android:text="@string/email"
                 app:layout_constraintStart_toStartOf="@+id/loginUsernameEditText"
                 app:layout_constraintTop_toBottomOf="@+id/loginUsernameEditText" />
 
@@ -67,6 +68,7 @@
                 android:id="@+id/loginEmailEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
                 android:inputType="textEmailAddress"
                 app:layout_constraintStart_toStartOf="@+id/emailInputTitle"
@@ -77,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="رمز عبور"
+                android:text="@string/password"
                 app:layout_constraintStart_toStartOf="@+id/loginEmailEditText"
                 app:layout_constraintTop_toBottomOf="@+id/loginEmailEditText" />
 
@@ -85,6 +87,7 @@
                 android:id="@+id/loginPasswordEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
                 android:inputType="textPassword"
                 app:layout_constraintStart_toStartOf="@+id/passwordInputTitle"
@@ -96,10 +99,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="ورود"
+                android:text="@string/login"
                 app:layout_constraintBottom_toBottomOf="@id/loginHolder"
                 app:layout_constraintEnd_toEndOf="@+id/loginPasswordEditText"
                 app:layout_constraintTop_toBottomOf="@+id/loginPasswordEditText" />
+
+            <TextView
+                android:id="@+id/registerLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                app:layout_constraintBottom_toBottomOf="@+id/loginBtn"
+                app:layout_constraintStart_toStartOf="@+id/loginPasswordEditText"
+                app:layout_constraintTop_toTopOf="@+id/loginBtn" />
+
+            <ProgressBar
+                android:id="@+id/loginProgressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/registerHeader" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
