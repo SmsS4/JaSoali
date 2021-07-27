@@ -15,11 +15,14 @@ import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
+import com.example.jasoali.ui.sign_in_up.LoginActivity;
+import com.example.jasoali.ui.sign_in_up.RegisterActivity;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,18 +50,19 @@ public class DBConnection {
         sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
-        ParseObject parseQuestionHolder = null;
+        ParseObject parseQuestionHolder;
         try {
-            // todo: handle in a better way
-            parseQuestionHolder = query.fromLocalDatastore().get(questionHolderId);
-            if (parseQuestionHolder == null) {
-                parseQuestionHolder = query.fromNetwork().get(questionHolderId);
-            }
+            parseQuestionHolder = query.get(questionHolderId);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
         }
 
+        try {
+            parseQuestionHolder.fetch();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         ParseUser creator = getUserFromParseObject(parseQuestionHolder, "creator");
         QuestionsHolder questionsHolder = new QuestionsHolder(
                 parseQuestionHolder.getObjectId(),
@@ -96,7 +100,6 @@ public class DBConnection {
             if (error == null) {
                 List<ParseObject> questionHoldersList = task.getResult();
                 for (ParseObject parseObject : questionHoldersList) {
-                    Log.e("BUG", parseObject.getObjectId());
                     ParseUser creator = getUserFromParseObject(parseObject, "creator");
                     result.add(new QuestionsHolder(
                             parseObject.getObjectId(),
@@ -169,12 +172,56 @@ public class DBConnection {
 
 
     public void addToFavouriteQuestionsHolders(String questionsHolderId) {
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
+
         ParseObject favoriteQuestionHolder = new ParseObject("FavoriteQuestionHolder");
+        favoriteQuestionHolder.put("user", ParseUser.getCurrentUser());
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
+        ParseObject questionHolder = null;
+        try {
+            // todo: handle in a better way
+            questionHolder = query.fromLocalDatastore().get(questionsHolderId);
+            if (questionHolder == null) {
+                questionHolder = query.fromNetwork().get(questionsHolderId);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        favoriteQuestionHolder.put("questionHolder", questionHolder);
+
+        favoriteQuestionHolder.saveInBackground(e -> {
+            if (e == null) {
+                sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+            }
+        });
     }
 
 
     public void removeFromFavouriteQuestionsHolder(String questionsHolderId) {
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
 
+        ParseObject favoriteQuestionHolder = new ParseObject("FavoriteQuestionHolder");
+        favoriteQuestionHolder.put("user", ParseUser.getCurrentUser());
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
+        ParseObject questionHolder = null;
+        try {
+            // todo: handle in a better way
+            questionHolder = query.fromLocalDatastore().get(questionsHolderId);
+            if (questionHolder == null) {
+                questionHolder = query.fromNetwork().get(questionsHolderId);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        favoriteQuestionHolder.put("questionHolder", questionHolder);
+
+        favoriteQuestionHolder.deleteInBackground(e -> {
+            if (e == null) {
+                sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+            }
+        });
     }
 
 
@@ -232,78 +279,25 @@ public class DBConnection {
 
 
     public void addComment(Comment comment) {
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
+
         ParseObject parseObject = getCommentAsParseObject(comment);
         try {
             parseObject.save();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
 
-
-    public QuestionsHolder getLocalQuestionsHolder() {
-        String currentUserId = ParseUser.getCurrentUser().getObjectId();
-        // todo
-        ArrayList<Category> categories = new ArrayList<>();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
+        ParseObject parseQuestionHolder = null;
         try {
-            categories.add(
-                    new Category(CategoryType.COURSE, "شبیه سازی")
-            );
-            categories.add(
-                    new Category(CategoryType.DEPARTMENT, "مهندسی کامپیوتر")
-            );
-            categories.add(
-                    new Category(CategoryType.OTHER, "سوال_سخت")
-            );
-            categories.add(
-                    new Category(CategoryType.OTHER, "مخصوص_خودته")
-            );
-            categories.add(
-                    new Category(CategoryType.TERM, "بهار ۱۴۰۰")
-            );
-            ArrayList<Question> questions = new ArrayList<>();
-            questions.add(
-                    new TextQuestion("سوال‌ها یک عنوان طولانی همیشگی", "بلا بلا متن سوال بلا بلا")
-            );
-//            questions.add(
-//                    new FileQuestion("جواب‌ها", null)
-//            );
-//            questions.add(
-//                    new FileQuestion("راهنمایی‌ها", null)
-//            );
-//            questions.add(
-//                    new FileQuestion("جواب‌ها", null)
-//            );
-//            questions.add(
-//                    new FileQuestion("راهنمایی‌ها", null)
-//            );
-//            questions.add(
-//                    new FileQuestion("جواب‌ها", null)
-//            );
-//            questions.add(
-//                    new FileQuestion("راهنمایی‌ها", null)
-//            );
-            ArrayList<Comment> comments = new ArrayList<>();
-            comments.add(
-                    new Comment(currentUserId, "عالی و طلایی", "ممد", "0")
-            );
-            comments.add(
-                    new Comment(currentUserId, "ماورای تصور", "یک پدیده", "0")
-            );
-            return new QuestionsHolder(
-                    "0",
-                    "سلام سوال",
-                    "این یک توضیحات تستی برای یک تست دستی است.",
-                    currentUserId,
-                    "آقا صادق",
-                    categories,
-                    comments,
-                    questions
-            );
-        } catch (LengthExceeded le) {
-            return null;
+            parseQuestionHolder = query.get(comment.getQuestionsHolderId());
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        parseQuestionHolder.add("comments", parseObject);
 
+        sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
     }
 
 
@@ -315,9 +309,12 @@ public class DBConnection {
         ParseUser.logInInBackground(username, password,
                 (user, e) -> {
                     if (user != null) {
-                        // Hooray! The user is logged in.
+                        sendMessage(LoginActivity.LOGIN_SUCCESSFUL_RESULT_CODE);
                     } else {
-                        // Signup failed. Look at the ParseException to see what happened.
+                        Message msg = new Message();
+                        msg.what = LoginActivity.LOGIN_FAILED_RESULT_CODE;
+                        msg.obj = e.getLocalizedMessage();
+                        handler.sendMessage(msg);
                     }
                 });
     }
@@ -330,11 +327,17 @@ public class DBConnection {
         parseUser.setEmail(user.getEmail());
         parseUser.put("name", user.getName());
         parseUser.put("isAdmin", false);
-        try {
-            parseUser.signUp();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        parseUser.signUpInBackground(e -> {
+            if (e == null) {
+                sendMessage(RegisterActivity.REGISTER_SUCCESSFUL_RESULT_CODE);
+            } else {
+                e.printStackTrace();
+                Message msg = new Message();
+                msg.what = RegisterActivity.REGISTER_FAILED_RESULT_CODE;
+                msg.obj = e.getLocalizedMessage();
+                handler.sendMessage(msg);
+            }
+        });
     }
 
 
