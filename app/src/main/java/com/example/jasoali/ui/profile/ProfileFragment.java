@@ -185,7 +185,6 @@ public class ProfileFragment extends Fragment {
     public static class ProfileHandler extends Handler {
 
         public static final int START_FETCH_PROFILE = 1;
-        public static final int SHOW_PROGRESS_BAR = 2;
         private final WeakReference<ProfileFragment> profileFragmentWeakReference;
         private ImageHandler imageHandler;
 
@@ -203,11 +202,6 @@ public class ProfileFragment extends Fragment {
             if (fragment == null)
                 return;
             if (msg.what == START_FETCH_PROFILE) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 fragment.user = fragment.db.getLocalUser();
                 fragment.findElements();
                 fragment.setText();
@@ -218,8 +212,6 @@ public class ProfileFragment extends Fragment {
                 fragment.username.setEnabled(false);
                 fragment.setAddQuestionListener();
 
-            } else if (msg.what == SHOW_PROGRESS_BAR) {
-                fragment.view.findViewById(R.id.fetchProfileBar).setVisibility(View.VISIBLE);
             }
         }
     }

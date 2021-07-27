@@ -75,7 +75,9 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private EditText title;
     private EditText description;
     private EditText tags;
+    private EditText newComment;
     private Button editButton;
+    private Button submitComment;
     private RecyclerView questionsRecyclerView;
     private RecyclerView recyclerViewComments;
     private RecyclerView recyclerViewTags;
@@ -145,6 +147,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
         }
         return mimeType;
     }
+
     private void showFileQuestion(FileQuestion fileQuestion) {
         Uri path = Uri.fromFile(fileQuestion.getFile());
         Intent pdfOpenintent = new Intent(Intent.ACTION_VIEW);
@@ -152,8 +155,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
         pdfOpenintent.setDataAndType(path, getMimeType(path));
         try {
             startActivity(pdfOpenintent);
-        }
-        catch (ActivityNotFoundException e) {
+        } catch (ActivityNotFoundException e) {
 
         }
     }
@@ -256,7 +258,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
             @Override
             public void onQuestionClicked(Question question) {
-                if(editModeActive){
+                if (editModeActive) {
                     return;
                 }
                 if (question instanceof TextQuestion) {
@@ -308,9 +310,11 @@ public class ShowQuestionsHolderFragment extends Fragment {
         };
         questionsRecyclerView.setAdapter(questionsAdapter);
     }
+
     public void openSomeActivityForResult() {
 
     }
+
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -323,7 +327,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
                     }
                 }
             });
-    public void qhSelectFile(){
+
+    public void qhSelectFile() {
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //        Intent intent = new Intent(context, );
@@ -359,7 +364,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
 //                PICKFILE_RESULT_CODE
 //        );
     }
-    public void callback(){
+
+    public void callback() {
 
     }
 
@@ -409,7 +415,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
 
     private void initQuestionsHolder() {
-        favButton = view.findViewById(R.id.favButton);
         favButton.setClickable(true);
         favButton.bringToFront();
         favButton.setOnClickListener(v -> {
@@ -420,7 +425,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
                     Toast.LENGTH_SHORT
             ).show();
         });
-        questionsRecyclerView = view.findViewById(R.id.questions);
         questionsRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2) {
             @Override
             public boolean canScrollVertically() {
@@ -428,10 +432,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
             }
         });
 
-        recyclerViewComments = view.findViewById(R.id.comments);
         recyclerViewComments.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        recyclerViewTags = view.findViewById(R.id.special_tags);
         recyclerViewTags.setLayoutManager(new LinearLayoutManager(view.getContext()) {
             @Override
             public boolean canScrollVertically() {
@@ -439,9 +441,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
             }
         });
 
-        title = view.findViewById(R.id.titleQH);
-        view.findViewById(R.id.submit_comment).setOnClickListener(v -> {
-            EditText newComment = view.findViewById(R.id.new_comment);
+        submitComment.setOnClickListener(v -> {
             Comment comment = new Comment(
                     user.getId(),
                     newComment.getText().toString(),
@@ -455,8 +455,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
             newComment.setText("");
             KeyboardHider.HideKeyboard(view);
         });
-        description = view.findViewById(R.id.descriptionQH);
-        editButton = view.findViewById(R.id.edit_btn);
 
     }
 
@@ -486,7 +484,6 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
 
     private void showOtherTags() {
-        tags = view.findViewById(R.id.tagQH);
         tags.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 colorFulTags(getEditedTags());
@@ -506,11 +503,25 @@ public class ShowQuestionsHolderFragment extends Fragment {
         description.setText(questionsHolder.getDescription());
     }
 
+    private void findViews() {
+        favButton = view.findViewById(R.id.favButton);
+        questionsRecyclerView = view.findViewById(R.id.questions);
+        recyclerViewComments = view.findViewById(R.id.comments);
+        recyclerViewTags = view.findViewById(R.id.special_tags);
+        title = view.findViewById(R.id.titleQH);
+        submitComment = view.findViewById(R.id.submit_comment);
+        newComment = view.findViewById(R.id.new_comment);
+        description = view.findViewById(R.id.descriptionQH);
+        editButton = view.findViewById(R.id.edit_btn);
+        tags = view.findViewById(R.id.tagQH);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_show_questions_holder, container, false);
+        findViews();
         initQuestionsHolder();
         showQuestionsHolder();
         setEditButtonToEdit();
