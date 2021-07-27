@@ -1,6 +1,7 @@
 package com.example.jasoali.ui.problem;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -52,6 +53,7 @@ public class ShowQuestionTextFragment extends Fragment {
             text = getArguments().getString(ARG_TEXT);
         }
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     void changeDarkMode(boolean newMode){

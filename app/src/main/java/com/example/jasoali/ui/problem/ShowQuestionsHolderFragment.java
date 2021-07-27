@@ -73,6 +73,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private QuestionsAdapter questionsAdapter;
     private TagsAdapter tagsAdapter;
 
+    private boolean editModeActive = false;
+
     private static final String[] MIMES = new String[]{"image/*", "application/pdf"};
 
 
@@ -116,7 +118,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
     private void showTextQuestion(TextQuestion textQuestion) {
         ShowQuestionTextFragment fragInfo = ShowQuestionTextFragment.newInstance(textQuestion);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction().add(fragInfo, "detail").addToBackStack(null);
         transaction.replace(R.id.fragment_container, fragInfo);
         transaction.commit();
     }
@@ -197,6 +199,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
 
     private void enterEditMode() {
+        editModeActive = true;
         tagsAdapter.enterEditMode();
         editButton.setText("پایان");
         editButton.setOnClickListener(v -> new MaterialAlertDialogBuilder(view.getContext())
@@ -229,6 +232,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     }
 
     private void exitEditMode() {
+        editModeActive = false;
         showQuestionsHolder();
         editButton.setText("ویرایش");
         setEditButtonToEdit();
@@ -243,6 +247,9 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
             @Override
             public void onQuestionClicked(Question question) {
+                if(editModeActive){
+                    return;
+                }
                 if (question instanceof TextQuestion) {
                     showTextQuestion((TextQuestion) question);
                 } else {
@@ -448,6 +455,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
         setEditButtonToEdit();
         changeMode(addQuestionMode);
         if (addQuestionMode) {
+            editModeActive = true;
             enterEditMode();
         }
         if (!user.isAdmin()) {
