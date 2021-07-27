@@ -65,15 +65,12 @@ public class LoginActivity extends AppCompatActivity {
         EditText passwordEditText = findViewById(R.id.loginPasswordEditText);
 
         Button loginBtn = findViewById(R.id.loginBtn);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = usernameEditText.getText().toString();
-                String email = emailEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
-                addRequestsCount(+1);
-                db.login(username, password, email);
-            }
+        loginBtn.setOnClickListener(v -> {
+            String username = usernameEditText.getText().toString();
+            String email = emailEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+            addRequestsCount(+1);
+            db.login(username, password, email);
         });
     }
 
