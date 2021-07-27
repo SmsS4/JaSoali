@@ -58,6 +58,9 @@
     <string name="admin_request">درخواست مدیریت</string>
     <string name="add_question">اضافه کردن سوال</string>
     <string name="admin_request_done">ثبت شد</string>
+    <string name="title_profile">حساب کاربری</string>
+    <string name="title_search">جست‌وجو</string>
+    <string name="title_favorites">نشان‌شده‌ها</string>
 
 
 </resources>

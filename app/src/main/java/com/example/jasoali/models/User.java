@@ -5,14 +5,12 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private FileData image;
     private String name;
     private boolean isAdmin;
 
-    public User(String id, String username, String password, String email, String name, FileData image, boolean isAdmin) {
+    public User(String id, String username, String password, String email, String name, boolean isAdmin) {
         this.id = id;
         this.username = username;
-        this.image = image;
         this.password = password;
         this.name = name;
         this.email = email;
@@ -59,13 +57,6 @@ public class User {
         isAdmin = admin;
     }
 
-    public FileData getImage() {
-        return image;
-    }
-
-    public void setImage(FileData image) {
-        this.image = image;
-    }
 
     public String getEmail() {
         return email;

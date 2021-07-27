@@ -2,7 +2,10 @@ package com.example.jasoali;
 
 //import com.parse.Parse;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,13 +15,17 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jasoali.api.DBConnection;
+import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.SearchFragment;
-import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
+import com.example.jasoali.ui.profile.ProfileFragment;
 import com.example.jasoali.ui.sign_in_up.RegisterActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.parse.Parse;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 //import com.parse.ParseObject;
@@ -26,11 +33,10 @@ import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final SearchFragment searchFragment = new SearchFragment();
-    public LinearProgressIndicator progressIndicator;
-    ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(0);
-
     private static MyHandler handler;
+    public LinearProgressIndicator progressIndicator;
+    ShowQuestionsHolderFragment fragInfo;
+    private SearchFragment searchFragment;
 
     public static MyHandler getHandler() {
         return handler;
@@ -41,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         handler = new MyHandler(this);
+        searchFragment = new SearchFragment();
+        fragInfo = ShowQuestionsHolderFragment.newInstance(0);
 
         // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -58,16 +66,27 @@ public class MainActivity extends AppCompatActivity {
         progressIndicator = findViewById(R.id.progress_bar);
         progressIndicator.setVisibility(View.INVISIBLE);
 
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.fragment_container, searchFragment).commit();
+        configNavigationMenu();
+        showSearchFragment();
 
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+
+//        Intent intent = new Intent(this, RegisterActivity.class);
+//        startActivity(intent);
 
 //        /// todo remove these
+//        new DBConnection(null).register(
+//                new User(
+//                        "a2",
+//                        "SmsS132",
+//                        "1122qqww",
+//                        "smss.lite2@gmail.com",
+//                        "سید مهدی صادق شبیری",
+//                        true
+//                )
+//        );
+//        ProfileFragment fragInfo = ProfileFragment.newInstance();
 //        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.fragment_container, s);
+//        transaction.replace(R.id.fragment_container, fragInfo);
 //        transaction.commit();
 
 //        ParseObject firstObject = new ParseObject("FirstClass");
@@ -100,6 +119,44 @@ public class MainActivity extends AppCompatActivity {
 
 //        DBConnection.getInstance().addQuestionsHolder(DBConnection.getInstance().getLocalQuestionsHolder());
 //        DBConnection.getInstance().addComment(new Comment("alaki", "comment text", "سید علیرضا هاشمی"));
+    }
+
+    void showProfileFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, searchFragment).commit();
+    }
+
+    void showFavoritesFragment() {
+        // TODO
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, searchFragment).commit();
+    }
+
+    void showSearchFragment() {
+        // TODO
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, searchFragment).commit();
+    }
+
+    void configNavigationMenu() {
+        BottomNavigationView menu = findViewById(R.id.bottom_navigation);
+        menu.setSelectedItemId(R.id.navigation_search);
+        menu.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_profile) {
+                showProfileFragment();
+                return true;
+            } else if (item.getItemId() == R.id.navigation_favorites) {
+                showFavoritesFragment();
+                return true;
+            } else if (item.getItemId() == R.id.navigation_search) {
+                showSearchFragment();
+                return true;
+            } else
+                return false;
+        });
     }
 
     public static class MyHandler extends Handler {
