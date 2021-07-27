@@ -21,6 +21,11 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +102,7 @@ public class DBConnection {
             if (error == null) {
                 List<ParseObject> questionHoldersList = task.getResult();
                 for (ParseObject parseObject : questionHoldersList) {
+                    parseObject.fetchIfNeeded();
                     ParseUser creator = getUserFromParseObject(parseObject, "creator");
                     result.add(new QuestionsHolder(
                             parseObject.getObjectId(),
@@ -109,7 +115,7 @@ public class DBConnection {
                 }
                 Log.e("FETCH", "3" + result.size());
                 adapter.replaceData(result);
-                sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
+                sendMessage(MainActivity.MyHandler.NOTIFY_SEARCH_RECYCLER_VIEW);
             }
             return query.fromNetwork().findInBackground();
         }).continueWithTask((task -> {
@@ -119,6 +125,7 @@ public class DBConnection {
             if (error == null) {
                 List<ParseObject> questionHoldersList = task.getResult();
                 for (ParseObject parseObject : questionHoldersList) {
+                    parseObject.fetchIfNeeded();
                     ParseUser creator = getUserFromParseObject(parseObject, "creator");
                     result.add(new QuestionsHolder(
                             parseObject.getObjectId(),
@@ -137,33 +144,47 @@ public class DBConnection {
                 Log.e("FETCH", "5" + result.size());
                 adapter.replaceData(result);
                 sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
-                sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
+                sendMessage(MainActivity.MyHandler.NOTIFY_SEARCH_RECYCLER_VIEW);
             }
             return task;
         }));
     }
 
 
-    public void getFavouriteQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
+    public void getAllFavouriteQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
         sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("FavoriteQuestionHolder");
         query.whereEqualTo("user", ParseUser.getCurrentUser());
         ArrayList<QuestionsHolder> favoriteQuestionHolders = new ArrayList<>();
         query.findInBackground((parseFavoriteQuestionHolders, e) -> {
-            for (ParseObject parseFavoriteQuestionHolder : parseFavoriteQuestionHolders) {
-                ParseUser creator = getUserFromParseObject(parseFavoriteQuestionHolder, "creator");
-                favoriteQuestionHolders.add(new QuestionsHolder(
-                        parseFavoriteQuestionHolder.getObjectId(),
-                        parseFavoriteQuestionHolder.getString("title"),
-                        parseFavoriteQuestionHolder.getString("description"),
-                        creator.getObjectId(),
-                        creator.getString("name"),
-                        getCategoryListFromParseObject(parseFavoriteQuestionHolder)));
+            Log.e("QQQQQQQQQQQQQQQQQQ", String.valueOf(parseFavoriteQuestionHolders.size() + "WWWW"));
+            if (e == null) {
+                for (ParseObject parseFavoriteQuestionHolder : parseFavoriteQuestionHolders) {
+                    try {
+                        parseFavoriteQuestionHolder.fetchIfNeeded();
+                    } catch (ParseException parseException) {
+                        parseException.printStackTrace();
+                    }
+                    ParseUser creator = getUserFromParseObject(parseFavoriteQuestionHolder, "user");
+                    ParseObject questionHolder = parseFavoriteQuestionHolder.getParseObject("questionHolder");
+                    try {
+                        questionHolder.fetchIfNeeded();
+                    } catch (ParseException parseException) {
+                        parseException.printStackTrace();
+                    }
+                    favoriteQuestionHolders.add(new QuestionsHolder(
+                            questionHolder.getObjectId(),
+                            questionHolder.getString("title"),
+                            questionHolder.getString("description"),
+                            creator.getObjectId(),
+                            creator.getString("name"),
+                            getCategoryListFromParseObject(questionHolder)));
+                }
+                adapter.replaceData(favoriteQuestionHolders);
+                sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+                sendMessage(MainActivity.MyHandler.NOTIFY_FAVORITE_RECYCLER_VIEW);
             }
-            adapter.replaceData(favoriteQuestionHolders);
-            sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
-            sendMessage(MainActivity.MyHandler.NOTIFY_RECYCLER_VIEW);
         });
     }
 
@@ -368,10 +389,36 @@ public class DBConnection {
         ParseObject parseObject = new ParseObject("Question");
         parseObject.put("title", question.getTitle());
         if (question instanceof TextQuestion) {
-            parseObject.put("text", ((TextQuestion) question).getText());
+            if (((TextQuestion) question).getText() != null) {
+                parseObject.put("text", ((TextQuestion) question).getText());
+            }
         }
         if (question instanceof FileQuestion) {
-            parseObject.put("file", ((FileQuestion) question).getFile());
+            File file = ((FileQuestion) question).getFile();
+            if (file != null) {
+                int size = (int) file.length();
+                byte[] pdfBytes = new byte[size];
+
+                try {
+                    BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+                    buf.read(pdfBytes, 0, pdfBytes.length);
+                    buf.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // Create the ParseFile
+                ParseFile parseFile = new ParseFile(file.getName(), pdfBytes);
+                parseObject.put("file", parseFile);
+
+                // Upload the file into Parse Cloud
+                try {
+                    parseFile.save();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return parseObject;
     }

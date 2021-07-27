@@ -1,6 +1,7 @@
 package com.example.jasoali.ui.problem;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,6 @@ public class QuestionHolderRecyclerViewAdapter
     public ItemClickListener mClickListener;
 
 
-
     public QuestionHolderRecyclerViewAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
     }
@@ -40,7 +40,6 @@ public class QuestionHolderRecyclerViewAdapter
     }
 
 
-
     @NonNull
     @Override
     public QuestionHolderHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -49,13 +48,18 @@ public class QuestionHolderRecyclerViewAdapter
     }
 
 
-
     @Override
     public void onBindViewHolder(@NonNull QuestionHolderHolder holder, int position) {
         QuestionsHolder questionsHolder = mData.get(position);
+
+        Log.e("QQQQQQQQQQQQQ", questionsHolder.getTitle() + "DDDDDD");
+        Log.e("QQQQQQQQQQQQQ", questionsHolder.getDescription() + "DDDDDD");
+        Log.e("QQQQQQQQQQQQQ", questionsHolder.getCategories().size() + "DDDDDD");
+        Log.e("QQQQQQQQQQQQQ", questionsHolder.getCreatorName() + "DDDDDD");
+
         holder.title.setText(questionsHolder.getTitle());
         holder.card.setOnClickListener(v -> {
-            ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(questionsHolder.getId(),holder.itemView.getContext());
+            ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(questionsHolder.getId(), holder.itemView.getContext());
             MainActivity activity = (MainActivity) holder.itemView.getContext();
             activity.showInfoFragment(fragInfo);
         });
@@ -82,7 +86,6 @@ public class QuestionHolderRecyclerViewAdapter
     }
 
 
-
     @Override
     public int getItemCount() {
         return mData.size();
@@ -105,17 +108,14 @@ public class QuestionHolderRecyclerViewAdapter
     }
 
 
-
     public QuestionsHolder getItem(int id) {
         return mData.get(id);
     }
 
 
-
     public void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
-
 
 
     public interface ItemClickListener {

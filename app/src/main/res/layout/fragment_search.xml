@@ -151,7 +151,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/search_question_holders_fragment_button"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
         android:layout_margin="10dp"
         android:background="@color/design_default_color_on_primary"
