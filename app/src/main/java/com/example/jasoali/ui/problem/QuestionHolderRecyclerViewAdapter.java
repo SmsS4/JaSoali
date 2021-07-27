@@ -1,7 +1,6 @@
 package com.example.jasoali.ui.problem;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +23,6 @@ public class QuestionHolderRecyclerViewAdapter
     private final List<QuestionsHolder> mData = new ArrayList<>();
     private final List<QuestionsHolder> mDataCopy = new ArrayList<>();
     private final LayoutInflater mInflater;
-    public ItemClickListener mClickListener;
-
 
     public QuestionHolderRecyclerViewAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
@@ -52,11 +49,6 @@ public class QuestionHolderRecyclerViewAdapter
     public void onBindViewHolder(@NonNull QuestionHolderHolder holder, int position) {
         QuestionsHolder questionsHolder = mData.get(position);
 
-        Log.e("QQQQQQQQQQQQQ", questionsHolder.getTitle() + "DDDDDD");
-        Log.e("QQQQQQQQQQQQQ", questionsHolder.getDescription() + "DDDDDD");
-        Log.e("QQQQQQQQQQQQQ", questionsHolder.getCategories().size() + "DDDDDD");
-        Log.e("QQQQQQQQQQQQQ", questionsHolder.getCreatorName() + "DDDDDD");
-
         holder.title.setText(questionsHolder.getTitle());
         holder.card.setOnClickListener(v -> {
             ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(questionsHolder.getId(), holder.itemView.getContext());
@@ -67,8 +59,6 @@ public class QuestionHolderRecyclerViewAdapter
             if (category.getType() == CategoryType.COURSE) {
                 holder.course.setText(category.getValue());
             }
-
-//            Log.e("DEPARTMENT", category.getValue());
 
             if (category.getType() == CategoryType.PROFESSOR) {
                 holder.professor.setText(category.getValue());
@@ -110,17 +100,5 @@ public class QuestionHolderRecyclerViewAdapter
 
     public QuestionsHolder getItem(int id) {
         return mData.get(id);
-    }
-
-
-    public void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-
-    public interface ItemClickListener {
-        void onDeleteButtonClick(int position);
-
-        void onItemClick(View view, int position);
     }
 }

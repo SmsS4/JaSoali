@@ -17,12 +17,12 @@ import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
 import com.example.jasoali.ui.sign_in_up.LoginActivity;
 import com.example.jasoali.ui.sign_in_up.RegisterActivity;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SignUpCallback;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -98,59 +98,36 @@ public class DBConnection {
         }
 
         sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
-        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
-            Log.e("FETCH", "2");
-            ParseException error = (ParseException) task.getError();
-            ArrayList<QuestionsHolder> result = new ArrayList<>();
-            if (error == null) {
-                List<ParseObject> questionHoldersList = task.getResult();
-                for (ParseObject parseObject : questionHoldersList) {
-                    parseObject.fetchIfNeeded();
-                    ParseUser creator = getUserFromParseObject(parseObject, "creator");
-                    result.add(new QuestionsHolder(
-                            parseObject.getObjectId(),
-                            parseObject.getString("title"),
-                            parseObject.getString("description"),
-                            creator.getObjectId(),
-                            creator.getString("name"),
-                            getCategoryListFromParseObject(parseObject)));
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException error) {
+                Log.e("FETCH", "2");
+                ArrayList<QuestionsHolder> result = new ArrayList<>();
+                if (error == null) {
+                    List<ParseObject> questionHoldersList = objects;
+                    for (ParseObject parseObject : questionHoldersList) {
+                        try {
+                            parseObject.fetchIfNeeded();
+                        } catch (ParseException parseException) {
+                            parseException.printStackTrace();
+                        }
+                        ParseUser creator = getUserFromParseObject(parseObject, "creator");
+                        result.add(new QuestionsHolder(
+                                parseObject.getObjectId(),
+                                parseObject.getString("title"),
+                                parseObject.getString("description"),
+                                creator.getObjectId(),
+                                creator.getString("name"),
+                                getCategoryListFromParseObject(parseObject)));
 
-                }
-                Log.e("FETCH", "3" + result.size());
-                adapter.replaceData(result);
-                sendMessage(MainActivity.MyHandler.NOTIFY_SEARCH_RECYCLER_VIEW);
-            }
-            return query.fromNetwork().findInBackground();
-        }).continueWithTask((task -> {
-            Log.e("FETCH", "4");
-            ParseException error = (ParseException) task.getError();
-            ArrayList<QuestionsHolder> result = new ArrayList<>();
-            if (error == null) {
-                List<ParseObject> questionHoldersList = task.getResult();
-                for (ParseObject parseObject : questionHoldersList) {
-                    parseObject.fetchIfNeeded();
-                    ParseUser creator = getUserFromParseObject(parseObject, "creator");
-                    result.add(new QuestionsHolder(
-                            parseObject.getObjectId(),
-                            parseObject.getString("title"),
-                            parseObject.getString("description"),
-                            creator.getObjectId(),
-                            creator.getString("name"),
-                            getCategoryListFromParseObject(parseObject)));
-                }
-                ParseObject.unpinAllInBackground(questionHoldersList, e -> { // todo: cache in a better way
-                    if (e == null) {
-                        // Add the latest results for this query to the cache.
-                        ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
                     }
-                });
-                Log.e("FETCH", "5" + result.size());
-                adapter.replaceData(result);
-                sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
-                sendMessage(MainActivity.MyHandler.NOTIFY_SEARCH_RECYCLER_VIEW);
+                    Log.e("FETCH", "3" + result.size());
+                    adapter.replaceData(result);
+                    sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+                    sendMessage(MainActivity.MyHandler.NOTIFY_SEARCH_RECYCLER_VIEW);
+                }
             }
-            return task;
-        }));
+        });
     }
 
 
@@ -161,7 +138,6 @@ public class DBConnection {
         query.whereEqualTo("user", ParseUser.getCurrentUser());
         ArrayList<QuestionsHolder> favoriteQuestionHolders = new ArrayList<>();
         query.findInBackground((parseFavoriteQuestionHolders, e) -> {
-            Log.e("QQQQQQQQQQQQQQQQQQ", String.valueOf(parseFavoriteQuestionHolders.size() + "WWWW"));
             if (e == null) {
                 for (ParseObject parseFavoriteQuestionHolder : parseFavoriteQuestionHolders) {
                     try {
@@ -202,10 +178,7 @@ public class DBConnection {
         ParseObject questionHolder = null;
         try {
             // todo: handle in a better way
-            questionHolder = query.fromLocalDatastore().get(questionsHolderId);
-            if (questionHolder == null) {
-                questionHolder = query.fromNetwork().get(questionsHolderId);
-            }
+            questionHolder = query.fromNetwork().get(questionsHolderId);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -246,8 +219,15 @@ public class DBConnection {
     }
 
 
-    public void addQuestionsHolder(QuestionsHolder questionsHolder) {
-        ParseObject parseObject = new ParseObject("QuestionHolder");
+    public void addQuestionsHolder(QuestionsHolder questionsHolder, ParseObject baseParseQuestionHolder) {
+        sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
+
+        ParseObject parseObject;
+        if (baseParseQuestionHolder != null) {
+            parseObject = baseParseQuestionHolder;
+        } else {
+            parseObject = new ParseObject("QuestionHolder");
+        }
         parseObject.put("title", questionsHolder.getTitle());
         parseObject.put("description", questionsHolder.getDescription());
         parseObject.put("creator", ParseUser.getCurrentUser());
@@ -255,14 +235,22 @@ public class DBConnection {
             parseObject.put(category.getType().toString().toLowerCase(), category.getValue());
         }
 
+        ArrayList<ParseObject> parseComments = new ArrayList<>();
+        for (Comment comment : questionsHolder.getComments()) {
+            parseComments.add(getCommentAsParseObject(parseObject.getObjectId(), comment));
+        }
+        parseObject.put("comments", parseComments);
+
+
         ArrayList<ParseObject> parseQuestions = new ArrayList<>();
         for (Question question : questionsHolder.getQuestions()) {
-            parseQuestions.add(getQuestionAsParseObject(question));
+            parseQuestions.add(getQuestionAsParseObject(parseObject.getObjectId(), question));
         }
         parseObject.put("questions", parseQuestions);
 
         parseObject.saveInBackground(e -> {
             if (e == null) {
+                sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
                 //todo: add notification of creating object
                 Log.e("Hoora!", "object saved!");
             } else {
@@ -273,36 +261,36 @@ public class DBConnection {
 
 
     public void editQuestionsHolder(QuestionsHolder newQuestionsHolder) {
-        removeQuestionsHolder(newQuestionsHolder.getId());
-        addQuestionsHolder(newQuestionsHolder);
-    }
-
-
-    public void removeQuestionsHolder(String questionsHolderId) {
         sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
-        ParseObject questionHolder = null;
+        ParseObject parseQuestionHolder = null;
         try {
-            // todo: handle in a better way
-            questionHolder = query.fromLocalDatastore().get(questionsHolderId);
-            if (questionHolder == null) {
-                questionHolder = query.fromNetwork().get(questionsHolderId);
-            }
+            parseQuestionHolder = query.get(newQuestionsHolder.getId());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        questionHolder.deleteInBackground(e -> {
-            //todo: add notification of deleting object
-            sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
-        });
+        parseQuestionHolder = eraseQuestionHolder(parseQuestionHolder);
+        addQuestionsHolder(newQuestionsHolder, parseQuestionHolder);
+        sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+    }
+
+    public ParseObject eraseQuestionHolder(ParseObject parseQuestionsHolder) {
+        parseQuestionsHolder.remove("title");
+        parseQuestionsHolder.remove("description");
+        parseQuestionsHolder.remove("creator");
+        parseQuestionsHolder.remove("categories");
+        parseQuestionsHolder.remove("comments");
+        parseQuestionsHolder.remove("questions");
+
+        return parseQuestionsHolder;
     }
 
 
     public void addComment(Comment comment) {
         sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
 
-        ParseObject parseObject = getCommentAsParseObject(comment);
+        ParseObject parseObject = getCommentAsParseObject(comment.getQuestionsHolderId(), comment);
         try {
             parseObject.save();
         } catch (ParseException e) {
@@ -317,8 +305,12 @@ public class DBConnection {
             e.printStackTrace();
         }
         parseQuestionHolder.add("comments", parseObject);
-
-        sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+        try {
+            parseQuestionHolder.save();
+            sendMessage(MainActivity.MyHandler.STOP_PROGRESS_BAR);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -385,9 +377,9 @@ public class DBConnection {
 
 
     public void updateName(String userId, String newName) {
-        /// this method should update name of user in db
-        /// optional: update comments name too XD
-        // todo:
+        ParseUser user = ParseUser.getCurrentUser();
+        user.put("name", newName);
+        user.saveInBackground();
     }
 
 
@@ -399,7 +391,7 @@ public class DBConnection {
     ////////////////////////
 
 
-    private ParseObject getQuestionAsParseObject(Question question) {
+    private ParseObject getQuestionAsParseObject(String questionHolderId, Question question) {
         ParseObject parseObject = new ParseObject("Question");
         parseObject.put("title", question.getTitle());
         if (question instanceof TextQuestion) {
@@ -438,20 +430,16 @@ public class DBConnection {
     }
 
 
-    private ParseObject getCommentAsParseObject(Comment comment) {
+    private ParseObject getCommentAsParseObject(String questionHolderId, Comment comment) {
         ParseObject parseObject = new ParseObject("Comment");
         parseObject.put("maker", ParseUser.getCurrentUser());
         parseObject.put("text", comment.getText());
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
         ParseObject questionHolder = null;
-        System.out.println(comment.getQuestionsHolderId());
         try {
             // todo: handle in a better way
-            questionHolder = query.fromLocalDatastore().get(comment.getQuestionsHolderId());
-            if (questionHolder == null) {
-                questionHolder = query.fromNetwork().get(comment.getQuestionsHolderId());
-            }
+            questionHolder = query.get(questionHolderId);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -527,7 +515,8 @@ public class DBConnection {
         }
         return result;
     }
-    public void logout(){
+
+    public void logout() {
         /// todo?
         ParseUser.logOut();
     }

@@ -223,10 +223,10 @@ public class ShowQuestionsHolderFragment extends Fragment {
                         added = true;
                         QuestionsHolder addedQuestionsHolder = getEditedQuestionsHolder();
                         db.addQuestionsHolder(
-                                addedQuestionsHolder
+                                addedQuestionsHolder, null
                         );
                         questionsHolder = addedQuestionsHolder;
-                        ((MainActivity)context).showSearchFragment();
+                        ((MainActivity) context).showSearchFragment();
                     } else {
                         QuestionsHolder editedQuestionsHolder = getEditedQuestionsHolder();
                         db.editQuestionsHolder(

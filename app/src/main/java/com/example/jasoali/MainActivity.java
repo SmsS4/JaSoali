@@ -22,7 +22,6 @@ import com.example.jasoali.ui.profile.ProfileFragment;
 import com.example.jasoali.ui.sign_in_up.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.parse.Parse;
 
 import java.lang.ref.WeakReference;
 
