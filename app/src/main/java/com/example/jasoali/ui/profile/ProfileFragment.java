@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.jasoali.MainActivity;
 import com.example.jasoali.R;

@@ -1,8 +1,6 @@
 package com.example.jasoali.models;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestionsHolder {
     private String id;
@@ -26,12 +24,13 @@ public class QuestionsHolder {
         this.questions = questions;
     }
 
-    public QuestionsHolder(String id, String title, String description, String creatorId, String creatorName) {
+    public QuestionsHolder(String id, String title, String description, String creatorId, String creatorName, ArrayList<Category> categories) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
+        this.categories = categories;
     }
 
 

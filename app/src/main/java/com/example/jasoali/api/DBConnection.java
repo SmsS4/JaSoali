@@ -6,25 +6,21 @@ import android.util.Log;
 
 import com.example.jasoali.MainActivity;
 import com.example.jasoali.exceptions.LengthExceeded;
-import com.example.jasoali.exceptions.NetworkError;
 import com.example.jasoali.models.Category;
 import com.example.jasoali.models.CategoryType;
 import com.example.jasoali.models.Comment;
-import com.example.jasoali.models.FileData;
 import com.example.jasoali.models.FileQuestion;
 import com.example.jasoali.models.Question;
 import com.example.jasoali.models.QuestionsHolder;
 import com.example.jasoali.models.TextQuestion;
 import com.example.jasoali.models.User;
 import com.example.jasoali.ui.problem.QuestionHolderRecyclerViewAdapter;
-import com.parse.DeleteCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +49,6 @@ public class DBConnection {
 
 
     public QuestionsHolder getWholeQuestionHolderData(String questionHolderId) {
-        // todo: آصادق این تابع منتظر استفاده‌ی شماست!
         return null;
     }
 
@@ -63,7 +58,7 @@ public class DBConnection {
 
         for (Category category : categories) {
             if (category.getValue() != null && !category.getValue().equals(""))
-                query.whereEqualTo(category.getType().toString(), category.getValue());
+                query.whereEqualTo(category.getType().toString().toLowerCase(), category.getValue());
         }
 
         sendMessage(MainActivity.MyHandler.START_PROGRESS_BAR);
@@ -82,7 +77,9 @@ public class DBConnection {
                             parseObject.getString("title"),
                             parseObject.getString("description"),
                             user.getObjectId(),
-                            user.getString("name")));
+                            user.getString("name"),
+                            getCategoryListFromParseObject(parseObject)));
+
                 }
                 Log.e("FETCH", "3" + result.size());
                 adapter.replaceData(result);
@@ -102,9 +99,10 @@ public class DBConnection {
                             parseObject.getString("title"),
                             parseObject.getString("description"),
                             user.getObjectId(),
-                            user.getString("name")));
+                            user.getString("name"),
+                            getCategoryListFromParseObject(parseObject)));
                 }
-                ParseObject.unpinAllInBackground(QUESTION_HOLDERS, questionHoldersList, e -> {
+                ParseObject.unpinAllInBackground(questionHoldersList, e -> { // todo: cache in a better way
                     if (e == null) {
                         // Add the latest results for this query to the cache.
                         ParseObject.pinAllInBackground(QUESTION_HOLDERS, questionHoldersList);
@@ -176,11 +174,6 @@ public class DBConnection {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
-
-    public FileData getFile(String fileId) throws NetworkError {
-        /// download and store file
-        return null;
     }
 
     public QuestionsHolder getLocalQuestionsHolder() {
@@ -317,6 +310,7 @@ public class DBConnection {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
         ParseObject questionHolder = null;
         try {
+            // todo: handle in a better way
             questionHolder = query.fromLocalDatastore().get(comment.getQuestionsHolderId());
             if (questionHolder == null) {
                 questionHolder = query.fromNetwork().get(comment.getQuestionsHolderId());

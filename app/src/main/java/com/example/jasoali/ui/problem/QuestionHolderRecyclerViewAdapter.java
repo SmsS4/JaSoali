@@ -1,12 +1,9 @@
 package com.example.jasoali.ui.problem;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +12,6 @@ import com.example.jasoali.R;
 import com.example.jasoali.models.Category;
 import com.example.jasoali.models.CategoryType;
 import com.example.jasoali.models.QuestionsHolder;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,17 +54,23 @@ public class QuestionHolderRecyclerViewAdapter
         QuestionsHolder questionsHolder = mData.get(position);
         holder.title.setText(questionsHolder.getTitle());
         for (Category category : questionsHolder.getCategories()) {
-            if (category.getType() == CategoryType.COURSE)
+            if (category.getType() == CategoryType.COURSE) {
                 holder.course.setText(category.getValue());
+            }
 
-            if (category.getType() == CategoryType.PROFESSOR)
+//            Log.e("DEPARTMENT", category.getValue());
+
+            if (category.getType() == CategoryType.PROFESSOR) {
                 holder.professor.setText(category.getValue());
+            }
 
-            if (category.getType() == CategoryType.TERM)
+            if (category.getType() == CategoryType.TERM) {
                 holder.term.setText(category.getValue());
+            }
 
-            if (category.getType() == CategoryType.UNIVERSITY)
+            if (category.getType() == CategoryType.UNIVERSITY) {
                 holder.university.setText(category.getValue());
+            }
         }
     }
 
