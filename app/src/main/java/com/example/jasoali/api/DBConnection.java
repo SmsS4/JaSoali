@@ -43,13 +43,35 @@ public class DBConnection {
     }
 
 
-    public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
-        getQuestionsHolderByCategories(new ArrayList<>(), adapter);
+    public QuestionsHolder getWholeQuestionHolderData(String questionHolderId) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
+        ParseObject parseQuestionHolder = null;
+        try {
+            // todo: handle in a better way
+            parseQuestionHolder = query.fromLocalDatastore().get(questionHolderId);
+            if (parseQuestionHolder == null) {
+                parseQuestionHolder = query.fromNetwork().get(questionHolderId);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        ParseUser creator = getUserFromParseObject(parseQuestionHolder, "creator");
+        return new QuestionsHolder(
+                parseQuestionHolder.getObjectId(),
+                parseQuestionHolder.getString("title"),
+                parseQuestionHolder.getString("description"),
+                creator.getObjectId(),
+                creator.getString("name"),
+                getCategoryListFromParseObject(parseQuestionHolder),
+                getCommentsListFromParseObject(parseQuestionHolder),
+                getQuestionsListFromParseObject(parseQuestionHolder));
     }
 
 
-    public QuestionsHolder getWholeQuestionHolderData(String questionHolderId) {
-        return null;
+    public void getAllQuestionsHolder(QuestionHolderRecyclerViewAdapter adapter) {
+        getQuestionsHolderByCategories(new ArrayList<>(), adapter);
     }
 
 
@@ -71,13 +93,13 @@ public class DBConnection {
                 List<ParseObject> questionHoldersList = task.getResult();
                 for (ParseObject parseObject : questionHoldersList) {
                     Log.e("BUG", parseObject.getObjectId());
-                    ParseUser user = getUserFromParseObject(parseObject, "creator");
+                    ParseUser creator = getUserFromParseObject(parseObject, "creator");
                     result.add(new QuestionsHolder(
                             parseObject.getObjectId(),
                             parseObject.getString("title"),
                             parseObject.getString("description"),
-                            user.getObjectId(),
-                            user.getString("name"),
+                            creator.getObjectId(),
+                            creator.getString("name"),
                             getCategoryListFromParseObject(parseObject)));
 
                 }
@@ -93,13 +115,13 @@ public class DBConnection {
             if (error == null) {
                 List<ParseObject> questionHoldersList = task.getResult();
                 for (ParseObject parseObject : questionHoldersList) {
-                    ParseUser user = getUserFromParseObject(parseObject, "creator");
+                    ParseUser creator = getUserFromParseObject(parseObject, "creator");
                     result.add(new QuestionsHolder(
                             parseObject.getObjectId(),
                             parseObject.getString("title"),
                             parseObject.getString("description"),
-                            user.getObjectId(),
-                            user.getString("name"),
+                            creator.getObjectId(),
+                            creator.getString("name"),
                             getCategoryListFromParseObject(parseObject)));
                 }
                 ParseObject.unpinAllInBackground(questionHoldersList, e -> { // todo: cache in a better way
