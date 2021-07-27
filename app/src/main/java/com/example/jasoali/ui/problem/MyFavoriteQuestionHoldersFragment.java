@@ -18,7 +18,7 @@ import com.example.jasoali.models.QuestionsHolder;
 
 import java.util.ArrayList;
 
-class MyFavoriteQuestionsHoldersFragment extends Fragment {
+public class MyFavoriteQuestionHoldersFragment extends Fragment {
     public QuestionHolderRecyclerViewAdapter adapter;
     private RecyclerView questionHolders;
     private SearchView searchField;
