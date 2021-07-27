@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static MyHandler handler;
     public LinearProgressIndicator progressIndicator;
-    private ShowQuestionsHolderFragment fragInfo;
+//    private ShowQuestionsHolderFragment fragInfo;
     private SearchFragment searchFragment;
     private ProfileFragment profileFragment;
 
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         handler = new MyHandler(this);
         searchFragment = new SearchFragment();
-        fragInfo = ShowQuestionsHolderFragment.newInstance(0, this);
+//        fragInfo = ShowQuestionsHolderFragment.newInstance("0", this);
         profileFragment = ProfileFragment.newInstance(this);
 
         // hides keyboard on start

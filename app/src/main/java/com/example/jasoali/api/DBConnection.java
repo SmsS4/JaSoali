@@ -124,7 +124,7 @@ public class DBConnection {
     }
 
     public void addToFavouriteQuestionsHolders(String questionsHolderId) {
-
+        // todo
     }
 
     public void removeFromFavouriteQuestionsHolder(String questionsHolderId) {

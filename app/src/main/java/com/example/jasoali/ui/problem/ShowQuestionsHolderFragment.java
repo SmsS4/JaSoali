@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
@@ -53,7 +54,7 @@ import java.util.ArrayList;
 public class ShowQuestionsHolderFragment extends Fragment {
 
     public static final String QUESTIONS_HOLDER_ID = "questionsHolderId";
-    public static final int ADD_QUESTIONS_ID = -1;
+    public static final String ADD_QUESTIONS_ID = "-1";
     private static final int PICKFILE_RESULT_CODE = -1;
     private static final String[] mimes = new String[]{"image/*", "application/pdf"};
     private final DBConnection db = new DBConnection(MainActivity.getHandler());
@@ -74,7 +75,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private View view;
     private QuestionsAdapter questionsAdapter;
     private TagsAdapter tagsAdapter;
-    private Button favButton;
+    private ImageButton favButton;
 
     private boolean editModeActive = false;
 
@@ -86,10 +87,10 @@ public class ShowQuestionsHolderFragment extends Fragment {
     }
 
 
-    public static ShowQuestionsHolderFragment newInstance(int questionsHolderId, Context context) {
+    public static ShowQuestionsHolderFragment newInstance(String questionsHolderId, Context context) {
         ShowQuestionsHolderFragment fragment = new ShowQuestionsHolderFragment(context);
         Bundle args = new Bundle();
-        args.putInt(QUESTIONS_HOLDER_ID, questionsHolderId);
+        args.putString(QUESTIONS_HOLDER_ID, questionsHolderId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -105,8 +106,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
 //            user = db.getLocalUser(); todo
             user = new User("pppfff", "fafsadfa", "ffffff", "f@f.com", "fff", true);
-            int questionsHolderId = getArguments().getInt(QUESTIONS_HOLDER_ID);
-            if (questionsHolderId != ADD_QUESTIONS_ID) {
+            String questionsHolderId = getArguments().getString(QUESTIONS_HOLDER_ID);
+            if (!questionsHolderId.equals(ADD_QUESTIONS_ID)) {
                 questionsHolder = db.getLocalQuestionsHolder();
                 addQuestionMode = false;
             } else {
