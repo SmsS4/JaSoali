@@ -19,9 +19,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
+                android:id="@+id/tafasd"
                 android:layout_height="wrap_content">
+                <ImageButton
+                    android:id="@+id/favButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    app:srcCompat="@android:drawable/btn_star_big_off" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/edit_btn"
@@ -60,9 +67,10 @@
                         android:textColor="@drawable/edit_text_selector"
                         android:textSize="24sp" />
 
+
                 </com.google.android.material.textfield.TextInputLayout>
 
-            </FrameLayout>
+            </RelativeLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

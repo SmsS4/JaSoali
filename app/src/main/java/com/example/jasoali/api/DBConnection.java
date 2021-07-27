@@ -75,17 +75,14 @@ public class DBConnection {
             if (error == null) {
                 List<ParseObject> questionHoldersList = task.getResult();
                 for (ParseObject parseObject : questionHoldersList) {
+                    Log.e("BUG", parseObject.getObjectId());
                     ParseUser user = getUserFromParseObject(parseObject, "creator");
                     result.add(new QuestionsHolder(
-                            parseObject.getString("id"),
+                            parseObject.getObjectId(),
                             parseObject.getString("title"),
                             parseObject.getString("description"),
                             user.getObjectId(),
-                            user.getString("name"),
-                            getCategoryListFromParseObject(parseObject),
-                            getCommentsListFromParseObject(parseObject),
-                            getQuestionsListFromParseObject(parseObject)
-                    ));
+                            user.getString("name")));
                 }
                 Log.e("FETCH", "3" + result.size());
                 adapter.replaceData(result);

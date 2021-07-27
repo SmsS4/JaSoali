@@ -70,16 +70,16 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(intent);
 
 //        /// todo remove these
-//        new DBConnection(null).register(
-//                new User(
-//                        "a2",
-//                        "SmsS132",
-//                        "1122qqww",
-//                        "smss.lite2@gmail.com",
-//                        "سید مهدی صادق شبیری",
-//                        true
-//                )
-//        );
+//        new DBConnection(null).login("SmsS132", "1122qqww", "smss.lite2@gmail.com");
+////                new User(
+////                        "a2",
+////                        "SmsS132",
+////                        "1122qqww",
+////                        "smss.lite2@gmail.com",
+////                        "سید مهدی صادق شبیری",
+////                        true
+////                )
+////        );
 //        ProfileFragment fragInfo = ProfileFragment.newInstance();
 //        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 //        transaction.replace(R.id.fragment_container, fragInfo);
