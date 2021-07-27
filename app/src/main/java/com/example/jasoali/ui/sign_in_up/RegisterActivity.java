@@ -73,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
 
             User user = new User("", username, password, email, name, false);
+            addRequestsCount(+1);
             db.register(user);
         });
     }
