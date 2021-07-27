@@ -32,13 +32,21 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
     private final List<TagsAdapter.ViewHolder> viewHolders = new ArrayList<>();
 
     public TagsAdapter(List<Category> categories) {
+//        System.out.println("hooy");
+//        for(Category category:categories){
+//            System.out.println(category.getValue());
+//        }
         this.categories = new ArrayList<>();
         for (Category category : categories) {
+            Category categoryToAdd = new Category(
+                    category.getType(),
+                    category.getValue()
+            );
+            if (categoryToAdd.getValue() == null){
+                categoryToAdd.setValue("");
+            }
             this.categories.add(
-                    new Category(
-                            category.getType(),
-                            category.getValue()
-                    )
+                    categoryToAdd
             );
 
         }

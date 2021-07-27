@@ -198,70 +198,70 @@ public class DBConnection {
         }
     }
 
-    public QuestionsHolder getLocalQuestionsHolder() {
-        String currentUserId = ParseUser.getCurrentUser().getObjectId();
-        // todo
-        ArrayList<Category> categories = new ArrayList<>();
-        try {
-            categories.add(
-                    new Category(CategoryType.COURSE, "شبیه سازی")
-            );
-            categories.add(
-                    new Category(CategoryType.DEPARTMENT, "مهندسی کامپیوتر")
-            );
-            categories.add(
-                    new Category(CategoryType.OTHER, "سوال_سخت")
-            );
-            categories.add(
-                    new Category(CategoryType.OTHER, "مخصوص_خودته")
-            );
-            categories.add(
-                    new Category(CategoryType.TERM, "بهار ۱۴۰۰")
-            );
-            ArrayList<Question> questions = new ArrayList<>();
-            questions.add(
-                    new TextQuestion("سوال‌ها یک عنوان طولانی همیشگی", "بلا بلا متن سوال بلا بلا")
-            );
-//            questions.add(
-//                    new FileQuestion("جواب‌ها", null)
+//    public QuestionsHolder getLocalQuestionsHolder() {
+//        String currentUserId = ParseUser.getCurrentUser().getObjectId();
+//        // todo
+//        ArrayList<Category> categories = new ArrayList<>();
+//        try {
+//            categories.add(
+//                    new Category(CategoryType.COURSE, "شبیه سازی")
 //            );
-//            questions.add(
-//                    new FileQuestion("راهنمایی‌ها", null)
+//            categories.add(
+//                    new Category(CategoryType.DEPARTMENT, "مهندسی کامپیوتر")
 //            );
-//            questions.add(
-//                    new FileQuestion("جواب‌ها", null)
+//            categories.add(
+//                    new Category(CategoryType.OTHER, "سوال_سخت")
 //            );
-//            questions.add(
-//                    new FileQuestion("راهنمایی‌ها", null)
+//            categories.add(
+//                    new Category(CategoryType.OTHER, "مخصوص_خودته")
 //            );
-//            questions.add(
-//                    new FileQuestion("جواب‌ها", null)
+//            categories.add(
+//                    new Category(CategoryType.TERM, "بهار ۱۴۰۰")
 //            );
+//            ArrayList<Question> questions = new ArrayList<>();
 //            questions.add(
-//                    new FileQuestion("راهنمایی‌ها", null)
+//                    new TextQuestion("سوال‌ها یک عنوان طولانی همیشگی", "بلا بلا متن سوال بلا بلا")
 //            );
-            ArrayList<Comment> comments = new ArrayList<>();
-            comments.add(
-                    new Comment(currentUserId, "عالی و طلایی", "ممد", "0")
-            );
-            comments.add(
-                    new Comment(currentUserId, "ماورای تصور", "یک پدیده", "0")
-            );
-            return new QuestionsHolder(
-                    "0",
-                    "سلام سوال",
-                    "این یک توضیحات تستی برای یک تست دستی است.",
-                    currentUserId,
-                    "آقا صادق",
-                    categories,
-                    comments,
-                    questions
-            );
-        } catch (LengthExceeded le) {
-            return null;
-        }
-
-    }
+////            questions.add(
+////                    new FileQuestion("جواب‌ها", null)
+////            );
+////            questions.add(
+////                    new FileQuestion("راهنمایی‌ها", null)
+////            );
+////            questions.add(
+////                    new FileQuestion("جواب‌ها", null)
+////            );
+////            questions.add(
+////                    new FileQuestion("راهنمایی‌ها", null)
+////            );
+////            questions.add(
+////                    new FileQuestion("جواب‌ها", null)
+////            );
+////            questions.add(
+////                    new FileQuestion("راهنمایی‌ها", null)
+////            );
+//            ArrayList<Comment> comments = new ArrayList<>();
+//            comments.add(
+//                    new Comment(currentUserId, "عالی و طلایی", "ممد", "0")
+//            );
+//            comments.add(
+//                    new Comment(currentUserId, "ماورای تصور", "یک پدیده", "0")
+//            );
+//            return new QuestionsHolder(
+//                    "0",
+//                    "سلام سوال",
+//                    "این یک توضیحات تستی برای یک تست دستی است.",
+//                    currentUserId,
+//                    "آقا صادق",
+//                    categories,
+//                    comments,
+//                    questions
+//            );
+//        } catch (LengthExceeded le) {
+//            return null;
+//        }
+//
+//    }
 
     public void login(String username, String password, String email) {
         ParseUser parseUser = new ParseUser();
@@ -368,6 +368,7 @@ public class DBConnection {
     private ArrayList<Comment> getCommentsListFromParseObject(ParseObject parseObject) {
         ArrayList<Comment> result = new ArrayList<>();
         List<ParseObject> parseComments = parseObject.getList("comments");
+        if (parseComments == null) return result;
         for (ParseObject parseComment : parseComments) {
             try {
                 parseComment.fetch();

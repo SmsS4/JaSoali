@@ -111,9 +111,12 @@ public class ShowQuestionsHolderFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             user = db.getLocalUser();
+            if(user == null){
+                System.out.println("wht");
+            }
             String questionsHolderId = getArguments().getString(QUESTIONS_HOLDER_ID);
             if (!questionsHolderId.equals(ADD_QUESTIONS_ID)) {
-                questionsHolder = db.getLocalQuestionsHolder();
+                questionsHolder = db.getWholeQuestionHolderData(questionsHolderId);
                 addQuestionMode = false;
             } else {
                 questionsHolder = new QuestionsHolder(user.getId(), user.getName());
