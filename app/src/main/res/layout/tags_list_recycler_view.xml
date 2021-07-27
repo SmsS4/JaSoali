@@ -47,6 +47,7 @@
 
         android:layout_height="35sp"
         android:layout_weight="3"
+        android:maxLength="12"
         android:gravity="center|center_horizontal|center_vertical"
         android:inputType="textPersonName"
 
