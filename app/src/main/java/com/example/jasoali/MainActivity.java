@@ -13,7 +13,6 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.ui.problem.MyFavoriteQuestionHoldersFragment;
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
@@ -190,7 +189,8 @@ public class MainActivity extends AppCompatActivity {
 
         public static final int START_PROGRESS_BAR = 1;
         public static final int STOP_PROGRESS_BAR = 2;
-        public static final int NOTIFY_RECYCLER_VIEW = 3;
+        public static final int NOTIFY_SEARCH_RECYCLER_VIEW = 3;
+        public static final int NOTIFY_FAVORITE_RECYCLER_VIEW = 4;
         private final WeakReference<MainActivity> mainActivityWeakReference;
 
         public MyHandler(MainActivity mainActivity) {
@@ -209,8 +209,11 @@ public class MainActivity extends AppCompatActivity {
             if (msg.what == STOP_PROGRESS_BAR) {
                 mainActivity.progressIndicator.setVisibility(View.INVISIBLE);
             }
-            if (msg.what == NOTIFY_RECYCLER_VIEW) {
+            if (msg.what == NOTIFY_SEARCH_RECYCLER_VIEW) {
                 mainActivity.searchFragment.adapter.notifyDataSetChanged();
+            }
+            if (msg.what == NOTIFY_FAVORITE_RECYCLER_VIEW) {
+                mainActivity.favoritesFragment.adapter.notifyDataSetChanged();
             }
         }
     }

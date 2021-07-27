@@ -16,7 +16,6 @@ import com.example.jasoali.R;
 import com.example.jasoali.api.DBConnection;
 import com.example.jasoali.models.Category;
 import com.example.jasoali.models.CategoryType;
-import com.example.jasoali.models.QuestionsHolder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ public class SearchFragment extends Fragment {
     public QuestionHolderRecyclerViewAdapter adapter;
     private RecyclerView questionHolders;
     private SearchView searchField;
-    private final ArrayList<QuestionsHolder> mQuestionsHolders = new ArrayList<>();
     private final DBConnection dbConnection = new DBConnection(MainActivity.getHandler());
 
     @Override
