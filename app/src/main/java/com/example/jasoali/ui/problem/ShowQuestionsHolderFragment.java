@@ -72,6 +72,7 @@ public class ShowQuestionsHolderFragment extends Fragment {
     private View view;
     private QuestionsAdapter questionsAdapter;
     private TagsAdapter tagsAdapter;
+    private Button favButton;
 
     private boolean editModeActive = false;
 
@@ -363,6 +364,8 @@ public class ShowQuestionsHolderFragment extends Fragment {
 
 
     private void initQuestionsHolder() {
+        favButton = view.findViewById(R.id.favButton);
+        favButton.setOnClickListener(v -> db.addToFavouriteQuestionsHolders(questionsHolder.getId(), user.getId()));
         questionsRecyclerView = view.findViewById(R.id.questions);
         questionsRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2) {
             @Override

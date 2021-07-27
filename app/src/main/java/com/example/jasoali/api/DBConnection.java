@@ -123,7 +123,7 @@ public class DBConnection {
         return new ArrayList<>();
     }
 
-    public void addToFavouriteQuestionsHolders(String questionsHolderId) {
+    public void addToFavouriteQuestionsHolders(String questionsHolderId, String userId) {
 
     }
 

@@ -24,7 +24,7 @@
                 android:id="@+id/tafasd"
                 android:layout_height="wrap_content">
                 <ImageButton
-                    android:id="@+id/imageButton"
+                    android:id="@+id/favButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
