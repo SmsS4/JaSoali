@@ -7,5 +7,4 @@ public enum CategoryType {
     UNIVERSITY,
     PROFESSOR,
     OTHER,
-
 }
