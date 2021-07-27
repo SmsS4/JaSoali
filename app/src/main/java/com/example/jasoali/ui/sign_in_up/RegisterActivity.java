@@ -60,18 +60,20 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button registerBtn = findViewById(R.id.registerBtn);
         registerBtn.setOnClickListener(v -> {
-            String password = passwordEditText.toString();
-            String repeatPassword = password2EditText.toString();
+            String password = passwordEditText.getText().toString();
+            String repeatPassword = password2EditText.getText().toString();
             if (!password.equals(repeatPassword)) {
+                System.out.println(password + " " + repeatPassword);
                 showError("عدم تطابق رمزهای عبور");
                 return;
             }
 
-            String name = nameEditText.toString();
-            String username = usernameEditText.toString();
-            String email = emailEditText.toString();
+            String name = nameEditText.getText().toString();
+            String username = usernameEditText.getText().toString();
+            String email = emailEditText.getText().toString();
 
             User user = new User("", username, password, email, name, false);
+            addRequestsCount(+1);
             db.register(user);
         });
     }
