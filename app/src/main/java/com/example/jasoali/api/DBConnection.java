@@ -313,8 +313,17 @@ public class DBConnection {
         ParseObject parseObject = new ParseObject("Comment");
         parseObject.put("maker", ParseUser.getCurrentUser());
         parseObject.put("text", comment.getText());
-        ParseObject questionHolder = new ParseObject("QuestionHolder");
-        questionHolder.setObjectId(comment.getQuestionsHolderId());
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
+        ParseObject questionHolder = null;
+        try {
+            questionHolder = query.fromLocalDatastore().get(comment.getQuestionsHolderId());
+            if (questionHolder == null) {
+                questionHolder = query.fromNetwork().get(comment.getQuestionsHolderId());
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         parseObject.put("questionHolder", questionHolder);
         return parseObject;
     }

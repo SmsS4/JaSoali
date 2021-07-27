@@ -12,6 +12,7 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jasoali.ui.problem.MyFavoriteQuestionHoldersFragment;
 import com.example.jasoali.ui.problem.SearchFragment;
 import com.example.jasoali.ui.problem.ShowQuestionTextFragment;
 import com.example.jasoali.ui.problem.ShowQuestionsHolderFragment;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 //    private ShowQuestionsHolderFragment fragInfo;
     private SearchFragment searchFragment;
     private ProfileFragment profileFragment;
+    private MyFavoriteQuestionHoldersFragment favoritesFragment;
 
     public static MyHandler getHandler() {
         return handler;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         searchFragment = new SearchFragment();
 //        fragInfo = ShowQuestionsHolderFragment.newInstance("0", this);
         profileFragment = ProfileFragment.newInstance(this);
+        favoritesFragment = new MyFavoriteQuestionHoldersFragment();
 
         // hides keyboard on start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -130,20 +133,22 @@ public class MainActivity extends AppCompatActivity {
     void showProfileFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, profileFragment).commit();
+                .replace(R.id.fragment_container, profileFragment)
+                .commit();
     }
 
     void showFavoritesFragment() {
-        // TODO
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, searchFragment).commit();
+                .replace(R.id.fragment_container, favoritesFragment)
+                .commit();
     }
 
     void showSearchFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, searchFragment).commit();
+                .replace(R.id.fragment_container, searchFragment)
+                .commit();
     }
 
     public void showInfoFragment(ShowQuestionsHolderFragment frag) {
