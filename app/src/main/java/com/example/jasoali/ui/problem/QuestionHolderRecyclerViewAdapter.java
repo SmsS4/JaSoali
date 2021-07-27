@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jasoali.MainActivity;
 import com.example.jasoali.R;
 import com.example.jasoali.models.Category;
 import com.example.jasoali.models.CategoryType;
@@ -25,7 +26,7 @@ public class QuestionHolderRecyclerViewAdapter
     public ItemClickListener mClickListener;
 
 
-    // data is passed into the constructor
+
     public QuestionHolderRecyclerViewAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
     }
@@ -39,7 +40,7 @@ public class QuestionHolderRecyclerViewAdapter
     }
 
 
-    // inflates the row layout from xml when needed
+
     @NonNull
     @Override
     public QuestionHolderHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,11 +49,16 @@ public class QuestionHolderRecyclerViewAdapter
     }
 
 
-    // binds the data to the TextView in each row
+
     @Override
     public void onBindViewHolder(@NonNull QuestionHolderHolder holder, int position) {
         QuestionsHolder questionsHolder = mData.get(position);
         holder.title.setText(questionsHolder.getTitle());
+        holder.card.setOnClickListener(v -> {
+            ShowQuestionsHolderFragment fragInfo = ShowQuestionsHolderFragment.newInstance(questionsHolder.getId(),holder.itemView.getContext());
+            MainActivity activity = (MainActivity) holder.itemView.getContext();
+            activity.showInfoFragment(fragInfo);
+        });
         for (Category category : questionsHolder.getCategories()) {
             if (category.getType() == CategoryType.COURSE) {
                 holder.course.setText(category.getValue());
@@ -72,10 +78,11 @@ public class QuestionHolderRecyclerViewAdapter
                 holder.university.setText(category.getValue());
             }
         }
+
     }
 
 
-    // total number of rows
+
     @Override
     public int getItemCount() {
         return mData.size();
@@ -98,19 +105,19 @@ public class QuestionHolderRecyclerViewAdapter
     }
 
 
-    // convenience method for getting data at click position
+
     public QuestionsHolder getItem(int id) {
         return mData.get(id);
     }
 
 
-    // allows clicks events to be caught
+
     public void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 
 
-    // parent activity will implement this method to respond to click events
+
     public interface ItemClickListener {
         void onDeleteButtonClick(int position);
 

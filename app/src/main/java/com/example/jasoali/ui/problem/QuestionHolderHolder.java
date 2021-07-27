@@ -15,7 +15,7 @@ public class QuestionHolderHolder extends RecyclerView.ViewHolder {
     TextView course;
     TextView university;
     TextView professor;
-    MaterialCardView card;
+    public MaterialCardView card;
 
     QuestionHolderHolder(View itemView) {
         super(itemView);
