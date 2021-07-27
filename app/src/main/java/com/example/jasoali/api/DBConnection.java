@@ -398,6 +398,7 @@ public class DBConnection {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("QuestionHolder");
         ParseObject questionHolder = null;
+        System.out.println(comment.getQuestionsHolderId());
         try {
             // todo: handle in a better way
             questionHolder = query.fromLocalDatastore().get(comment.getQuestionsHolderId());
